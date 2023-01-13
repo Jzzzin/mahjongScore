@@ -75,8 +75,8 @@ window.addEventListener('DOMContentLoaded', event => {
             event.preventDefault();
             const meetNo = $('#meetList option:selected').val();
             $('.memberList').each(function () {
-                const id = $(this).children('input').attr('id');
-                if (id === meetNo) $(this).show();
+                const classNo = $(this).children('input').attr('class');
+                if (classNo === meetNo) $(this).show();
                 else $(this).hide();
             });
         })
@@ -184,9 +184,9 @@ $(document).ready(function() {
                                 const option = $('<option value="' + value.meetNo + '">' + meetDay + '</option>');
                                 $('#meetList').append(option);
 
-                                const id = value.meetNo;
                                 value.memberList.forEach(member => {
-                                    const li = $('<li style="display: inline; padding: 10px" class="memberList"><input type="checkbox" name="memberList" id="' + id + '" value="' + member.memberNo + '"/>' +
+                                    const id = value.meetNo + member.memberName;
+                                    const li = $('<li style="display: inline; padding: 10px" class="memberList"><input type="checkbox" name="memberList" id="' + id + '" value="' + member.memberNo + ' class="' + value.meetNo +  '"/>' +
                                         '<label for="' + id + '"></label></li>');
                                     li.find('label').text(member.memberName);
                                     li.hide();
