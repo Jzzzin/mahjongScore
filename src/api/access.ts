@@ -535,6 +535,7 @@ export interface GameMemberMapForUpdate {
   memberNo: number
   position: string
   score: number
+  gameMemberCount: number
   returnScore: number
   okaPoint: number
   umaPoint: number
@@ -542,13 +543,14 @@ export interface GameMemberMapForUpdate {
 
 export async function findGameMemberMapListForUpdate(gameNo: number): Promise<GameMemberMapForUpdate[]> {
   const sql = `
-    SELECT game.game_no         AS gameNo,
-           map.member_no        AS memberNo,
-           map.position         AS position,
-           map.score            AS score,
-           game.return_score    AS returnScore,
-           game.oka_point       AS okaPoint,
-           game.uma_point       AS umaPoint
+    SELECT game.game_no             AS gameNo,
+           map.member_no            AS memberNo,
+           map.position             AS position,
+           map.score                AS score,
+           game.game_member_count   AS gameMemberCount,
+           game.return_score        AS returnScore,
+           game.oka_point           AS okaPoint,
+           game.uma_point           AS umaPoint
     FROM game game
         LEFT JOIN game_member_map map ON game.game_no = map.game_no
     WHERE game.game_no = '${gameNo}'

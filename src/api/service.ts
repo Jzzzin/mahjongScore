@@ -219,9 +219,22 @@ export async function updateGameMemberMap(ctx: Context, param: GameMemberParam) 
     gameMemberMapData.forEach((map, idx) => {
       const rank = idx + 1
       const okaPoint = rank === 1 ? map.okaPoint : 0
-      const umaPoint = map.umaPoint * 2 - (map.umaPoint * idx)
+      let umaPoint = 0
+      switch (idx) {
+        case 0:
+          umaPoint = map.gameMemberCount === 4 ? umaPoint * 2 : umaPoint
+          break
+        case 1:
+          umaPoint = map.gameMemberCount === 4 ? umaPoint : 0
+          break
+        case 2:
+          umaPoint = map.gameMemberCount === 4 ? -umaPoint : -umaPoint
+          break
+        case 3:
+          umaPoint = map.gameMemberCount === 4 ? -umaPoint * 2 : 0
+          break
+      }
       const point = (map.score - map.returnScore) / 1000 + okaPoint + umaPoint
-      console.log(map.score, map.returnScore, (map.score - map.returnScore) / 1000, okaPoint, umaPoint, point)
 
       const updateParam: UpdateGameMemberMapParam = {
         gameNo: map.gameNo,
