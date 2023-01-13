@@ -1,0 +1,18 @@
+extends ../layouts/dashboard.pug
+
+block config
+    - var bodyClass = 'sb-nav-fixed'
+    - var pageTitle = '게임 수정'
+    - var sidenavStyle = 'sb-sidenav-dark'
+    - var buttonName = '수정'
+
+block content
+    .container-fluid.px-4
+        .card.mb-4
+            .card-header
+                h3.text-center.font-weight-light.my-4 게임 수정
+            .card-body
+                include includes/game-form.pug
+
+append scripts
+    script(src='js/game-edit.js')

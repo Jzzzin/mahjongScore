@@ -1,0 +1,61 @@
+extends ../layouts/dashboard.pug
+
+block config
+    - var bodyClass = 'sb-nav-fixed'
+    - var pageTitle = '게임'
+    - var addPage = 'game-add.html'
+    - var sidenavStyle = 'sb-sidenav-dark'
+
+prepend css
+    //- Load Simple DataTables Stylesheet
+    link(href='https://cdn.jsdelivr.net/npm/simple-datatables@5/dist/style.css', rel='stylesheet')
+
+block content
+    .container-fluid.px-4
+        include includes/page-header.pug
+        .card.mb-4
+            .card-header
+                i.fas.fa-table.me-1
+                | 게임
+            .card-body
+                table.gameTable#gameDataTable
+                    thead
+                        tr
+                            th(rowspan= 2) 게임No
+                            th(rowspan= 2) 모임일자
+                            th(rowspan= 2) 게임번호
+                            th(colspan= 5) 참여자1
+                            th(colspan= 5) 참여자2
+                            th(colspan= 5) 참여자3
+                            th(colspan= 5) 참여자4
+                            th(rowspan= 2) 종료여부
+                            th(rowspan= 2) 수정
+                        tr
+                            th 회원No
+                            th 순위
+                            th 이름
+                            th 자리
+                            th 점수
+                            th 회원No
+                            th 순위
+                            th 이름
+                            th 자리
+                            th 점수
+                            th 회원No
+                            th 순위
+                            th 이름
+                            th 자리
+                            th 점수
+                            th 회원No
+                            th 순위
+                            th 이름
+                            th 자리
+                            th 점수
+
+
+
+append scripts
+    //- Load Simple DataTables Scripts
+    script(src='https://cdn.jsdelivr.net/npm/simple-datatables@5', crossorigin='anonymous')
+    script(src='https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js')
+    script(src='js/game.js')

@@ -1,0 +1,35 @@
+form#meetForm(name='form')
+    input#inputMeetNo(type='hidden')
+    input#inputMemberList(type='hidden')
+    .row.mb-3
+        .form-floating.mb-3.mb-md-0
+            input#inputMeetDay.form-control(type='text', placeholder='YYYYMMDD')
+            label(for='inputMeetDay') 모임일자
+    .row.mb-3
+        .form-floating.mb-3
+            input#inputMeetTime.form-control(type='text', placeholder='HHMM')
+            label(for='inputMeetTime') 모임시각
+    .row.mb-3
+        .form-floating.mb-3
+            input#inputLocation.form-control(type='text', placeholder='모임장소를 입력해 주세요')
+            label(for='inputLocation') 장소
+    .row.mb-3
+        .form-floating.mb-3
+        p#memberListName 참여자
+            d#memberDiv
+                ul#memberList(style='list-style:none')
+    .row.mb-3
+        .form-floating.mb-3.mb-md-0
+        p#endYnName 종료 여부
+            input#inputEndYn1(type='radio', name='endYn', value='0')
+            | 진행중
+            input#inputEndYn2(type='radio', name='endYn', value='1')
+            | 종료
+    .mt-4.mb-0
+        .d-grid
+            .row.mb-3
+                .form-floating.mb-3
+                    a.btn.btn-primary.btn-block#submit #{buttonName}
+            .row.mb-3
+                .form-floating.mb-3
+                    a(href='meet.html') 목록으로

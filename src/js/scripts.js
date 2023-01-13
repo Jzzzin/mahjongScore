@@ -1,6 +1,6 @@
-// 
+//
 // Scripts
-// 
+//
 
 window.addEventListener('DOMContentLoaded', event => {
 
@@ -18,4 +18,24 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
+    const logoutBtn = document.body.querySelector('#logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', event => {
+            event.preventDefault();
+            sessionStorage.setItem("token", "");
+            alert("로그아웃 되었습니다.");
+            return false;
+        });
+    }
+
+
+});
+
+$(document).ready(function() {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+        $('#login').hide();
+    } else {
+        $('#logout').hide();
+    }
 });

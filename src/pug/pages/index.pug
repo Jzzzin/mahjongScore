@@ -2,86 +2,43 @@ extends ../layouts/dashboard.pug
 
 block config
     - var bodyClass = 'sb-nav-fixed'
-    - var pageTitle = 'Dashboard';
+    - var pageTitle = '순위';
+    - var addPage = ''
     - var index = true;
     - var sidenavStyle = 'sb-sidenav-dark'
-    
+
 prepend css
     //- Load Simple DataTables Stylesheet
-    link(href='https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css', rel='stylesheet')
+    link(href='https://cdn.jsdelivr.net/npm/simple-datatables@5/dist/style.css', rel='stylesheet')
 
 block content
     .container-fluid.px-4
         include includes/page-header.pug
-        .row
-            .col-xl-3.col-md-6
-                .card.bg-primary.text-white.mb-4
-                    .card-body
-                        | Primary Card
-                    .card-footer.d-flex.align-items-center.justify-content-between
-                        a(href='#').small.text-white.stretched-link
-                            | View Details
-                        .small.text-white
-                            i.fas.fa-angle-right
-            .col-xl-3.col-md-6
-                .card.bg-warning.text-white.mb-4
-                    .card-body
-                        | Warning Card
-                    .card-footer.d-flex.align-items-center.justify-content-between
-                        a(href='#').small.text-white.stretched-link
-                            | View Details
-                        .small.text-white
-                            i.fas.fa-angle-right
-            .col-xl-3.col-md-6
-                .card.bg-success.text-white.mb-4
-                    .card-body
-                        | Success Card
-                    .card-footer.d-flex.align-items-center.justify-content-between
-                        a(href='#').small.text-white.stretched-link
-                            | View Details
-                        .small.text-white
-                            i.fas.fa-angle-right
-            .col-xl-3.col-md-6
-                .card.bg-danger.text-white.mb-4
-                    .card-body
-                        | Danger Card
-                    .card-footer.d-flex.align-items-center.justify-content-between
-                        a(href='#').small.text-white.stretched-link
-                            | View Details
-                        .small.text-white
-                            i.fas.fa-angle-right
-        .row
-
-            .col-xl-6
-                .card.mb-4
-                    .card-header
-                        i.fas.fa-chart-area.me-1
-                        | Area Chart Example
-                    .card-body
-                        canvas#myAreaChart(width='100%', height='40')
-                    
-            .col-xl-6
-                .card.mb-4
-                    .card-header
-                        i.fas.fa-chart-bar.me-1
-                        | Bar Chart Example
-                    .card-body
-                        canvas#myBarChart(width='100%', height='40')
-        
         .card.mb-4
             .card-header
                 i.fas.fa-table.me-1
-                | DataTable Example
+                | 순위
             .card-body
-                include includes/datatable.pug
+                table.rankTable#rankDataTable
+                    thead
+                        tr
+                            th 순위
+                            th 이름
+                            th 총 승점
+                            th 평균 승점
+                            th 승률
+                            th 1,2위율
+                            th 4위율
+                            th 승수
+                            th 2위 횟수
+                            th 3위 횟수
+                            th 4위 횟수
+                            th 순위율
+                            th 총 국수
 
 
 append scripts
-    //- Load Chart.js and demos
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js', crossorigin='anonymous')
-    script(src='assets/demo/chart-area-demo.js')
-    script(src='assets/demo/chart-bar-demo.js')
-    
     //- Load Simple DataTables Scripts
-    script(src='https://cdn.jsdelivr.net/npm/simple-datatables@latest', crossorigin='anonymous')
-    script(src='js/datatables-simple-demo.js')
+    script(src='https://cdn.jsdelivr.net/npm/simple-datatables@5', crossorigin='anonymous')
+    script(src='https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js')
+    script(src='js/rank.js')

@@ -13,18 +13,16 @@ block content
                     .card-body
                         form
                             .form-floating.mb-3
-                                input#inputEmail.form-control(type='email', placeholder='name@example.com')
-                                label(for='inputEmail') Email address
+                                input#inputUserId.form-control(type='text')
+                                label(for='inputUserId') 아이디
                             .form-floating.mb-3
                                 input#inputPassword.form-control(type='password', placeholder='Password')
-                                label(for='inputPassword') Password
-                            .form-check.mb-3
-                                input#inputRememberPassword.form-check-input(type='checkbox', value='')
-                                label.form-check-label(for='inputRememberPassword')
-                                    | Remember Password
+                                label(for='inputPassword') 패스워드
                             .d-flex.align-items-center.justify-content-between.mt-4.mb-0
-                                a.small(href='password.html') Forgot Password?
-                                a.btn.btn-primary(href='index.html') Login
+                                a.btn.btn-primary#login 로그인
                     .card-footer.text-center.py-3
                         .small
-                            a(href='register.html') Need an account? Sign up!
+                            a(href='index.html') 처음으로
+
+append scripts
+    script(src='js/login.js')

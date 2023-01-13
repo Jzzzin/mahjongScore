@@ -1,0 +1,21 @@
+form#meetForm(name='form')
+    input#inputMemberNo(type='hidden')
+    .row.mb-3
+        .form-floating.mb-3.mb-md-0
+            input#inputMemberName.form-control(type='text')
+            label(for='inputMemberName') 이름
+    .row.mb-3
+        .form-floating.mb-3.mb-md-0
+        p#useYnName 활동 여부
+            input#inputUseYn1(type='radio', name='useYn', value='0')
+            | 휴면
+            input#inputUseYn2(type='radio', name='useYn', value='1')
+            | 활동
+    .mt-4.mb-0
+        .d-grid
+            .row.mb-3
+                .form-floating.mb-3
+                    a.btn.btn-primary.btn-block#submit #{buttonName}
+            .row.mb-3
+                .form-floating.mb-3
+                    a(href='member.html') 목록으로

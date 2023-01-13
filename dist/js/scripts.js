@@ -1,11 +1,11 @@
 /*!
-    * Start Bootstrap - SB Admin v7.0.5 (https://startbootstrap.com/template/sb-admin)
-    * Copyright 2013-2022 Start Bootstrap
-    * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin/blob/master/LICENSE)
+    * Start Bootstrap - Mahjong Score v1.0.0 (undefined)
+    * Copyright 2013-2023 undefined
+    * Licensed under MIT (https://github.com/StartBootstrap/mahjong_score/blob/master/LICENSE)
     */
-    // 
+    //
 // Scripts
-// 
+//
 
 window.addEventListener('DOMContentLoaded', event => {
 
@@ -23,4 +23,24 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 
+    const logoutBtn = document.body.querySelector('#logout');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', event => {
+            event.preventDefault();
+            sessionStorage.setItem("token", "");
+            alert("로그아웃 되었습니다.");
+            return false;
+        });
+    }
+
+
+});
+
+$(document).ready(function() {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+        $('#login').hide();
+    } else {
+        $('#logout').hide();
+    }
 });

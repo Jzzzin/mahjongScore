@@ -1,0 +1,37 @@
+extends ../layouts/dashboard.pug
+
+block config
+    - var bodyClass = 'sb-nav-fixed'
+    - var pageTitle = '모임'
+    - var addPage = 'meet-add.html'
+    - var sidenavStyle = 'sb-sidenav-dark'
+
+prepend css
+    //- Load Simple DataTables Stylesheet
+    link(href='https://cdn.jsdelivr.net/npm/simple-datatables@5/dist/style.css', rel='stylesheet')
+
+block content
+    .container-fluid.px-4
+        include includes/page-header.pug
+        .card.mb-4
+            .card-header
+                i.fas.fa-table.me-1
+                | 모임
+            .card-body
+                table.meetTable#meetDataTable
+                    thead
+                        tr
+                            th 모임일자
+                            th 모임시각
+                            th 장소
+                            th 참석자
+                            th 종료여부
+                            th 수정
+
+
+
+append scripts
+    //- Load Simple DataTables Scripts
+    script(src='https://cdn.jsdelivr.net/npm/simple-datatables@5', crossorigin='anonymous')
+    script(src='https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js')
+    script(src='js/meet.js')

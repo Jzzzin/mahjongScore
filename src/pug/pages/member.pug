@@ -1,0 +1,34 @@
+extends ../layouts/dashboard.pug
+
+block config
+    - var bodyClass = 'sb-nav-fixed'
+    - var pageTitle = '회원'
+    - var addPage = 'member-add.html'
+    - var sidenavStyle = 'sb-sidenav-dark'
+
+prepend css
+    //- Load Simple DataTables Stylesheet
+    link(href='https://cdn.jsdelivr.net/npm/simple-datatables@5/dist/style.css', rel='stylesheet')
+
+block content
+    .container-fluid.px-4
+        include includes/page-header.pug
+        .card.mb-4
+            .card-header
+                i.fas.fa-table.me-1
+                | 회원
+            .card-body
+                table.memberTable#memberDataTable
+                    thead
+                        tr
+                            th 이름
+                            th 등록일시
+                            th 수정
+
+
+
+append scripts
+    //- Load Simple DataTables Scripts
+    script(src='https://cdn.jsdelivr.net/npm/simple-datatables@5', crossorigin='anonymous')
+    script(src='https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js')
+    script(src='js/member.js')

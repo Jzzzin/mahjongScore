@@ -1,0 +1,30 @@
+form#meetForm(name='form')
+    input#inputGameNo(type='hidden')
+    input#inputMemberNo(type='hidden')
+    .row.mb-3
+        .form-floating.mb-3
+            input#inputName.form-control(type='text', disabled)
+            label(for='inputName') 이름
+    .row.mb-3
+        .form-floating.mb-3.mb-md-0
+        p#positionName 자리
+            input#inputPosition1(type='radio', name='position', value='EAST')
+            | 동
+            input#inputPosition2(type='radio', name='position', value='SOUTH')
+            | 남
+            input#inputPosition3(type='radio', name='position', value='WEST')
+            | 서
+            input#inputPosition4(type='radio', name='position', value='NORTH')
+            | 북
+    .row.mb-3
+        .form-floating.mb-3
+            input#inputScore.form-control(type='text', placeholder='점수')
+            label(for='inputScore') 점수
+    .mt-4.mb-0
+        .d-grid
+            .row.mb-3
+                .form-floating.mb-3
+                    a.btn.btn-primary.btn-block#submit #{buttonName}
+            .row.mb-3
+                .form-floating.mb-3
+                    a(href='game.html') 목록으로

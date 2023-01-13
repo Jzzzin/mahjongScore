@@ -1,0 +1,36 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2018,
+    "project": "./tsconfig.json"
+  },
+  "extends": [
+    "standard-with-typescript"
+  ],
+  "rules": {
+    "generator-star-spacing": ["error", {
+      "before": false,
+      "after": true,
+      "method": { "before": true, "after": false }
+    }],
+    "@typescript-eslint/space-before-function-paren": ["error", {
+      "anonymous": "always",
+      "named": "never",
+      "asyncArrow": "always"
+    }],
+    "@typescript-eslint/explicit-function-return-type": ["off"],
+    "@typescript-eslint/no-floating-promises": ["error", {
+      "ignoreVoid": false,
+      "ignoreIIFE": true
+    }],
+    "@typescript-eslint/strict-boolean-expressions": ["off"],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "variable",
+        "format": ["camelCase", "UPPER_CASE", "snake_case"]
+      }
+    ]
+  }
+}
