@@ -11,7 +11,7 @@ concurrently([
     { command: `node ${sbPath}`, name: 'SB_WATCH', prefixColor: 'bgBlue.bold' },
     { command: `node ${apiPath}`, name: 'MAHJONG_SCORE_API', prefixColor: 'bgYellow.bold' },
     {
-        command: `"${browserSyncPath}" --port 8001 --reload-delay 2000 --reload-debounce 2000 dist -w --no-online`,
+        command: `"${browserSyncPath}" --port 8001 --reload-delay 2000 --reload-debounce 2000 ${apiPath} -w --no-online`,
         name: 'SB_BROWSER_SYNC',
         prefixColor: 'bgGreen.bold',
     }
