@@ -5,7 +5,7 @@ const browserSyncPath = upath.resolve(upath.dirname(__filename), './node_modules
 
 concurrently([
     // { command: 'node scripts/sb-watch.js', name: 'SB_WATCH', prefixColor: 'bgBlue.bold' },
-    { command: 'node dist', name: 'MAHJONG_SCORE_API', prefixColor: 'bgYellow.bold' },
+    { command: 'node dist/index.js', name: 'MAHJONG_SCORE_API', prefixColor: 'bgYellow.bold' },
     // {
     //     command: `"${browserSyncPath}" --port 8001 --reload-delay 2000 --reload-debounce 2000 dist -w --no-online`,
     //     name: 'SB_BROWSER_SYNC',
