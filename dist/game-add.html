@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>게임 추가 - Mahjong Score</title>
+        <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" href="index.html">Mahjong Score</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="login.html" id="login">로그인</a></li>
+                        <li><a class="dropdown-item" id="logout">로그아웃</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">메뉴</div>
+                            <a class="nav-link" href="index.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                순위
+                            </a>
+                            <a class="nav-link" href="game.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                게임
+                            </a>
+                            <a class="nav-link" href="meet.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                모임
+                            </a>
+                            <a class="nav-link" href="member.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                회원
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>
+                        Mahjong Score
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-4">
+                        <div class="card mb-4">
+                            <div class="card-header"><h3 class="text-center font-weight-light my-4">게임 추가</h3></div>
+                            <div class="card-body">
+                                <form id="meetForm" name="form">
+                                    <input id="inputGameNo" type="hidden" />
+                                    <input id="inputMeetNo" type="hidden" />
+                                    <input id="inputMemberList" type="hidden" />
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3 mb-md-0"></div>
+                                        <p id="meetDayListName">
+                                            모임일자
+                                            <d id="meetDiv"><select id="meetList"></select></d>
+                                        </p>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="inputGameNumber" type="text" placeholder="YYYYMMDDXX" />
+                                            <label for="inputGameNumber">게임번호</label>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3 mb-md-0"></div>
+                                        <p id="gameMemberCountName">
+                                            참여인원
+                                            <input id="inputGameMemberCount1" type="radio" name="gameMemberCount" value="3" />
+                                            3인
+                                            <input id="inputGameMemberCount2" type="radio" name="gameMemberCount" value="4" />
+                                            4인
+                                        </p>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3 mb-md-0"></div>
+                                        <p id="gameTypeName">
+                                            게임유형
+                                            <input id="inputGameType1" type="radio" name="gameType" value="HALF" />
+                                            반장전
+                                            <input id="inputGameType2" type="radio" name="gameType" value="EAST" />
+                                            동장전
+                                        </p>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="inputStartScore" type="text" placeholder="시작점수" />
+                                            <label for="inputStartScore">시작점수</label>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="inputReturnScore" type="text" placeholder="반환점수" />
+                                            <label for="inputReturnScore">반환점수</label>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3">
+                                            <input class="form-control" id="inputOkaPoint" type="text" placeholder="오카" disabled />
+                                            <label for="inputOkaPoint">오카</label>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3 mb-md-0"></div>
+                                        <p id="umaPointName">
+                                            우마
+                                            <input id="inputUmaPoint1" type="radio" name="umaPoint" value="5" />
+                                            5(10)
+                                            <input id="inputUmaPoint2" type="radio" name="umaPoint" value="10" />
+                                            10(20)
+                                        </p>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3"></div>
+                                        <p id="memberListName">
+                                            참여자
+                                            <d id="memberDiv"><ul id="memberList" style="list-style: none"></ul></d>
+                                        </p>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3 mb-md-0"></div>
+                                        <p id="endYnName">
+                                            종료 여부
+                                            <input id="inputEndYn1" type="radio" name="endYn" value="0" disabled />
+                                            진행중
+                                            <input id="inputEndYn2" type="radio" name="endYn" value="1" disabled />
+                                            종료
+                                        </p>
+                                    </div>
+                                    <div class="mt-4 mb-0">
+                                        <div class="d-grid">
+                                            <div class="row mb-3">
+                                                <div class="form-floating mb-3"><a class="btn btn-primary btn-block" id="submit">등록</a></div>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <div class="form-floating mb-3"><a href="game.html">목록으로</a></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Your Website 2022</div>
+                            <div>
+                                <a href="#">Privacy Policy</a>
+                                &middot;
+                                <a href="#">Terms &amp; Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="js/scripts.js"></script>
+        <script src="js/game-add.js"></script>
+    </body>
+</html>
