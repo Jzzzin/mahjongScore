@@ -222,16 +222,16 @@ export async function updateGameMemberMap(ctx: Context, param: GameMemberParam) 
       let umaPoint = 0
       switch (idx) {
         case 0:
-          umaPoint = map.gameMemberCount === 4 ? umaPoint * 2 : umaPoint
+          umaPoint = map.gameMemberCount === 4 ? map.umaPoint * 2 : map.umaPoint
           break
         case 1:
-          umaPoint = map.gameMemberCount === 4 ? umaPoint : 0
+          umaPoint = map.gameMemberCount === 4 ? map.umaPoint : 0
           break
         case 2:
-          umaPoint = map.gameMemberCount === 4 ? -umaPoint : -umaPoint
+          umaPoint = map.gameMemberCount === 4 ? -map.umaPoint : -map.umaPoint
           break
         case 3:
-          umaPoint = map.gameMemberCount === 4 ? -umaPoint * 2 : 0
+          umaPoint = map.gameMemberCount === 4 ? -map.umaPoint * 2 : 0
           break
       }
       const point = (map.score - map.returnScore) / 1000 + okaPoint + umaPoint
