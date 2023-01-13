@@ -1,5 +1,5 @@
 'use strict';
 
-const renderSCSS = require('./render-scss');
+const renderSCSS = require(__dirname + '/render-scss');
 
 renderSCSS();

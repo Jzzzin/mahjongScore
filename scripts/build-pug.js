@@ -1,7 +1,7 @@
 'use strict';
 const upath = require('upath');
 const sh = require('shelljs');
-const renderPug = require('./render-pug');
+const renderPug = require(__dirname + '/render-pug');
 
 const srcPath = upath.resolve(upath.dirname(__filename), '../src');
 

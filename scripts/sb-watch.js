@@ -3,10 +3,10 @@
 const _ = require('lodash');
 const chokidar = require('chokidar');
 const upath = require('upath');
-const renderAssets = require('./render-assets');
-const renderPug = require('./render-pug');
-const renderScripts = require('./render-scripts');
-const renderSCSS = require('./render-scss');
+const renderAssets = require(__dirname + '/render-assets');
+const renderPug = require(__dirname + '/render-pug');
+const renderScripts = require(__dirname + '/render-scripts');
+const renderSCSS = require(__dirname + '/render-scss');
 
 const watcher = chokidar.watch('src', {
     persistent: true,
@@ -28,13 +28,13 @@ watcher.on('ready', () => {
 _handleSCSS();
 
 function _processFile(filePath, watchEvent) {
-    
+
     if (!READY) {
         if (filePath.match(/\.pug$/)) {
             if (!filePath.match(/includes/) && !filePath.match(/mixins/) && !filePath.match(/\/pug\/layouts\//)) {
                 allPugFiles[filePath] = true;
-            }    
-        }    
+            }
+        }
         process.stdout.write('.');
         return;
     }
