@@ -14,9 +14,10 @@ window.addEventListener('DOMContentLoaded', event => {
 
 // Call the dataTables jQuery plugin
 $(document).ready(function() {
+    const currentURL = window.location.protocol + "//" + window.location.host;
     $('#rankDataTable').DataTable({
         ajax: {
-            url: 'http://localhost:8080/api/rank',
+            url: currentURL + '/api/rank',
             dataSrc: ''
         },
         searching: false,

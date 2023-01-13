@@ -19,7 +19,8 @@ window.addEventListener('DOMContentLoaded', event => {
         submitBtn.addEventListener('click', event => {
             event.preventDefault();
             const meetNo = $('#inputMeetNo').val();
-            const url = "http://localhost:8080/api/meet/" + meetNo;
+            const currentURL = window.location.protocol + "//" + window.location.host;
+            const url = currentURL + "/api/meet/" + meetNo;
             const memberNoList = [];
             $('input:checkbox[name=memberList]').each(function () {
                 if($(this).is(":checked") === true) memberNoList.push($(this).val())
@@ -67,7 +68,8 @@ $(document).ready(function() {
 
     const urlParams = new URL(location.href).searchParams;
     const meetNo = urlParams.get('meetNo');
-    const url = "http://localhost:8080/api/meet/" + meetNo;
+    const currentURL = window.location.protocol + "//" + window.location.host;
+    const url = currentURL + "/api/meet/" + meetNo;
 
     $.ajax({
         type: "GET",

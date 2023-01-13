@@ -18,7 +18,8 @@ window.addEventListener('DOMContentLoaded', event => {
     if (submitBtn) {
         submitBtn.addEventListener('click', event => {
             event.preventDefault();
-            const url = "http://localhost:8080/api/game/result";
+            const currentURL = window.location.protocol + "//" + window.location.host;
+            const url = currentURL + "/api/game/result";
 
             const formData = {
                 "gameNo": $('#inputGameNo').val(),

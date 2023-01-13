@@ -4,7 +4,8 @@ window.addEventListener('DOMContentLoaded', event => {
     if (loginBtn) {
         loginBtn.addEventListener('click', event => {
             event.preventDefault();
-            const url = "http://localhost:8080/api/login";
+            const currentURL = window.location.protocol + "//" + window.location.host;
+            const url = currentURL + "/api/login";
             const formData = {
                 "userId": $('#inputUserId').val(),
                 "password": $('#inputPassword').val()

@@ -18,7 +18,8 @@ window.addEventListener('DOMContentLoaded', event => {
     if (submitBtn) {
         submitBtn.addEventListener('click', event => {
             event.preventDefault();
-            const url = "http://localhost:8080/api/game";
+            const currentURL = window.location.protocol + "//" + window.location.host;
+            const url = currentURL + "/api/game";
 
             const meetNo = $('#meetList option:selected').val();
             const memberNoList = [];
@@ -112,7 +113,8 @@ $('input:radio[name="gameType"]').change(function () {
 
 $(document).ready(function() {
 
-    const url = "http://localhost:8080/api/meetForGame";
+    const currentURL = window.location.protocol + "//" + window.location.host;
+    const url = currentURL + "/api/meetForGame";
 
     $('input:radio[name="gameMemberCount"]:input[value="4"]').prop('checked', true);
     $('input:radio[name="gameType"]:input[value="HALF"]').prop('checked', true);

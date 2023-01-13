@@ -19,7 +19,8 @@ window.addEventListener('DOMContentLoaded', event => {
         submitBtn.addEventListener('click', event => {
             event.preventDefault();
             const gameNo = $('#inputGameNo').val();
-            const url = "http://localhost:8080/api/game/" + gameNo;
+            const currentURL = window.location.protocol + "//" + window.location.host;
+            const url = currentURL +  "/api/game/" + gameNo;
 
             const meetNo = $('#meetList option:selected').val();
             const memberNoList = [];
@@ -116,7 +117,8 @@ $(document).ready(function() {
 
     const urlParams = new URL(location.href).searchParams;
     const gameNo = urlParams.get('gameNo');
-    const url = "http://localhost:8080/api/game/" + gameNo;
+    const currentURL = window.location.protocol + "//" + window.location.host;
+    const url = currentURL + "/api/game/" + gameNo;
 
     $.ajax({
         type: "GET",
@@ -164,9 +166,11 @@ $(document).ready(function() {
             }
         },
         complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+            const currentURL = window.location.protocol + "//" + window.location.host;
+
             $.ajax({
                 type: "GET",
-                url: "http://localhost:8080/api/meetForGame",
+                url: currentURL + "/api/meetForGame",
                 dataType: 'json',
                 beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
                 },

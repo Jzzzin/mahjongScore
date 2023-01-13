@@ -19,7 +19,8 @@ window.addEventListener('DOMContentLoaded', event => {
         submitBtn.addEventListener('click', event => {
             event.preventDefault();
             const memberNo = $('#inputMemberNo').val();
-            const url = "http://localhost:8080/api/member/" + memberNo;
+            const currentURL = window.location.protocol + "//" + window.location.host;
+            const url = currentURL + "/api/member/" + memberNo;
             const formData = {
                 "memberNo": memberNo,
                 "memberName": $('#inputMemberName').val(),
@@ -60,7 +61,8 @@ $(document).ready(function() {
 
     const urlParams = new URL(location.href).searchParams;
     const memberNo = urlParams.get('memberNo');
-    const url = "http://localhost:8080/api/member/" + memberNo;
+    const currentURL = window.location.protocol + "//" + window.location.host;
+    const url = currentURL + "/api/member/" + memberNo;
 
     $.ajax({
         type: "GET",

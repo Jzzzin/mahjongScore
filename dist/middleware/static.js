@@ -29,6 +29,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const koa_static_1 = __importDefault(require("koa-static"));
 const path = __importStar(require("path"));
 function koaStatic() {
-    return (0, koa_static_1.default)(path.join(__dirname, '../../static'));
+    return (0, koa_static_1.default)(path.join(__dirname, '../../dist'));
 }
 exports.default = koaStatic;

@@ -18,7 +18,8 @@ window.addEventListener('DOMContentLoaded', event => {
     if (submitBtn) {
         submitBtn.addEventListener('click', event => {
             event.preventDefault();
-            const url = "http://localhost:8080/api/member";
+            const currentURL = window.location.protocol + "//" + window.location.host;
+            const url = currentURL + "/api/member";
             const formData = {
                 "memberNo": "0",
                 "memberName": $('#inputMemberName').val(),
