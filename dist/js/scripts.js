@@ -29,6 +29,8 @@ window.addEventListener('DOMContentLoaded', event => {
             event.preventDefault();
             sessionStorage.setItem("token", "");
             alert("로그아웃 되었습니다.");
+            $('#login').show();
+            $('#logout').hide();
             return false;
         });
     }
