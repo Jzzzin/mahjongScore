@@ -24,7 +24,7 @@ window.addEventListener('DOMContentLoaded', event => {
             const meetNo = $('#meetList option:selected').val();
             const memberNoList = [];
             $('input:checkbox[name=memberList]').each(function () {
-                if($(this).is(":checked") === true && $(this).attr('id') === meetNo) memberNoList.push($(this).val())
+                if($(this).is(":checked") === true && $(this).attr('class') === meetNo) memberNoList.push($(this).val())
             });
             const formData = {
                 "gameNo": "0",

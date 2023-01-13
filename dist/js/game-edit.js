@@ -25,7 +25,7 @@ window.addEventListener('DOMContentLoaded', event => {
             const meetNo = $('#meetList option:selected').val();
             const memberNoList = [];
             $('input:checkbox[name=memberList]').each(function () {
-                if($(this).is(":checked") === true && $(this).attr('id') === meetNo) memberNoList.push($(this).val())
+                if($(this).is(":checked") === true && $(this).attr('class') === meetNo) memberNoList.push($(this).val())
             });
             const formData = {
                 "gameNo": gameNo,
@@ -155,8 +155,8 @@ $(document).ready(function() {
                 else
                     $('#inputEndYn2').prop('checked', true);
                 data.memberList.forEach(value => {
-                    const id = data.meetNo;
-                    const li = $('<li style="display: inline; padding: 10px" class="memberList"><input type="checkbox" name="memberList" id="' + id + '" value="' + value.memberNo + '"/>' +
+                    const id = data.meetNo + value.memberName;
+                    const li = $('<li style="display: inline; padding: 10px" class="memberList"><input type="checkbox" name="memberList" id="' + id + '" value="' + value.memberNo + '" class="' + data.meetNo + '"/>' +
                       '<label for="' + id + '"></label></li>');
                     li.find('label').text(value.memberName);
                     if (value.attendYn === 1)
@@ -186,7 +186,7 @@ $(document).ready(function() {
 
                                 value.memberList.forEach(member => {
                                     const id = value.meetNo + member.memberName;
-                                    const li = $('<li style="display: inline; padding: 10px" class="memberList"><input type="checkbox" name="memberList" id="' + id + '" value="' + member.memberNo + ' class="' + value.meetNo +  '"/>' +
+                                    const li = $('<li style="display: inline; padding: 10px" class="memberList"><input type="checkbox" name="memberList" id="' + id + '" value="' + member.memberNo + '" class="' + value.meetNo +  '"/>' +
                                         '<label for="' + id + '"></label></li>');
                                     li.find('label').text(member.memberName);
                                     li.hide();
