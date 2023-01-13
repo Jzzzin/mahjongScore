@@ -1,11 +1,13 @@
 const concurrently = require('concurrently');
 const upath = require('upath');
+const fs = require('fs');
 
 const browserSyncPath = upath.resolve(upath.dirname(__filename), './node_modules/.bin/browser-sync');
 const apiPath = upath.resolve(upath.dirname(__filename), './dist');
+console.log(browserSyncPath, fs.existsSync(browserSyncPath));
 
 concurrently([
-    // { command: 'node scripts/sb-watch.js', name: 'SB_WATCH', prefixColor: 'bgBlue.bold' },
+    { command: 'node scripts/sb-watch.js', name: 'SB_WATCH', prefixColor: 'bgBlue.bold' },
     { command: `node ${apiPath}`, name: 'MAHJONG_SCORE_API', prefixColor: 'bgYellow.bold' },
     // {
     //     command: `"${browserSyncPath}" --port 8001 --reload-delay 2000 --reload-debounce 2000 dist -w --no-online`,
