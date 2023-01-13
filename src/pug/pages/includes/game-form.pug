@@ -15,16 +15,16 @@ form#meetForm(name='form')
         .form-floating.mb-3.mb-md-0
         p#gameMemberCountName 참여인원
             input#inputGameMemberCount1(type='radio', name='gameMemberCount', value='3')
-            | 3인
+            label(for='inputGameMemberCount1') 3인
             input#inputGameMemberCount2(type='radio', name='gameMemberCount', value='4')
-            | 4인
+            label(for='inputGameMemberCount2') 4인
     .row.mb-3
         .form-floating.mb-3.mb-md-0
         p#gameTypeName 게임유형
             input#inputGameType1(type='radio', name='gameType', value='HALF')
-            | 반장전
+            label(for='inputGameType1') 반장전
             input#inputGameType2(type='radio', name='gameType', value='EAST')
-            | 동장전
+            label(for='inputGameType2') 동장전
     .row.mb-3
         .form-floating.mb-3
             input#inputStartScore.form-control(type='text', placeholder='시작점수')
@@ -41,9 +41,9 @@ form#meetForm(name='form')
         .form-floating.mb-3.mb-md-0
         p#umaPointName 우마
             input#inputUmaPoint1(type='radio', name='umaPoint', value='5')
-            | 5(10)
+            label(for='inputUmaPoint1') 5(10)
             input#inputUmaPoint2(type='radio', name='umaPoint', value='10')
-            | 10(20)
+            label(for='inputUmaPoint2') 10(20)
     .row.mb-3
         .form-floating.mb-3
         p#memberListName 참여자
@@ -53,9 +53,9 @@ form#meetForm(name='form')
         .form-floating.mb-3.mb-md-0
         p#endYnName 종료 여부
             input#inputEndYn1(type='radio', name='endYn', value='0', disabled)
-            | 진행중
+            label(for='inputEndYn1') 진행중
             input#inputEndYn2(type='radio', name='endYn', value='1', disabled)
-            | 종료
+            label(for='inputEndYn2') 종료
     .mt-4.mb-0
         .d-grid
             .row.mb-3

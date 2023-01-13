@@ -81,7 +81,7 @@ $(document).ready(function() {
                 data.forEach(value => {
                     const id = value.memberName + value.memberNo;
                     const li = $('<li style="display: inline; padding: 10px"><input type="checkbox" name="memberList" id="' + id + '" value="' + value.memberNo + '"/>' +
-                      '<label for="' + value.memberName + '"></label></li>');
+                      '<label for="' + id + '"></label></li>');
                     li.find('label').text(value.memberName);
                     $('#memberList').append(li);
                 });

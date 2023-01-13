@@ -157,7 +157,7 @@ $(document).ready(function() {
                 data.memberList.forEach(value => {
                     const id = data.meetNo;
                     const li = $('<li style="display: inline; padding: 10px" class="memberList"><input type="checkbox" name="memberList" id="' + id + '" value="' + value.memberNo + '"/>' +
-                      '<label for="' + value.memberName + '"></label></li>');
+                      '<label for="' + id + '"></label></li>');
                     li.find('label').text(value.memberName);
                     if (value.attendYn === 1)
                         li.find('input').prop('checked', true);
@@ -187,7 +187,7 @@ $(document).ready(function() {
                                 const id = value.meetNo;
                                 value.memberList.forEach(member => {
                                     const li = $('<li style="display: inline; padding: 10px" class="memberList"><input type="checkbox" name="memberList" id="' + id + '" value="' + member.memberNo + '"/>' +
-                                        '<label for="' + member.memberName + '"></label></li>');
+                                        '<label for="' + id + '"></label></li>');
                                     li.find('label').text(member.memberName);
                                     li.hide();
                                     $('#memberList').append(li);

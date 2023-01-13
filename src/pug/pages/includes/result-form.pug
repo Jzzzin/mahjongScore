@@ -9,13 +9,13 @@ form#meetForm(name='form')
         .form-floating.mb-3.mb-md-0
         p#positionName 자리
             input#inputPosition1(type='radio', name='position', value='EAST')
-            | 동
+            label(for='inputPosition1') 동
             input#inputPosition2(type='radio', name='position', value='SOUTH')
-            | 남
+            label(for='inputPosition2') 남
             input#inputPosition3(type='radio', name='position', value='WEST')
-            | 서
+            label(for='inputPosition3') 서
             input#inputPosition4(type='radio', name='position', value='NORTH')
-            | 북
+            label(for='inputPosition4') 북
     .row.mb-3
         .form-floating.mb-3
             input#inputScore.form-control(type='text', placeholder='점수')

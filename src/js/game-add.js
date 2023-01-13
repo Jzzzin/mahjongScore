@@ -141,7 +141,7 @@ $(document).ready(function() {
                     const id = value.meetNo;
                     value.memberList.forEach(member => {
                         const li = $('<li style="display: inline; padding: 10px" class="memberList"><input type="checkbox" name="memberList" id="' + id + '" value="' + member.memberNo + '"/>' +
-                            '<label for="' + member.memberName + '"></label></li>');
+                            '<label for="' + id + '"></label></li>');
                         li.find('label').text(member.memberName);
                         if (idx !== 0) li.hide();
                         $('#memberList').append(li);
