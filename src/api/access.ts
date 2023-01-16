@@ -349,6 +349,7 @@ export async function findGameList(filter:FindGameFilter): Promise<GameData[]> {
            game.return_score                AS returnScore,
            game.oka_point                   AS okaPoint,
            game.uma_point                   AS umaPoint,
+           game.comment                     AS comment,
            game.end_yn                      AS endYn
     FROM game game
         LEFT JOIN meet meet ON game.meet_no = meet.meet_no
@@ -398,6 +399,7 @@ export async function findGameWithMember(gameNo: number): Promise<GameWithMember
            game.return_score                AS returnScore,
            game.oka_point                   AS okaPoint,
            game.uma_point                   AS umaPoint,
+           game.comment                     AS comment,
            game.end_yn                      AS endYn,
            meetMap.member_no                AS memberNo,
            member.member_name               AS memberName,
@@ -415,6 +417,27 @@ export async function findGameWithMember(gameNo: number): Promise<GameWithMember
   return data as GameWithMember[]
 }
 
+interface GameNumberData {
+  maxGameNumber: string
+  meetDay: string
+}
+
+export async function findGameNumber(meetNo: number): Promise<GameNumberData> {
+  const sql = `
+    SELECT CAST(COALESCE(MAX(game.game_number), '') AS CHAR)    AS maxGameNumber,
+           CAST(meet.meet_day AS CHAR)                          AS meetDay
+    FROM meet meet
+        LEFT JOIN game game ON game.meet_no = meet.meet_no
+    WHERE meet.meet_no = '${meetNo}'
+    GROUP BY meet.meet_no
+  `
+  console.log(sql)
+
+  const [data] = await DB_MAHJONG_SCORE.query(sql)
+  const result = data as GameNumberData[]
+  return result[0]
+}
+
 type GameName =
 | 'meetNo'
 | 'gameNumber'
@@ -422,13 +445,14 @@ type GameName =
 | 'gameType'
 | 'startScore'
 | 'returnScore'
-| 'umaPoint'
 | 'okaPoint'
+| 'umaPoint'
+| 'comment'
 export type CreateGameParam = Pick<MahjongScore.game, GameName>
 export async function createGame(param: CreateGameParam): Promise<any> {
   const sql = `
-    INSERT INTO game (meet_no, game_number, game_member_count, game_type, start_score, return_score, uma_point, oka_point, created_date, modified_date)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, now(), now())
+    INSERT INTO game (meet_no, game_number, game_member_count, game_type, start_score, return_score, oka_point, uma_point, comment, created_date, modified_date)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, now(), now())
   `
   console.log(sql)
 
@@ -476,7 +500,14 @@ export async function createGameMemberMap(params: CreateGameMemberMapParam[]): P
   }
 }
 
-export async function updateGame(param: GameParam): Promise<any> {
+interface UpdateGameParam extends GameParam {
+  gameNumber: string
+  startScore: number
+  returnScore: number
+  umaPoint: number
+}
+
+export async function updateGame(param: UpdateGameParam): Promise<any> {
   const sql = `
     UPDATE game
     SET meet_no = '${param.meetNo}',
@@ -487,9 +518,33 @@ export async function updateGame(param: GameParam): Promise<any> {
         return_score = '${param.returnScore}',
         oka_point = (${param.returnScore} - ${param.startScore}) * ${param.gameMemberCount} / 1000,
         uma_point = '${param.umaPoint}',
+        comment = '${param.comment}',
         modified_date = now()
     WHERE game_no = '${param.gameNo}'
       AND end_yn = '0'
+  `
+  console.log(sql)
+
+  try {
+    const [rows] = await DB_MAHJONG_SCORE.query(sql)
+    return rows
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+interface SortGameNumberParam {
+  gameNumber: string
+  meetNo: number
+}
+
+export async function sortGameNumber(param: SortGameNumberParam): Promise<any> {
+
+  const sql = `
+    UPDATE game
+    SET game_number = CAST((CAST(game_number AS unsigned) - 1) AS CHAR)
+    WHERE meet_no = ${param.meetNo}
+      AND game_number > ${param.gameNumber}
   `
   console.log(sql)
 
@@ -604,16 +659,17 @@ export async function findRankList(filter:FindRankFilter): Promise<RankData[]> {
 
   const search = getSearchQuery(filter)
   const searchParam = getSearchRankParam(filter, search)
-  const sort = getSortQuery(filter, 'totalPoint')
+  const sort = getSortQuery(filter, 'avgPoint')
 
   const sql = `
-    SELECT member.member_name                   AS memberName,
-           SUM(map.point)                       AS totalPoint,
-           COUNT(IF(map.rank=1, true, null))    AS winCnt,
-           COUNT(IF(map.rank=2, true, null))    AS secondCnt,
-           COUNT(IF(map.rank=3, true, null))    AS thirdCnt,
-           COUNT(IF(map.rank=4, true, null))    AS forthCnt,
-           COUNT(map.game_no)                   AS totalGameCnt
+    SELECT member.member_name                               AS memberName,
+           SUM(map.point)                                   AS totalPoint,
+           ROUND(SUM(map.point) / COUNT(map.game_no), 2)    AS avgPoint,
+           COUNT(IF(map.rank=1, true, null))                AS winCnt,
+           COUNT(IF(map.rank=2, true, null))                AS secondCnt,
+           COUNT(IF(map.rank=3, true, null))                AS thirdCnt,
+           COUNT(IF(map.rank=4, true, null))                AS forthCnt,
+           COUNT(map.game_no)                               AS totalGameCnt
     FROM game_member_map map
         LEFT JOIN game game ON game.game_no = map.game_no
         LEFT JOIN meet meet ON meet.meet_no = game.meet_no

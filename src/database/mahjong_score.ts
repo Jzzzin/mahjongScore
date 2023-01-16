@@ -38,6 +38,7 @@ export interface game extends auditWithUpdate {
   returnScore: number
   okaPoint: number
   umaPoint: number
+  comment: string
   endYn: number
 }
 

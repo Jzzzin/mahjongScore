@@ -1,7 +1,8 @@
 form#meetForm(name='form')
     input#inputGameNo(type='hidden')
-    input#inputMeetNo(type='hidden')
+    input#inputOrgMeetNo(type='hidden')
     input#inputMemberList(type='hidden')
+    input#inputMeetNo(type='hidden')
     .row.mb-3
         .form-floating.mb-3.mb-md-0
         p#meetDayListName 모임일자
@@ -9,8 +10,8 @@ form#meetForm(name='form')
                 select#meetList
     .row.mb-3
         .form-floating.mb-3
-            input#inputGameNumber.form-control(type='text', placeholder='YYYYMMDDXX')
-            label(for='inputGameNumber') 게임번호
+            input#inputOrgGameNumber.form-control(type='text', disabled)
+            label(for='inputOrgGameNumber') 게임번호
     .row.mb-3
         .form-floating.mb-3.mb-md-0
         p#gameMemberCountName 참여인원
@@ -27,28 +28,32 @@ form#meetForm(name='form')
             label(for='inputGameType2') 동장전
     .row.mb-3
         .form-floating.mb-3
-            input#inputStartScore.form-control(type='text', placeholder='시작점수')
+            input#inputStartScore.form-control(type='text', disabled)
             label(for='inputStartScore') 시작점수
     .row.mb-3
         .form-floating.mb-3
-            input#inputReturnScore.form-control(type='text', placeholder='반환점수')
+            input#inputReturnScore.form-control(type='text', disabled)
             label(for='inputReturnScore') 반환점수
     .row.mb-3
         .form-floating.mb-3
-            input#inputOkaPoint.form-control(type='text', placeholder='오카', disabled)
+            input#inputOkaPoint.form-control(type='text', disabled)
             label(for='inputOkaPoint') 오카
     .row.mb-3
         .form-floating.mb-3.mb-md-0
         p#umaPointName 우마
-            input#inputUmaPoint1(type='radio', name='umaPoint', value='5')
+            input#inputUmaPoint1(type='radio', name='umaPoint', value='5', disabled)
             label(for='inputUmaPoint1') 5(10)
-            input#inputUmaPoint2(type='radio', name='umaPoint', value='10')
+            input#inputUmaPoint2(type='radio', name='umaPoint', value='10', disabled)
             label(for='inputUmaPoint2') 10(20)
     .row.mb-3
         .form-floating.mb-3
         p#memberListName 참여자
             d#memberDiv
                 ul#memberList(style='list-style:none')
+    .row.mb-3
+        .form-floating.mb-3
+            textarea#inputComment.form-control
+            label(for='inputComment') 메모
     .row.mb-3
         .form-floating.mb-3.mb-md-0
         p#endYnName 종료 여부

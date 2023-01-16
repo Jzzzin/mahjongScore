@@ -65,6 +65,8 @@ $(document).ready(function() {
     const name = urlParams.get('name');
     const position = urlParams.get('position');
     const score = urlParams.get('score');
+    const rank = urlParams.get('rank');
+    const point = urlParams.get('point');
     $('#inputGameNo').val(gameNo);
     $('#inputMemberNo').val(memberNo);
     $('#inputName').val(name);
@@ -83,4 +85,6 @@ $(document).ready(function() {
             break;
     }
     $('#inputScore').val(score);
+    $('#inputRank').val(rank);
+    $('#inputPoint').val(point);
 });

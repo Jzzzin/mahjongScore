@@ -11,10 +11,11 @@ import type {
     MemberData,
     MemberParam, RankList
 } from './typeDef'
-import type {UpdateGameMemberMapParam} from "./access";
+import type {CreateGameParam, UpdateGameMemberMapParam} from "./access";
 import * as access from './access'
 import * as jwt from './jwt'
-import {getMysqlDatetime} from "./util";
+import { getMysqlDatetime } from "./util";
+import * as CONST from './const'
 
 export async function findMemberList(ctx: Context, filter: FindMemberFilter): Promise<MemberData[]> {
   ctx.log.info('*** Find Member List Service Start ***')
@@ -174,6 +175,7 @@ export async function findGame(ctx: Context, gameNo: number): Promise<GameDetail
     returnScore: gameWithMember[0].returnScore,
     okaPoint: gameWithMember[0].okaPoint,
     umaPoint: gameWithMember[0].umaPoint,
+    comment: gameWithMember[0].comment,
     endYn: gameWithMember[0].endYn,
     memberList: gameWithMember.map(value => { return { memberNo: value.memberNo, memberName: value.memberName, attendYn: value.gameMemberNo > 0 ? 1 : 0 }})
   }
@@ -184,23 +186,43 @@ export async function createGame(ctx: Context, param: GameParam) {
 
   let result = 0
 
-  const { gameNo, memberNoList, ...createParam } = param
-  const okaPoint = (param.returnScore - param.startScore) * param.gameMemberCount / 1000
+  const gameNumber = await access.findGameNumber(param.meetNo)
+  const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : gameNumber.meetDay.concat('01')
 
-  const createResult = await access.createGame({ ...createParam, okaPoint: okaPoint })
+  const createParam: CreateGameParam = {
+    meetNo: param.meetNo,
+    gameNumber: newGameNumber,
+    gameMemberCount: param.gameMemberCount,
+    gameType: param.gameType,
+    startScore: CONST.START_SCORE[param.gameMemberCount],
+    returnScore: CONST.RETURN_SCORE[param.gameMemberCount],
+    okaPoint: (CONST.RETURN_SCORE[param.gameMemberCount] - CONST.START_SCORE[param.gameMemberCount]) * param.gameMemberCount / 1000,
+    umaPoint: CONST.UMA_POINT[param.gameType],
+    comment: param.comment
+  }
+
+
+  const createResult = await access.createGame(createParam)
   result = createResult.insertId
   const now = getMysqlDatetime()
 
-  if (result > 0) await access.createGameMemberMap(memberNoList.map(value => { return [result, value, now, now] }))
+  if (result > 0) await access.createGameMemberMap(param.memberNoList.map(value => { return [result, value, now, now] }))
   return result
 }
 
 export async function updateGame(ctx: Context, param: GameParam) {
   ctx.log.info('*** Update Game Service Start ***')
 
-  const result = await access.updateGame(param)
+  const gameNumber = await access.findGameNumber(param.meetNo)
+  const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : gameNumber.meetDay.concat('01')
+  const startScore = CONST.START_SCORE[param.gameMemberCount]
+  const returnScore = CONST.RETURN_SCORE[param.gameMemberCount]
+  const umaPoint = CONST.UMA_POINT[param.gameType]
+
+  const result = await access.updateGame({ ...param, gameNumber: newGameNumber, startScore: startScore, returnScore: returnScore, umaPoint: umaPoint })
 
   if (result && result.affectedRows > 0) {
+    await access.sortGameNumber({ gameNumber: param.orgGameNumber, meetNo: param.orgMeetNo })
     const deleteResult = await access.deleteGameMemberMap(param.gameNo)
     const now = getMysqlDatetime()
     if (deleteResult && param.memberNoList.length > 0) await access.createGameMemberMap(param.memberNoList.map(value => { return [param.gameNo, value, now, now] }))
@@ -268,7 +290,6 @@ export async function findRankList(ctx: Context, filter: FindRankFilter): Promis
       const rankList: RankList = {
         ...value,
         rank: rank,
-        avgPoint: Math.round(value.totalPoint / value.totalGameCnt * 100) / 100,
         winRate: Math.round(value.winCnt / value.totalGameCnt * 1000) / 10,
         upRate: Math.round((value.winCnt + value.secondCnt) / value.totalGameCnt * 1000) / 10,
         forthRate: Math.round(value.forthCnt / value.totalGameCnt * 1000) / 10,

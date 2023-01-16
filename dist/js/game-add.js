@@ -14,13 +14,12 @@ window.addEventListener('DOMContentLoaded', event => {
             });
             const formData = {
                 "gameNo": "0",
+                "orgMeetNo": meetNo,
+                "orgGameNumber": $('#inputOrgGameNumber').val(),
                 "meetNo": meetNo,
-                "gameNumber": $('#inputGameNumber').val(),
                 "gameMemberCount": $('input:radio[name="gameMemberCount"]:checked').val(),
                 "gameType": $('input:radio[name="gameType"]:checked').val(),
-                "startScore": $('#inputStartScore').val(),
-                "returnScore": $('#inputReturnScore').val(),
-                "umaPoint": $('input:radio[name="umaPoint"]:checked').val(),
+                "comment": $('#inputComment').val(),
                 "memberNoList": memberNoList
             }
             $.ajax({
@@ -65,30 +64,27 @@ window.addEventListener('DOMContentLoaded', event => {
             });
         })
     }
-});
 
-$('#inputStartScore').change(function () {
-    const startScore = $(this).val();
-    const returnScore = $('#inputReturnScore').val();
-    const gameMemberCount = $('input:radio[name="gameMemberCount"]:checked').val();
-    const okaPoint = (returnScore - startScore) * gameMemberCount / 1000;
-    $('#inputOkaPoint').val(okaPoint);
-});
-
-$('#inputReturnScore').change(function () {
-    const startScore = $('#inputStartScore').val();
-    const returnScore = $(this).val();
-    const gameMemberCount = $('input:radio[name="gameMemberCount"]:checked').val();
-    const okaPoint = (returnScore - startScore) * gameMemberCount / 1000;
-    $('#inputOkaPoint').val(okaPoint);
+    const commentArea = document.body.querySelector('#inputComment');
+    if (commentArea) {
+        commentArea.addEventListener('input', event => {
+            const rowCount = $('#inputComment').val().split(/\r\n|\r|\n/).length;
+            commentArea.style.height= (rowCount * 18 + 36) + "px";
+        })
+    }
 });
 
 $('input:radio[name="gameMemberCount"]').change(function () {
-    const startScore = $('#inputStartScore').val();
-    const returnScore = $('#inputReturnScore').val();
     const gameMemberCount = $('input:radio[name="gameMemberCount"]:checked').val();
-    const okaPoint = (returnScore - startScore) * gameMemberCount / 1000;
-    $('#inputOkaPoint').val(okaPoint);
+    if (gameMemberCount === '3') {
+        $('#inputStartScore').val(35000);
+        $('#inputReturnScore').val(40000);
+        $('#inputOkaPoint').val(15);
+    } else if (gameMemberCount === '4') {
+        $('#inputStartScore').val(25000);
+        $('#inputReturnScore').val(30000);
+        $('#inputOkaPoint').val(20);
+    }
 });
 
 $('input:radio[name="gameType"]').change(function () {

@@ -15,13 +15,12 @@ window.addEventListener('DOMContentLoaded', event => {
             });
             const formData = {
                 "gameNo": gameNo,
+                "orgMeetNo": $('#inputOrgMeetNo').val(),
+                "orgGameNumber": $('#inputOrgGameNumber').val(),
                 "meetNo": meetNo,
-                "gameNumber": $('#inputGameNumber').val(),
                 "gameMemberCount": $('input:radio[name="gameMemberCount"]:checked').val(),
                 "gameType": $('input:radio[name="gameType"]:checked').val(),
-                "startScore": $('#inputStartScore').val(),
-                "returnScore": $('#inputReturnScore').val(),
-                "umaPoint": $('input:radio[name="umaPoint"]:checked').val(),
+                "comment": $('#inputComment').val(),
                 "memberNoList": memberNoList
             }
             $.ajax({
@@ -67,30 +66,27 @@ window.addEventListener('DOMContentLoaded', event => {
             });
         })
     }
-});
 
-$('#inputStartScore').change(function () {
-    const startScore = $(this).val();
-    const returnScore = $('#inputReturnScore').val();
-    const gameMemberCount = $('input:radio[name="gameMemberCount"]:checked').val();
-    const okaPoint = (returnScore - startScore) * gameMemberCount / 1000;
-    $('#inputOkaPoint').val(okaPoint);
-});
-
-$('#inputReturnScore').change(function () {
-    const startScore = $('#inputStartScore').val();
-    const returnScore = $(this).val();
-    const gameMemberCount = $('input:radio[name="gameMemberCount"]:checked').val();
-    const okaPoint = (returnScore - startScore) * gameMemberCount / 1000;
-    $('#inputOkaPoint').val(okaPoint);
+    const commentArea = document.body.querySelector('#inputComment');
+    if (commentArea) {
+        commentArea.addEventListener('input', event => {
+            const rowCount = $('#inputComment').val().split(/\r\n|\r|\n/).length;
+            commentArea.style.height= (rowCount * 18 + 36) + "px";
+        })
+    }
 });
 
 $('input:radio[name="gameMemberCount"]').change(function () {
-    const startScore = $('#inputStartScore').val();
-    const returnScore = $('#inputReturnScore').val();
     const gameMemberCount = $('input:radio[name="gameMemberCount"]:checked').val();
-    const okaPoint = (returnScore - startScore) * gameMemberCount / 1000;
-    $('#inputOkaPoint').val(okaPoint);
+    if (gameMemberCount === '3') {
+        $('#inputStartScore').val(35000);
+        $('#inputReturnScore').val(40000);
+        $('#inputOkaPoint').val(15);
+    } else if (gameMemberCount === '4') {
+        $('#inputStartScore').val(25000);
+        $('#inputReturnScore').val(30000);
+        $('#inputOkaPoint').val(20);
+    }
 });
 
 $('input:radio[name="gameType"]').change(function () {
@@ -116,11 +112,12 @@ $(document).ready(function() {
             // On Success, build our rich list up and append it to the #richList div.
             if (data) {
                 $('#inputGameNo').val(data.gameNo);
+                $('#inputOrgMeetNo').val(data.meetNo);
                 $('#inputMeetNo').val(data.meetNo);
                 const meetDay = `${data.meetDay.substring(0, 4)}년 ${data.meetDay.substring(4, 6)}월 ${data.meetDay.substring(6, 8)}일`
                 const option = $('<option value="' + data.meetNo + '" selected>' + meetDay + '</option>');
                 $('#meetList').append(option);
-                $('#inputGameNumber').val(data.gameNumber);
+                $('#inputOrgGameNumber').val(data.gameNumber);
                 if (data.gameMemberCount === 3)
                     $('#inputGameMemberCount1').prop('checked', true);
                 else
@@ -136,6 +133,10 @@ $(document).ready(function() {
                     $('#inputUmaPoint1').prop('checked', true);
                 else
                     $('#inputUmaPoint2').prop('checked', true);
+                $('#inputComment').val(data.comment ?? '');
+                const rowCount = $('#inputComment').val().split(/\r\n|\r|\n/).length;
+                $('#inputComment').height((rowCount * 18 + 36) + "px");
+
                 if (data.endYn === 0)
                     $('#inputEndYn1').prop('checked', true);
                 else

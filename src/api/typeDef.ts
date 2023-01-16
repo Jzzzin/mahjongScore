@@ -1,4 +1,5 @@
 import { Filter } from './util'
+import * as CONST from './const'
 
 type FindMemberFilterName = ''
 export interface FindMemberFilter extends Filter<FindMemberFilterName> {
@@ -65,6 +66,7 @@ export interface GameData {
   returnScore: number
   okaPoint: number
   umaPoint: number
+  comment: string
   endYn: number
 }
 
@@ -94,13 +96,12 @@ export interface GameDetail extends GameData {
 
 export interface GameParam {
   gameNo: number
+  orgMeetNo: number
+  orgGameNumber: string
   meetNo: number
-  gameNumber: string
-  gameMemberCount: number
-  gameType: string
-  startScore: number
-  returnScore: number
-  umaPoint: number
+  gameMemberCount: CONST.GameMemberCount
+  gameType: CONST.GameType
+  comment: string
   memberNoList: number[]
 }
 
@@ -121,6 +122,7 @@ export interface FindRankFilter extends Filter<FindRankFilterName> {
 export interface RankData {
   memberName: string
   totalPoint: number
+  avgPoint: number
   winCnt: number
   secondCnt: number
   thirdCnt: number
@@ -130,7 +132,6 @@ export interface RankData {
 
 export interface RankList extends RankData {
   rank: number
-  avgPoint: number
   winRate: number
   upRate: number
   forthRate: number

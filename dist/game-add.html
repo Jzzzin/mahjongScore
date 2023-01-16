@@ -49,6 +49,10 @@
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 회원
                             </a>
+                            <a class="nav-link" href="help.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                사용방법
+                            </a>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
@@ -65,8 +69,9 @@
                             <div class="card-body">
                                 <form id="meetForm" name="form">
                                     <input id="inputGameNo" type="hidden" />
-                                    <input id="inputMeetNo" type="hidden" />
+                                    <input id="inputOrgMeetNo" type="hidden" />
                                     <input id="inputMemberList" type="hidden" />
+                                    <input id="inputMeetNo" type="hidden" />
                                     <div class="row mb-3">
                                         <div class="form-floating mb-3 mb-md-0"></div>
                                         <p id="meetDayListName">
@@ -76,8 +81,8 @@
                                     </div>
                                     <div class="row mb-3">
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputGameNumber" type="text" placeholder="YYYYMMDDXX" />
-                                            <label for="inputGameNumber">게임번호</label>
+                                            <input class="form-control" id="inputOrgGameNumber" type="text" disabled />
+                                            <label for="inputOrgGameNumber">게임번호</label>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
@@ -102,19 +107,19 @@
                                     </div>
                                     <div class="row mb-3">
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputStartScore" type="text" placeholder="시작점수" />
+                                            <input class="form-control" id="inputStartScore" type="text" disabled />
                                             <label for="inputStartScore">시작점수</label>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputReturnScore" type="text" placeholder="반환점수" />
+                                            <input class="form-control" id="inputReturnScore" type="text" disabled />
                                             <label for="inputReturnScore">반환점수</label>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputOkaPoint" type="text" placeholder="오카" disabled />
+                                            <input class="form-control" id="inputOkaPoint" type="text" disabled />
                                             <label for="inputOkaPoint">오카</label>
                                         </div>
                                     </div>
@@ -122,9 +127,9 @@
                                         <div class="form-floating mb-3 mb-md-0"></div>
                                         <p id="umaPointName">
                                             우마
-                                            <input id="inputUmaPoint1" type="radio" name="umaPoint" value="5" />
+                                            <input id="inputUmaPoint1" type="radio" name="umaPoint" value="5" disabled />
                                             <label for="inputUmaPoint1">5(10)</label>
-                                            <input id="inputUmaPoint2" type="radio" name="umaPoint" value="10" />
+                                            <input id="inputUmaPoint2" type="radio" name="umaPoint" value="10" disabled />
                                             <label for="inputUmaPoint2">10(20)</label>
                                         </p>
                                     </div>
@@ -134,6 +139,12 @@
                                             참여자
                                             <d id="memberDiv"><ul id="memberList" style="list-style: none"></ul></d>
                                         </p>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3">
+                                            <textarea class="form-control" id="inputComment"></textarea>
+                                            <label for="inputComment">메모</label>
+                                        </div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="form-floating mb-3 mb-md-0"></div>

@@ -6,20 +6,17 @@ form#meetForm(name='form')
             input#inputName.form-control(type='text', disabled)
             label(for='inputName') 이름
     .row.mb-3
-        .form-floating.mb-3.mb-md-0
-        p#positionName 자리
-            input#inputPosition1(type='radio', name='position', value='EAST')
-            label(for='inputPosition1') 동
-            input#inputPosition2(type='radio', name='position', value='SOUTH')
-            label(for='inputPosition2') 남
-            input#inputPosition3(type='radio', name='position', value='WEST')
-            label(for='inputPosition3') 서
-            input#inputPosition4(type='radio', name='position', value='NORTH')
-            label(for='inputPosition4') 북
-    .row.mb-3
         .form-floating.mb-3
             input#inputScore.form-control(type='text', placeholder='점수')
             label(for='inputScore') 점수
+    .row.mb-3
+        .form-floating.mb-3
+            input#inputRank.form-control(type='text', placeholder='순위', disabled)
+            label(for='inputRank') 순위
+    .row.mb-3
+        .form-floating.mb-3
+            input#inputPoint.form-control(type='text', placeholder='승점', disabled)
+            label(for='inputPoint') 승점
     .mt-4.mb-0
         .d-grid
             .row.mb-3

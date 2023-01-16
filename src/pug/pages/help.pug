@@ -1,0 +1,53 @@
+extends ../layouts/dashboard.pug
+
+block config
+    - var bodyClass = 'sb-nav-fixed'
+    - var pageTitle = '사용방법'
+    - var addPage = ''
+    - var index = true;
+    - var sidenavStyle = 'sb-sidenav-dark'
+
+prepend css
+    //- Load Simple DataTables Stylesheet
+    link(href='https://cdn.jsdelivr.net/npm/simple-datatables@5/dist/style.css', rel='stylesheet')
+
+block content
+    .container-fluid.px-4
+        include includes/page-header.pug
+        .row
+            .col-xl-3.col-md-6
+                .card.mb-4
+                    .card-body
+                        | 회원 정보(준비중)
+                    .card-footer.d-flex.align-items-center.justify-content-between
+                        a(href='#').small.stretched-link
+                            | View Details
+                        .small
+                            i.fas.fa-angle-right
+            .col-xl-3.col-md-6
+                .card.mb-4
+                    .card-body
+                        | 모임 정보(준비중)
+                    .card-footer.d-flex.align-items-center.justify-content-between
+                        a(href='#').small.stretched-link
+                            | View Details
+                        .small
+                            i.fas.fa-angle-right
+            .col-xl-3.col-md-6
+                .card.mb-4
+                    .card-body
+                        | 게임 정보(준비중)
+                    .card-footer.d-flex.align-items-center.justify-content-between
+                        a(href='#').small.stretched-link
+                            | View Details
+                        .small
+                            i.fas.fa-angle-right
+            .col-xl-3.col-md-6
+                .card.mb-4
+                    .card-body
+                        | 순위 정보(준비중)
+                    .card-footer.d-flex.align-items-center.justify-content-between
+                        a(href='#').small.stretched-link
+                            | View Details
+                        .small
+                            i.fas.fa-angle-right

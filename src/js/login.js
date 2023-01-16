@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', event => {
             const currentURL = window.location.protocol + "//" + window.location.host;
             const url = currentURL + "/api/login";
             const formData = {
-                "userId": $('#inputUserId').val(),
+                "userId": 'admin',
                 "password": $('#inputPassword').val()
             }
             $.ajax({
