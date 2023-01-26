@@ -47,6 +47,8 @@ export async function createMember(ctx: Context, param: MemberParam) {
   if (duplicated === 0) {
     const createResult = await access.createMember({ memberName: param.memberName })
     result = createResult.insertId
+
+    if (result > 0) await access.createMeetMemberMapByMember(result)
   }
   return result
 }
@@ -59,8 +61,14 @@ export async function updateMember(ctx: Context, param: MemberParam) {
   const duplicated = await access.findMemberForValidate(param.memberName)
   console.log(`*** Member No [${duplicated.toString()}] For Member Name[${param.memberName}]`)
   if (duplicated === 0 || duplicated === Number(param.memberNo)) {
+    const orgMember = await access.findMember(param.memberNo)
     const updateResult = await access.updateMember(param)
     result = updateResult.affectedRows
+
+    if (result > 0 && param.useYn !== orgMember.useYn) {
+      if (Number(param.useYn) === 1) await access.createMeetMemberMapByMember(param.memberNo)
+      else if (Number(param.useYn) === 0) await access.deleteMeetMemberMapByMember(param.memberNo)
+    }
   }
   return result
 }

@@ -32,3 +32,9 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     }
 });
+
+$(document).ready(function() {
+    sessionStorage.setItem("token", "");
+    $('#login').show();
+    $('#logout').hide();
+});

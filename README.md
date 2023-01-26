@@ -1,2 +1,109 @@
 # [MahjongScore With Start Bootstrap - SB Admin]
 
+[Frontend]
+- node + pug + jQuery
+- DataTables
+- Project Structure
+  - assets : Not Used
+  - js
+    - game.js : 게임 조회
+    - game-add.js : 게임 추가
+    - game-edit.js : 게임 수정
+    - game-result.js : 결과 등록
+    - login.js : 로그인
+    - meet.js : 모임 조회
+    - meet-add.js : 모임 추가
+    - meet-edit.js : 모임 수정
+    - member.js : 회원 조회
+    - member-add.js : 회원 추가
+    - member-edit.js : 회원 수정
+    - rank.js : 순위 조회
+    - scripts.js : 공통
+  - pug
+    - layouts
+      - includes
+        - head
+          - css.pug
+          - icons.pug
+          - meta.pug
+          - title.pug
+        - navigation
+          - sidenav.pug
+          - topnav.pug
+        - footer.pug
+        - scripts.pug
+      - authentication.pug
+      - dashboard.pug
+      - error.pug
+    - pages
+      - includes
+        - game-form.pug : 게임 추가 / 수정 폼
+        - meet-form.pug : 모임 추가 / 수정 폼
+        - member-form.pug : 회원 추가 / 수정 폼
+        - page-header.pug
+        - result-form.pug : 결과 추가 / 수정 폼
+      - game.pug : 게임 조회
+      - game-add.pug : 게임 추가
+      - game-edit.pug : 게임 수정
+      - game-result.pug : 결과 등록
+      - index.pug : 순위 조회
+      - login.pug
+      - meet.pug : 모임 조회
+      - meet-add.pug : 모임 추가
+      - meet-edit.pug : 모임 수정
+      - member.pug : 회원 조회
+      - member-add.pug : 회원 추가
+      - member-edit.pug : 회원 수정
+  - scss
+    - layout
+    - navigation
+    - plugins
+      - simple-datatables.scss : 데이터 테이블 css
+    - variables
+
+[Backend]
+- koa + typeScript + RestAPI
+- mysql
+- Project Structure
+  - api
+    - access.ts : DB Access Layer
+    - const.ts : Constant
+    - controller.ts : API Controller Layer
+    - jwt.ts : JSON Web Token
+    - service.ts : Service Handler
+    - typeDef.ts : Interface Definition
+    - util.ts : Utility
+  - config
+    - database.ts
+    - index.ts
+    - server.ts
+  - database
+    - helper.ts
+    - index.ts
+    - mahjong_score.ts : DB Schema
+  - middleware
+    - cors.ts
+    - index.ts
+    - jwt.ts
+    - logger.ts
+    - parser.ts
+    - router.ts
+    - static.ts
+  - app.ts
+  - index.ts
+
+[To-Do List]
+- 모임
+  - 날짜 입력 데이트 피커 적용
+  - 시간 입력 셀렉트 박스 적용
+- 게임
+  - 날짜 검색 조건 추가
+  - 결과 입력 시 일괄 등록 / 수정 기능 추가
+- 순위
+  - 날짜 검새 조건 추가
+- 토너먼트 메뉴 추가
+  - 참가자 베네핏 적용 여부 : 분기별 순위에 따른 베네핏 여부
+  - 참가자 핸디캡 적용 여부 : 순위에 따른 핸디캡 적용 여부
+
+[Deploy]
+npm run build 후 git commit 함

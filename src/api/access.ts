@@ -110,6 +110,21 @@ export async function createMember(param: CreateMemberParam): Promise<any> {
   }
 }
 
+export async function createMeetMemberMapByMember(memberNo: number): Promise<any> {
+  const sql = `
+    INSERT INTO meet_member_map (meet_no, member_no, created_date, modified_date)
+    SELECT meet_no, '${memberNo}', now(), now() FROM meet WHERE end_yn = '0'
+  `
+  console.log(sql)
+
+  try {
+    const [rows] = await DB_MAHJONG_SCORE.query(sql)
+    return rows
+  } catch (e) {
+    console.log(e)
+  }
+}
+
 export async function updateMember(param: MemberParam): Promise<any> {
   const sql = `
     UPDATE member
@@ -117,6 +132,22 @@ export async function updateMember(param: MemberParam): Promise<any> {
         use_yn = '${param.useYn}',
         modified_date = now()
     WHERE member_no = '${param.memberNo}'
+  `
+  console.log(sql)
+
+  try {
+    const [rows] = await DB_MAHJONG_SCORE.query(sql)
+    return rows
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export async function deleteMeetMemberMapByMember(memberNo: number): Promise<any> {
+  const sql = `
+    DELETE FROM meet_member_map
+    WHERE member_no = '${memberNo}'
+      AND meet_no IN (SELECT meet_no FROM meet WHERE end_yn = '0')
   `
   console.log(sql)
 

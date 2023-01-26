@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findRankList = exports.findRankCount = exports.findGameMemberMapListForUpdate = exports.updateGameMemberMap = exports.sortGameNumber = exports.updateGame = exports.createGameMemberMap = exports.deleteGameMemberMap = exports.createGame = exports.findGameNumber = exports.findGameWithMember = exports.findGameMemberMapList = exports.findGameList = exports.findGameCount = exports.updateMeet = exports.updateMeetMemberMap = exports.createMeetMemberMap = exports.createMeet = exports.findMeetForValidate = exports.findMeetWithMember = exports.findMeetMemberMapList = exports.findMeetList = exports.findMeetCount = exports.updateMember = exports.createMember = exports.findMemberForValidate = exports.findMember = exports.findMemberList = exports.findMemberCount = void 0;
+exports.findRankList = exports.findRankCount = exports.findGameMemberMapListForUpdate = exports.updateGameMemberMap = exports.sortGameNumber = exports.updateGame = exports.createGameMemberMap = exports.deleteGameMemberMap = exports.createGame = exports.findGameNumber = exports.findGameWithMember = exports.findGameMemberMapList = exports.findGameList = exports.findGameCount = exports.updateMeet = exports.updateMeetMemberMap = exports.createMeetMemberMap = exports.createMeet = exports.findMeetForValidate = exports.findMeetWithMember = exports.findMeetMemberMapList = exports.findMeetList = exports.findMeetCount = exports.deleteMeetMemberMapByMember = exports.updateMember = exports.createMeetMemberMapByMember = exports.createMember = exports.findMemberForValidate = exports.findMember = exports.findMemberList = exports.findMemberCount = void 0;
 const database_1 = require("../database");
 const util_1 = require("./util");
 const CONST = __importStar(require("./const"));
@@ -103,6 +103,21 @@ async function createMember(param) {
     }
 }
 exports.createMember = createMember;
+async function createMeetMemberMapByMember(memberNo) {
+    const sql = `
+    INSERT INTO meet_member_map (meet_no, member_no, created_date, modified_date)
+    SELECT meet_no, '${memberNo}', now(), now() FROM meet WHERE end_yn = '0'
+  `;
+    console.log(sql);
+    try {
+        const [rows] = await database_1.DB_MAHJONG_SCORE.query(sql);
+        return rows;
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+exports.createMeetMemberMapByMember = createMeetMemberMapByMember;
 async function updateMember(param) {
     const sql = `
     UPDATE member
@@ -121,6 +136,22 @@ async function updateMember(param) {
     }
 }
 exports.updateMember = updateMember;
+async function deleteMeetMemberMapByMember(memberNo) {
+    const sql = `
+    DELETE FROM meet_member_map
+    WHERE member_no = '${memberNo}'
+      AND meet_no IN (SELECT meet_no FROM meet WHERE end_yn = '0')
+  `;
+    console.log(sql);
+    try {
+        const [rows] = await database_1.DB_MAHJONG_SCORE.query(sql);
+        return rows;
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+exports.deleteMeetMemberMapByMember = deleteMeetMemberMapByMember;
 function getSearchMeetParam(filter, search) {
     const searchEndYn = !(0, util_1.isEmpty)(filter.endYn) ? `end_yn = '${filter.endYn}'` : '';
     let result = '';
