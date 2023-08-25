@@ -1,32 +1,8 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findRankList = exports.findRankCount = exports.findGameMemberMapListForUpdate = exports.updateGameMemberMap = exports.sortGameNumber = exports.updateGame = exports.createGameMemberMap = exports.deleteGameMemberMap = exports.createGame = exports.findGameNumber = exports.findGameWithMember = exports.findGameMemberMapList = exports.findGameList = exports.findGameCount = exports.updateMeet = exports.updateMeetMemberMap = exports.createMeetMemberMap = exports.createMeet = exports.findMeetForValidate = exports.findMeetWithMember = exports.findMeetMemberMapList = exports.findMeetList = exports.findMeetCount = exports.deleteMeetMemberMapByMember = exports.updateMember = exports.createMeetMemberMapByMember = exports.createMember = exports.findMemberForValidate = exports.findMember = exports.findMemberList = exports.findMemberCount = void 0;
+exports.findRankList = exports.findRankCount = exports.findGameMemberMapListForUpdate = exports.updateGameMemberMap = exports.sortGameNumber = exports.updateGame = exports.createGameMemberMap = exports.deleteGameMemberMap = exports.createGame = exports.findGameNumber = exports.findGameWithMember = exports.findGameMemberMapList = exports.findGameList = exports.findGameCount = exports.updateMeetWinMember = exports.updateMeet = exports.updateMeetMemberMap = exports.createMeetMemberMap = exports.createMeet = exports.findMeetForValidate = exports.findMeetWithMember = exports.findMeetMemberMapList = exports.findMeetList = exports.findMeetCount = exports.findLocationList = exports.deleteMeetMemberMapByMember = exports.updateMember = exports.createMeetMemberMapByMember = exports.createMember = exports.findMemberForValidate = exports.findMember = exports.findMemberList = exports.findMemberCount = void 0;
 const database_1 = require("../database");
 const util_1 = require("./util");
-const CONST = __importStar(require("./const"));
 async function findMemberCount(filter) {
     const search = (0, util_1.getSearchQuery)(filter);
     const sql = `
@@ -152,8 +128,20 @@ async function deleteMeetMemberMapByMember(memberNo) {
     }
 }
 exports.deleteMeetMemberMapByMember = deleteMeetMemberMapByMember;
+async function findLocationList() {
+    const sql = `
+    SELECT location_no      AS locationNo,
+           location_name    AS locationName
+    FROM location
+    WHERE use_yn = '1'
+  `;
+    console.log(sql);
+    const [data] = await database_1.DB_MAHJONG_SCORE.query(sql);
+    return data;
+}
+exports.findLocationList = findLocationList;
 function getSearchMeetParam(filter, search) {
-    const searchEndYn = !(0, util_1.isEmpty)(filter.endYn) ? `end_yn = '${filter.endYn}'` : '';
+    const searchEndYn = !(0, util_1.isEmpty)(filter.endYn) ? `meet.end_yn = '${filter.endYn}'` : '';
     let result = '';
     for (const value of [searchEndYn, search]) {
         if (!(0, util_1.isEmpty)(result) && !(0, util_1.isEmpty)(value))
@@ -167,7 +155,8 @@ async function findMeetCount(filter) {
     const searchParam = getSearchMeetParam(filter, search);
     const sql = `
     SELECT count(*)
-    FROM meet
+    FROM meet meet
+        LEFT JOIN location location ON meet.location_no = location.location_no
     ${searchParam && `WHERE ${searchParam}`}
   `;
     const [data] = await database_1.DB_MAHJONG_SCORE.query(sql);
@@ -179,14 +168,19 @@ async function findMeetList(filter) {
         filter.is_desc = 'Y';
     const search = (0, util_1.getSearchQuery)(filter);
     const searchParam = getSearchMeetParam(filter, search);
-    const sort = (0, util_1.getSortQuery)(filter, 'meet_day');
+    const sort = (0, util_1.getSortQuery)(filter, 'meet.meet_day');
     const sql = `
-    SELECT meet_no                  AS meetNo,
-           CAST(meet_day AS CHAR)   AS meetDay,
-           CAST(meet_time AS CHAR)  AS meetTime,
-           location                 AS location,
-           end_yn                   AS endYn
-    FROM meet
+    SELECT meet.meet_no                     AS meetNo,
+           CAST(meet.meet_day AS CHAR)      AS meetDay,
+           CAST(meet.meet_time AS CHAR)     AS meetTime,
+           meet.location_no                 AS locationNo,
+           location.location_name           AS locationName,
+           meet.win_member_no               AS winMemberNo,
+           member.member_name               AS winMemberName,
+           meet.end_yn                      AS endYn
+    FROM meet meet
+        LEFT JOIN location location ON meet.location_no = location.location_no
+        LEFT JOIN member member ON meet.win_member_no = member.member_no
     ${searchParam && `WHERE ${searchParam}`}
     ${sort}
   `;
@@ -215,14 +209,19 @@ async function findMeetWithMember(meetNo) {
     SELECT meet.meet_no                     AS meetNo,
            CAST(meet.meet_day AS CHAR)      AS meetDay,
            CAST(meet.meet_time AS CHAR)     AS meetTime,
-           meet.location                    AS location,
+           meet.location_no                 AS locationNo,
+           location.location_name           AS locationName,
+           meet.win_member_no               AS winMemberNo,
+           member.member_name               AS winMemberName,
            meet.end_yn                      AS endYn,
            map.member_no                    AS memberNo,
-           member.member_name               AS memberName,
+           mapMember.member_name            AS memberName,
            map.attend_yn                    AS attendYn
     FROM meet meet
+        LEFT JOIN location location ON meet.location_no = location.location_no
+        LEFT JOIN member member ON meet.win_member_no = member.member_no
         LEFT JOIN meet_member_map map ON meet.meet_no = map.meet_no
-        LEFT JOIN member member ON map.member_no = member.member_no
+        LEFT JOIN member mapMember ON map.member_no = mapMember.member_no
     WHERE meet.meet_no = '${meetNo}'
   `;
     console.log(sql);
@@ -246,7 +245,7 @@ async function findMeetForValidate(meetDay) {
 exports.findMeetForValidate = findMeetForValidate;
 async function createMeet(param) {
     const sql = `
-    INSERT INTO meet (meet_day, meet_time, location, created_date, modified_date)
+    INSERT INTO meet (meet_day, meet_time, location_no, created_date, modified_date)
     VALUES (?, ?, ?, now(), now())
   `;
     console.log(sql);
@@ -303,7 +302,7 @@ async function updateMeet(param) {
     UPDATE meet
     SET meet_day = '${param.meetDay}',
         meet_time = '${param.meetTime}',
-        location = '${param.location}',
+        location_no = '${param.locationNo}',
         end_yn = '${param.endYn}',
         modified_date = now()
     WHERE meet_no = '${param.meetNo}'
@@ -318,6 +317,23 @@ async function updateMeet(param) {
     }
 }
 exports.updateMeet = updateMeet;
+async function updateMeetWinMember(param) {
+    const sql = `
+    UPDATE meet
+    SET win_member_no = '${param.winMemberNo}',
+        modified_date = now()
+    WHERE meet_no = '${param.meetNo}'
+  `;
+    console.log(sql);
+    try {
+        const [rows] = await database_1.DB_MAHJONG_SCORE.query(sql);
+        return rows;
+    }
+    catch (e) {
+        console.log(e);
+    }
+}
+exports.updateMeetWinMember = updateMeetWinMember;
 async function findGameCount(filter) {
     const search = (0, util_1.getSearchQuery)(filter);
     const sql = `
@@ -346,10 +362,13 @@ async function findGameList(filter) {
            game.return_score                AS returnScore,
            game.oka_point                   AS okaPoint,
            game.uma_point                   AS umaPoint,
+           game.yakuman_member_no           AS yakumanMemberNo,
+           member.member_name               AS yakumanMemberName,
            game.comment                     AS comment,
            game.end_yn                      AS endYn
     FROM game game
         LEFT JOIN meet meet ON game.meet_no = meet.meet_no
+        LEFT JOIN member member ON game.yakuman_member_no = member.member_no
     ${search && `WHERE ${search}`}
     ${sort}
   `;
@@ -365,7 +384,7 @@ async function findGameMemberMapList() {
            member.member_name           AS memberName,
            map.position                 AS position,
            map.score                    AS score,
-           map.rank                     AS rank,
+           map.rank                     AS 'rank',
            map.point                    AS point
     FROM game_member_map map
         LEFT JOIN member member ON map.member_no = member.member_no
@@ -388,13 +407,17 @@ async function findGameWithMember(gameNo) {
            game.return_score                AS returnScore,
            game.oka_point                   AS okaPoint,
            game.uma_point                   AS umaPoint,
+           game.yakuman_member_no           AS yakumanMemberNo,
+           gameMember.member_name           AS yakumanMemberName,
            game.comment                     AS comment,
            game.end_yn                      AS endYn,
            meetMap.member_no                AS memberNo,
            member.member_name               AS memberName,
-           IFNULL(gameMap.member_no, 0)     AS gameMemberNo
+           IFNULL(gameMap.member_no, 0)     AS gameMemberNo,
+           IFNULL(gameMap.score, 0)         AS gameMemberScore
     FROM game game
         LEFT JOIN meet meet ON game.meet_no = meet.meet_no
+        LEFT JOIN member gameMember ON game.yakuman_member_no = gameMember.member_no
         LEFT JOIN meet_member_map meetMap ON game.meet_no = meetMap.meet_no AND meetMap.attend_yn = '1'
         LEFT JOIN game_member_map gameMap ON game.game_no = gameMap.game_no AND meetMap.member_no = gameMap.member_no
         LEFT JOIN member member ON meetMap.member_no = member.member_no
@@ -452,7 +475,7 @@ async function deleteGameMemberMap(gameNo) {
 exports.deleteGameMemberMap = deleteGameMemberMap;
 async function createGameMemberMap(params) {
     const sql = `
-    INSERT INTO game_member_map (game_no, member_no, created_date, modified_date)
+    INSERT INTO game_member_map (game_no, member_no, score, created_date, modified_date)
     VALUES ?
   `;
     console.log(sql);
@@ -476,6 +499,7 @@ async function updateGame(param) {
         return_score = '${param.returnScore}',
         oka_point = (${param.returnScore} - ${param.startScore}) * ${param.gameMemberCount} / 1000,
         uma_point = '${param.umaPoint}',
+        yakuman_member_no = '${param.yakumanMemberNo}',
         comment = '${param.comment}',
         modified_date = now()
     WHERE game_no = '${param.gameNo}'
@@ -553,9 +577,9 @@ async function findGameMemberMapListForUpdate(gameNo) {
 }
 exports.findGameMemberMapListForUpdate = findGameMemberMapListForUpdate;
 function getSearchRankParam(filter, search) {
-    const searchDate = (filter.dateType !== CONST.DATE_TYPE.ALL && !(0, util_1.isEmpty)(filter.startDate) && !(0, util_1.isEmpty)(filter.endDate)) ? `meet.meet_day >= '${filter.startDate}' AND meet.meet_day <= '${filter.endDate}'` : '';
+    const searchMeetNo = !(0, util_1.isEmpty)(filter.meetNo) ? `meet.meet_no = '${filter.meetNo}'` : '';
     let result = '';
-    for (const value of [searchDate, search]) {
+    for (const value of [searchMeetNo, search]) {
         if (!(0, util_1.isEmpty)(result) && !(0, util_1.isEmpty)(value))
             result += ' AND ';
         result += value;
@@ -567,13 +591,15 @@ async function findRankCount(filter) {
     const searchParam = getSearchRankParam(filter, search);
     const sql = `
     SELECT count(*)
-    FROM ( SELECT member.member_name                   AS memberName,
-                  SUM(map.point)                       AS totalPoint,
-                  COUNT(IF(map.rank=1, true, null))    AS winCnt,
-                  COUNT(IF(map.rank=2, true, null))    AS secondCnt,
-                  COUNT(IF(map.rank=3, true, null))    AS thirdCnt,
-                  COUNT(IF(map.rank=4, true, null))    AS forthCnt,
-                  COUNT(map.game_no)                   AS totalGameCnt
+    FROM ( SELECT member.member_name                                                                    AS memberName,
+                  (SELECT COUNT(meet_no) FROM meet WHERE meet.win_member_no = member.member_no)         AS meetWinCnt,
+                  (SELECT COUNT(game_no) FROM game WHERE game.yakuman_member_no = member.member_no)     AS yakumanCnt,
+                  SUM(map.point)                                                                        AS totalPoint,
+                  COUNT(IF(map.rank=1, true, null))                                                     AS winCnt,
+                  COUNT(IF(map.rank=2, true, null))                                                     AS secondCnt,
+                  COUNT(IF(map.rank=3, true, null))                                                     AS thirdCnt,
+                  COUNT(IF(map.rank=4, true, null))                                                     AS forthCnt,
+                  COUNT(map.game_no)                                                                    AS totalGameCnt
            FROM game_member_map map
                LEFT JOIN game game ON game.game_no = map.game_no
                LEFT JOIN meet meet ON meet.meet_no = game.meet_no
@@ -583,6 +609,7 @@ async function findRankCount(filter) {
            GROUP BY map.member_no
          ) stat
   `;
+    console.log(sql);
     const [data] = await database_1.DB_MAHJONG_SCORE.query(sql);
     return data;
 }
@@ -594,14 +621,16 @@ async function findRankList(filter) {
     const searchParam = getSearchRankParam(filter, search);
     const sort = (0, util_1.getSortQuery)(filter, 'avgPoint');
     const sql = `
-    SELECT member.member_name                               AS memberName,
-           SUM(map.point)                                   AS totalPoint,
-           ROUND(SUM(map.point) / COUNT(map.game_no), 2)    AS avgPoint,
-           COUNT(IF(map.rank=1, true, null))                AS winCnt,
-           COUNT(IF(map.rank=2, true, null))                AS secondCnt,
-           COUNT(IF(map.rank=3, true, null))                AS thirdCnt,
-           COUNT(IF(map.rank=4, true, null))                AS forthCnt,
-           COUNT(map.game_no)                               AS totalGameCnt
+    SELECT member.member_name                                                                   AS memberName,
+           (SELECT COUNT(meet_no) FROM meet WHERE meet.win_member_no = member.member_no)        AS meetWinCnt,
+           (SELECT COUNT(game_no) FROM game WHERE game.yakuman_member_no = member.member_no)    AS yakumanCnt,
+           SUM(map.point)                                                                       AS totalPoint,
+           ROUND(SUM(map.point) / COUNT(map.game_no), 2)                                        AS avgPoint,
+           COUNT(IF(map.rank=1, true, null))                                                    AS winCnt,
+           COUNT(IF(map.rank=2, true, null))                                                    AS secondCnt,
+           COUNT(IF(map.rank=3, true, null))                                                    AS thirdCnt,
+           COUNT(IF(map.rank=4, true, null))                                                    AS forthCnt,
+           COUNT(map.game_no)                                                                   AS totalGameCnt
     FROM game_member_map map
         LEFT JOIN game game ON game.game_no = map.game_no
         LEFT JOIN meet meet ON meet.meet_no = game.meet_no

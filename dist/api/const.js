@@ -1,9 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UMA_POINT = exports.RETURN_SCORE = exports.START_SCORE = exports.GAME_TYPE = exports.GAME_MEMBER_COUNT = exports.PATHNAME = exports.WEEKDAY = exports.LOG_LEVEL = exports.DATE_TYPE = void 0;
-exports.DATE_TYPE = {
-    ALL: 'ALL'
-};
+exports.UMA_POINT = exports.RETURN_SCORE = exports.START_SCORE = exports.GAME_TYPE = exports.GAME_MEMBER_COUNT = exports.PATHNAME = exports.WEEKDAY = exports.LOG_LEVEL = void 0;
 exports.LOG_LEVEL = {
     INFO: 'INFO',
     WARN: 'WARN',

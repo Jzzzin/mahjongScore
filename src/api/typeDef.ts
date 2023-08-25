@@ -133,13 +133,13 @@ export interface GameMemberParam {
 
 type FindRankFilterName = ''
 export interface FindRankFilter extends Filter<FindRankFilterName> {
-  dateType: string
-  startDate: string
-  endDate: string
+  meetNo: string
 }
 
 export interface RankData {
   memberName: string
+  meetWinCnt: number
+  yakumanCnt: number
   totalPoint: number
   avgPoint: number
   winCnt: number

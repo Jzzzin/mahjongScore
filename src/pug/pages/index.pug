@@ -15,6 +15,11 @@ block content
     .container-fluid.px-4
         include includes/page-header.pug
         .card.mb-4
+            .row.mb-3
+                .form-floating.mb-3.mb-md-0
+                p#meetDayListName 모임일자
+                    d#meetDiv
+                        select#meetList
             .card-header
                 i.fas.fa-table.me-1
                 | 순위
@@ -24,6 +29,8 @@ block content
                         tr
                             th 순위
                             th 이름
+                            th 우승 횟수
+                            th 역만 횟수
                             th 총 승점
                             th 평균 승점
                             th 승률

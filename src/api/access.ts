@@ -21,7 +21,6 @@ import {
   getSortQuery,
   isEmpty
 } from './util'
-import * as CONST from './const'
 
 export async function findMemberCount(filter:FindMemberFilter): Promise<CountData[]> {
   const search = getSearchQuery(filter)
@@ -700,10 +699,10 @@ export async function findGameMemberMapListForUpdate(gameNo: number): Promise<Ga
 }
 
 function getSearchRankParam(filter: FindRankFilter, search: string): string {
-  const searchDate = (filter.dateType !== CONST.DATE_TYPE.ALL && !isEmpty(filter.startDate) && !isEmpty(filter.endDate)) ? `meet.meet_day >= '${filter.startDate}' AND meet.meet_day <= '${filter.endDate}'` : ''
+  const searchMeetNo = !isEmpty(filter.meetNo) ? `meet.meet_no = '${filter.meetNo}'` : ''
 
   let result = ''
-  for (const value of [searchDate, search]) {
+  for (const value of [searchMeetNo, search]) {
     if (!isEmpty(result) && !isEmpty(value)) result += ' AND '
     result += value
   }
@@ -711,18 +710,20 @@ function getSearchRankParam(filter: FindRankFilter, search: string): string {
 }
 
 export async function findRankCount(filter:FindRankFilter): Promise<CountData[]> {
-    const search = getSearchQuery(filter)
-    const searchParam = getSearchRankParam(filter, search)
+  const search = getSearchQuery(filter)
+  const searchParam = getSearchRankParam(filter, search)
 
-    const sql = `
+  const sql = `
     SELECT count(*)
-    FROM ( SELECT member.member_name                   AS memberName,
-                  SUM(map.point)                       AS totalPoint,
-                  COUNT(IF(map.rank=1, true, null))    AS winCnt,
-                  COUNT(IF(map.rank=2, true, null))    AS secondCnt,
-                  COUNT(IF(map.rank=3, true, null))    AS thirdCnt,
-                  COUNT(IF(map.rank=4, true, null))    AS forthCnt,
-                  COUNT(map.game_no)                   AS totalGameCnt
+    FROM ( SELECT member.member_name                                                                    AS memberName,
+                  (SELECT COUNT(meet_no) FROM meet WHERE meet.win_member_no = member.member_no)         AS meetWinCnt,
+                  (SELECT COUNT(game_no) FROM game WHERE game.yakuman_member_no = member.member_no)     AS yakumanCnt,
+                  SUM(map.point)                                                                        AS totalPoint,
+                  COUNT(IF(map.rank=1, true, null))                                                     AS winCnt,
+                  COUNT(IF(map.rank=2, true, null))                                                     AS secondCnt,
+                  COUNT(IF(map.rank=3, true, null))                                                     AS thirdCnt,
+                  COUNT(IF(map.rank=4, true, null))                                                     AS forthCnt,
+                  COUNT(map.game_no)                                                                    AS totalGameCnt
            FROM game_member_map map
                LEFT JOIN game game ON game.game_no = map.game_no
                LEFT JOIN meet meet ON meet.meet_no = game.meet_no
@@ -732,8 +733,8 @@ export async function findRankCount(filter:FindRankFilter): Promise<CountData[]>
            GROUP BY map.member_no
          ) stat
   `
-    const [data] = await DB_MAHJONG_SCORE.query(sql)
-    return data as CountData[]
+  const [data] = await DB_MAHJONG_SCORE.query(sql)
+  return data as CountData[]
 }
 
 export async function findRankList(filter:FindRankFilter): Promise<RankData[]> {
@@ -744,14 +745,16 @@ export async function findRankList(filter:FindRankFilter): Promise<RankData[]> {
   const sort = getSortQuery(filter, 'avgPoint')
 
   const sql = `
-    SELECT member.member_name                               AS memberName,
-           SUM(map.point)                                   AS totalPoint,
-           ROUND(SUM(map.point) / COUNT(map.game_no), 2)    AS avgPoint,
-           COUNT(IF(map.rank=1, true, null))                AS winCnt,
-           COUNT(IF(map.rank=2, true, null))                AS secondCnt,
-           COUNT(IF(map.rank=3, true, null))                AS thirdCnt,
-           COUNT(IF(map.rank=4, true, null))                AS forthCnt,
-           COUNT(map.game_no)                               AS totalGameCnt
+    SELECT member.member_name                                                                   AS memberName,
+           (SELECT COUNT(meet_no) FROM meet WHERE meet.win_member_no = member.member_no)        AS meetWinCnt,
+           (SELECT COUNT(game_no) FROM game WHERE game.yakuman_member_no = member.member_no)    AS yakumanCnt,
+           SUM(map.point)                                                                       AS totalPoint,
+           ROUND(SUM(map.point) / COUNT(map.game_no), 2)                                        AS avgPoint,
+           COUNT(IF(map.rank=1, true, null))                                                    AS winCnt,
+           COUNT(IF(map.rank=2, true, null))                                                    AS secondCnt,
+           COUNT(IF(map.rank=3, true, null))                                                    AS thirdCnt,
+           COUNT(IF(map.rank=4, true, null))                                                    AS forthCnt,
+           COUNT(map.game_no)                                                                   AS totalGameCnt
     FROM game_member_map map
         LEFT JOIN game game ON game.game_no = map.game_no
         LEFT JOIN meet meet ON meet.meet_no = game.meet_no

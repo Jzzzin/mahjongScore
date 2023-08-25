@@ -1,7 +1,3 @@
-export const DATE_TYPE = {
-  ALL: 'ALL'
-} as const
-
 export const LOG_LEVEL = {
   INFO: 'INFO',
   WARN: 'WARN',
