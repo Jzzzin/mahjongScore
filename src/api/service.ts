@@ -168,6 +168,7 @@ export async function findGameList(ctx: Context, filter: FindGameFilter): Promis
     gameData.forEach(value => {
       const gameList: GameList = {
         ...value,
+        yakumanYn: value.yakumanMemberNo > 0,
         memberList: gameMemberMapData.filter(map => map.gameNo === value.gameNo)
       }
       list.push(gameList)
@@ -192,9 +193,11 @@ export async function findGame(ctx: Context, gameNo: number): Promise<GameDetail
     returnScore: gameWithMember[0].returnScore,
     okaPoint: gameWithMember[0].okaPoint,
     umaPoint: gameWithMember[0].umaPoint,
+    yakumanMemberNo: gameWithMember[0].yakumanMemberNo,
+    yakumanMemberName: gameWithMember[0].yakumanMemberName,
     comment: gameWithMember[0].comment,
     endYn: gameWithMember[0].endYn,
-    memberList: gameWithMember.map(value => { return { memberNo: value.memberNo, memberName: value.memberName, attendYn: value.gameMemberNo > 0 ? 1 : 0 }})
+    memberList: gameWithMember.map(value => { return { memberNo: value.memberNo, memberName: value.memberName, score: value.gameMemberScore, attendYn: value.gameMemberNo > 0 ? 1 : 0 }})
   }
 }
 
@@ -204,7 +207,8 @@ export async function createGame(ctx: Context, param: GameParam) {
   let result = 0
 
   const gameNumber = await access.findGameNumber(param.meetNo)
-  const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : gameNumber.meetDay.concat('01')
+  const meetDay = gameNumber.meetDay.replace(/[^0-9]/g, '')
+  const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : meetDay.concat('01')
 
   const createParam: CreateGameParam = {
     meetNo: param.meetNo,
@@ -223,7 +227,7 @@ export async function createGame(ctx: Context, param: GameParam) {
   result = createResult.insertId
   const now = getMysqlDatetime()
 
-  if (result > 0) await access.createGameMemberMap(param.memberNoList.map(value => { return [result, value, now, now] }))
+  if (result > 0) await access.createGameMemberMap(param.memberList.map(value => { return [result, value.memberNo, value.score, now, now] }))
   return result
 }
 
@@ -231,7 +235,8 @@ export async function updateGame(ctx: Context, param: GameParam) {
   ctx.log.info('*** Update Game Service Start ***')
 
   const gameNumber = await access.findGameNumber(param.meetNo)
-  const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : gameNumber.meetDay.concat('01')
+  const meetDay = gameNumber.meetDay.replace(/[^0-9]/g, '')
+  const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : meetDay.concat('01')
   const startScore = CONST.START_SCORE[param.gameMemberCount]
   const returnScore = CONST.RETURN_SCORE[param.gameMemberCount]
   const umaPoint = CONST.UMA_POINT[param.gameType]
@@ -242,7 +247,7 @@ export async function updateGame(ctx: Context, param: GameParam) {
     await access.sortGameNumber({ gameNumber: param.orgGameNumber, meetNo: param.orgMeetNo })
     const deleteResult = await access.deleteGameMemberMap(param.gameNo)
     const now = getMysqlDatetime()
-    if (deleteResult && param.memberNoList.length > 0) await access.createGameMemberMap(param.memberNoList.map(value => { return [param.gameNo, value, now, now] }))
+    if (deleteResult && param.memberList.length > 0) await access.createGameMemberMap(param.memberList.map(value => { return [param.gameNo, value.memberNo, value.score, now, now] }))
   }
   return result.affectedRows
 }

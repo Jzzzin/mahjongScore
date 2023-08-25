@@ -421,6 +421,8 @@ export async function findGameList(filter:FindGameFilter): Promise<GameData[]> {
            game.return_score                AS returnScore,
            game.oka_point                   AS okaPoint,
            game.uma_point                   AS umaPoint,
+           game.yakuman_member_no           AS yakumanMemberNo,
+           member.member_name               AS yakumanMemberName,
            game.comment                     AS comment,
            game.end_yn                      AS endYn
     FROM game game
@@ -441,7 +443,7 @@ export async function findGameMemberMapList(): Promise<GameMemberMapData[]> {
            member.member_name           AS memberName,
            map.position                 AS position,
            map.score                    AS score,
-           map.rank                     AS rank,
+           map.rank                     AS 'rank',
            map.point                    AS point
     FROM game_member_map map
         LEFT JOIN member member ON map.member_no = member.member_no
@@ -457,6 +459,7 @@ export interface GameWithMember extends GameData {
   memberNo: number
   memberName: string
   gameMemberNo: number
+  gameMemberScore: number
 }
 
 export async function findGameWithMember(gameNo: number): Promise<GameWithMember[]> {
@@ -471,13 +474,17 @@ export async function findGameWithMember(gameNo: number): Promise<GameWithMember
            game.return_score                AS returnScore,
            game.oka_point                   AS okaPoint,
            game.uma_point                   AS umaPoint,
+           game.yakuman_member_no           AS yakumanMemberNo,
+           gameMember.member_name           AS yakumanMemberName,
            game.comment                     AS comment,
            game.end_yn                      AS endYn,
            meetMap.member_no                AS memberNo,
            member.member_name               AS memberName,
-           IFNULL(gameMap.member_no, 0)     AS gameMemberNo
+           IFNULL(gameMap.member_no, 0)     AS gameMemberNo,
+           IFNULL(gameMap.score, 0)         AS gameMemberScore
     FROM game game
         LEFT JOIN meet meet ON game.meet_no = meet.meet_no
+        LEFT JOIN member gameMember ON game.yakuman_member_no = gameMember.member_no
         LEFT JOIN meet_member_map meetMap ON game.meet_no = meetMap.meet_no AND meetMap.attend_yn = '1'
         LEFT JOIN game_member_map gameMap ON game.game_no = gameMap.game_no AND meetMap.member_no = gameMap.member_no
         LEFT JOIN member member ON meetMap.member_no = member.member_no
@@ -554,12 +561,13 @@ export async function deleteGameMemberMap(gameNo: number): Promise<any> {
 type GameMemberMapName =
 | 'gameNo'
 | 'memberNo'
+| 'score'
 | 'createdDate'
 | 'modifiedDate'
 export type CreateGameMemberMapParam = Array<MahjongScore.game_member_map[GameMemberMapName]>
 export async function createGameMemberMap(params: CreateGameMemberMapParam[]): Promise<any> {
   const sql = `
-    INSERT INTO game_member_map (game_no, member_no, created_date, modified_date)
+    INSERT INTO game_member_map (game_no, member_no, score, created_date, modified_date)
     VALUES ?
   `
   console.log(sql)
@@ -590,6 +598,7 @@ export async function updateGame(param: UpdateGameParam): Promise<any> {
         return_score = '${param.returnScore}',
         oka_point = (${param.returnScore} - ${param.startScore}) * ${param.gameMemberCount} / 1000,
         uma_point = '${param.umaPoint}',
+        yakuman_member_no = '${param.yakumanMemberNo}',
         comment = '${param.comment}',
         modified_date = now()
     WHERE game_no = '${param.gameNo}'

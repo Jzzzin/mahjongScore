@@ -30,14 +30,7 @@ $(document).ready(function() {
                 searchable: false,
             },
             {
-                data: 'meetDay',
-                render: function (data, type) {
-                    if (type === 'display') {
-                        return data.substr(0, 4) + '-' + data.substr(4, 2) + '-' + data.substr(6, 2);
-                    }
-
-                    return data;
-                },
+                data: 'meetDay'
             },
             { data: 'gameNumber' },
             {

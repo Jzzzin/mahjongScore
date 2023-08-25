@@ -8,9 +8,15 @@ window.addEventListener('DOMContentLoaded', event => {
             const url = currentURL + "/api/game";
 
             const meetNo = $('#meetList option:selected').val();
-            const memberNoList = [];
+            const memberList = [];
             $('input:checkbox[name=memberList]').each(function () {
-                if($(this).is(":checked") === true && $(this).attr('class') === meetNo) memberNoList.push($(this).val())
+                if($(this).is(":checked") === true && $(this).attr('class') === meetNo) {
+                    const member = {
+                        "memberNo": $(this).val(),
+                        "score": 0
+                    }
+                    memberList.push(member);
+                }
             });
             const formData = {
                 "gameNo": "0",
@@ -20,7 +26,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 "gameMemberCount": $('input:radio[name="gameMemberCount"]:checked').val(),
                 "gameType": $('input:radio[name="gameType"]:checked').val(),
                 "comment": $('#inputComment').val(),
-                "memberNoList": memberNoList
+                "memberList": memberList
             }
             $.ajax({
                 type: 'POST',
@@ -115,8 +121,7 @@ $(document).ready(function() {
             // On Success, build our rich list up and append it to the #richList div.
             if (data) {
                 data.forEach((value, idx) => {
-                    const meetDay = `${value.meetDay.substring(0, 4)}년 ${value.meetDay.substring(4, 6)}월 ${value.meetDay.substring(6, 8)}일`
-                    const option = $('<option value="' + value.meetNo + '">' + meetDay + '</option>');
+                    const option = $('<option value="' + value.meetNo + '">' + value.meetDay + '</option>');
                     if (idx === 0) option.prop("selected", true);
                     $('#meetList').append(option);
 

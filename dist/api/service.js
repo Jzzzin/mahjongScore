@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.findRankList = exports.updateGameMemberMap = exports.updateGame = exports.createGame = exports.findGame = exports.findGameList = exports.updateMeet = exports.createMeet = exports.findMeet = exports.findMeetList = exports.updateMember = exports.createMember = exports.findMember = exports.findMemberList = void 0;
+exports.login = exports.findRankList = exports.updateGameMemberMap = exports.updateGame = exports.createGame = exports.findGame = exports.findGameList = exports.updateMeet = exports.createMeet = exports.findMeet = exports.findMeetList = exports.findLocationList = exports.updateMember = exports.createMember = exports.findMember = exports.findMemberList = void 0;
 const access = __importStar(require("./access"));
 const jwt = __importStar(require("./jwt"));
 const util_1 = require("./util");
@@ -76,6 +76,11 @@ async function updateMember(ctx, param) {
     return result;
 }
 exports.updateMember = updateMember;
+async function findLocationList(ctx) {
+    ctx.log.info('*** Find Location List Service Start ***');
+    return access.findLocationList();
+}
+exports.findLocationList = findLocationList;
 async function findMeetList(ctx, filter) {
     ctx.log.info('*** Find Meet List Service Start ***');
     let list = [];
@@ -101,7 +106,10 @@ async function findMeet(ctx, meetNo) {
         meetNo: meetWithMember[0].meetNo,
         meetDay: meetWithMember[0].meetDay,
         meetTime: meetWithMember[0].meetTime,
-        location: meetWithMember[0].location,
+        locationNo: meetWithMember[0].locationNo,
+        locationName: meetWithMember[0].locationName,
+        winMemberNo: meetWithMember[0].winMemberNo,
+        winMemberName: meetWithMember[0].winMemberName,
         endYn: meetWithMember[0].endYn,
         memberList: meetWithMember.map(value => { return { meetNo: value.meetNo, memberNo: value.memberNo, memberName: value.memberName, attendYn: value.attendYn }; })
     };
@@ -113,7 +121,7 @@ async function createMeet(ctx, param) {
     const duplicated = await access.findMeetForValidate(param.meetDay);
     console.log(`*** Meet No [${duplicated.toString()}] For Meet Day[${param.meetDay}]`);
     if (duplicated === 0) {
-        const createResult = await access.createMeet({ meetDay: param.meetDay, meetTime: param.meetTime, location: param.location });
+        const createResult = await access.createMeet({ meetDay: param.meetDay, meetTime: param.meetTime, locationNo: param.locationNo });
         result = createResult.insertId;
         if (result > 0) {
             const mapResult = await access.createMeetMemberMap(result);
@@ -148,6 +156,7 @@ async function findGameList(ctx, filter) {
         gameData.forEach(value => {
             const gameList = {
                 ...value,
+                yakumanYn: value.yakumanMemberNo > 0,
                 memberList: gameMemberMapData.filter(map => map.gameNo === value.gameNo)
             };
             list.push(gameList);
@@ -170,9 +179,11 @@ async function findGame(ctx, gameNo) {
         returnScore: gameWithMember[0].returnScore,
         okaPoint: gameWithMember[0].okaPoint,
         umaPoint: gameWithMember[0].umaPoint,
+        yakumanMemberNo: gameWithMember[0].yakumanMemberNo,
+        yakumanMemberName: gameWithMember[0].yakumanMemberName,
         comment: gameWithMember[0].comment,
         endYn: gameWithMember[0].endYn,
-        memberList: gameWithMember.map(value => { return { memberNo: value.memberNo, memberName: value.memberName, attendYn: value.gameMemberNo > 0 ? 1 : 0 }; })
+        memberList: gameWithMember.map(value => { return { memberNo: value.memberNo, memberName: value.memberName, score: value.gameMemberScore, attendYn: value.gameMemberNo > 0 ? 1 : 0 }; })
     };
 }
 exports.findGame = findGame;
@@ -180,7 +191,8 @@ async function createGame(ctx, param) {
     ctx.log.info('*** Create Game Service Start ***');
     let result = 0;
     const gameNumber = await access.findGameNumber(param.meetNo);
-    const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : gameNumber.meetDay.concat('01');
+    const meetDay = gameNumber.meetDay.replace(/[^0-9]/g, '');
+    const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : meetDay.concat('01');
     const createParam = {
         meetNo: param.meetNo,
         gameNumber: newGameNumber,
@@ -196,14 +208,15 @@ async function createGame(ctx, param) {
     result = createResult.insertId;
     const now = (0, util_1.getMysqlDatetime)();
     if (result > 0)
-        await access.createGameMemberMap(param.memberNoList.map(value => { return [result, value, now, now]; }));
+        await access.createGameMemberMap(param.memberList.map(value => { return [result, value.memberNo, value.score, now, now]; }));
     return result;
 }
 exports.createGame = createGame;
 async function updateGame(ctx, param) {
     ctx.log.info('*** Update Game Service Start ***');
     const gameNumber = await access.findGameNumber(param.meetNo);
-    const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : gameNumber.meetDay.concat('01');
+    const meetDay = gameNumber.meetDay.replace(/[^0-9]/g, '');
+    const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : meetDay.concat('01');
     const startScore = CONST.START_SCORE[param.gameMemberCount];
     const returnScore = CONST.RETURN_SCORE[param.gameMemberCount];
     const umaPoint = CONST.UMA_POINT[param.gameType];
@@ -212,8 +225,8 @@ async function updateGame(ctx, param) {
         await access.sortGameNumber({ gameNumber: param.orgGameNumber, meetNo: param.orgMeetNo });
         const deleteResult = await access.deleteGameMemberMap(param.gameNo);
         const now = (0, util_1.getMysqlDatetime)();
-        if (deleteResult && param.memberNoList.length > 0)
-            await access.createGameMemberMap(param.memberNoList.map(value => { return [param.gameNo, value, now, now]; }));
+        if (deleteResult && param.memberList.length > 0)
+            await access.createGameMemberMap(param.memberList.map(value => { return [param.gameNo, value.memberNo, value.score, now, now]; }));
     }
     return result.affectedRows;
 }

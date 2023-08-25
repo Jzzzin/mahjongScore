@@ -9,9 +9,15 @@ window.addEventListener('DOMContentLoaded', event => {
             const url = currentURL +  "/api/game/" + gameNo;
 
             const meetNo = $('#meetList option:selected').val();
-            const memberNoList = [];
+            const memberList = [];
             $('input:checkbox[name=memberList]').each(function () {
-                if($(this).is(":checked") === true && $(this).attr('class') === meetNo) memberNoList.push($(this).val())
+                if($(this).is(":checked") === true && $(this).attr('class') === meetNo) {
+                    const member = {
+                        "memberNo": $(this).val(),
+                        "score": 0
+                    }
+                    memberList.push(member);
+                }
             });
             const formData = {
                 "gameNo": gameNo,
@@ -20,8 +26,9 @@ window.addEventListener('DOMContentLoaded', event => {
                 "meetNo": meetNo,
                 "gameMemberCount": $('input:radio[name="gameMemberCount"]:checked').val(),
                 "gameType": $('input:radio[name="gameType"]:checked').val(),
+                "yakumanMemberNo": 0,
                 "comment": $('#inputComment').val(),
-                "memberNoList": memberNoList
+                "memberList": memberList
             }
             $.ajax({
                 type: 'PUT',
@@ -114,8 +121,7 @@ $(document).ready(function() {
                 $('#inputGameNo').val(data.gameNo);
                 $('#inputOrgMeetNo').val(data.meetNo);
                 $('#inputMeetNo').val(data.meetNo);
-                const meetDay = `${data.meetDay.substring(0, 4)}년 ${data.meetDay.substring(4, 6)}월 ${data.meetDay.substring(6, 8)}일`
-                const option = $('<option value="' + data.meetNo + '" selected>' + meetDay + '</option>');
+                const option = $('<option value="' + data.meetNo + '" selected>' + data.meetDay + '</option>');
                 $('#meetList').append(option);
                 $('#inputOrgGameNumber').val(data.gameNumber);
                 if (data.gameMemberCount === 3)
@@ -167,8 +173,7 @@ $(document).ready(function() {
                         const meetNo = $('#inputMeetNo').val();
                         data.forEach((value) => {
                             if (String(value.meetNo) !== String(meetNo)) {
-                                const meetDay = `${value.meetDay.substring(0, 4)}년 ${value.meetDay.substring(4, 6)}월 ${value.meetDay.substring(6, 8)}일`
-                                const option = $('<option value="' + value.meetNo + '">' + meetDay + '</option>');
+                                const option = $('<option value="' + value.meetNo + '">' + value.meetDay + '</option>');
                                 $('#meetList').append(option);
 
                                 value.memberList.forEach(member => {

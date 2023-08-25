@@ -79,6 +79,8 @@ export interface GameData {
   returnScore: number
   okaPoint: number
   umaPoint: number
+  yakumanMemberNo: number
+  yakumanMemberName: string
   comment: string
   endYn: number
 }
@@ -94,12 +96,14 @@ export interface GameMemberMapData {
 }
 
 export interface GameList extends GameData {
+  yakumanYn: boolean
   memberList: GameMemberMapData[]
 }
 
 interface GameDetailMember {
   memberNo: number
   memberName: string
+  score: number
   attendYn: number
 }
 
@@ -114,8 +118,10 @@ export interface GameParam {
   meetNo: number
   gameMemberCount: CONST.GameMemberCount
   gameType: CONST.GameType
+  yakumanMemberNo: number
   comment: string
-  memberNoList: number[]
+  endYn: number
+  memberList: GameMemberParam[]
 }
 
 export interface GameMemberParam {
