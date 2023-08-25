@@ -7,6 +7,7 @@ window.addEventListener('DOMContentLoaded', event => {
             const meetNo = $('#inputMeetNo').val();
             const currentURL = window.location.protocol + "//" + window.location.host;
             const url = currentURL + "/api/meet/" + meetNo;
+            const locationNo = $('#locationList option:selected').val();
             const memberNoList = [];
             $('input:checkbox[name=memberList]').each(function () {
                 if($(this).is(":checked") === true) memberNoList.push($(this).val())
@@ -15,7 +16,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 "meetNo": meetNo,
                 "meetDay": $('#inputMeetDay').val(),
                 "meetTime": $('#inputMeetTime').val(),
-                "location": $('#inputLocation').val(),
+                "locationNo": locationNo,
                 "memberNoList": memberNoList,
                 "endYn": $('input:radio[name="endYn"]:checked').val()
             }
@@ -55,7 +56,7 @@ $(document).ready(function() {
     const urlParams = new URL(location.href).searchParams;
     const meetNo = urlParams.get('meetNo');
     const currentURL = window.location.protocol + "//" + window.location.host;
-    const url = currentURL + "/api/meet/" + meetNo;
+    let url = currentURL + "/api/meet/" + meetNo;
 
     $.ajax({
         type: "GET",
@@ -69,7 +70,9 @@ $(document).ready(function() {
                 $('#inputMeetNo').val(data.meetNo);
                 $('#inputMeetDay').val(data.meetDay);
                 $('#inputMeetTime').val(data.meetTime);
-                $('#inputLocation').val(data.location);
+                $('#inputLocationNo').val(data.locationNo);
+                const option = $('<option value="' + data.locationNo + '" selected>' + data.locationName + '</option>');
+                $('#locationList').append(option);
                 if (data.endYn === 0)
                     $('#inputEndYn1').prop('checked', true);
                 else
@@ -86,6 +89,29 @@ $(document).ready(function() {
             }
         },
         complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+            const currentURL = window.location.protocol + "//" + window.location.host;
+
+            $.ajax({
+                type: "GET",
+                url: currentURL + "/api/location",
+                dataType: 'json',
+                beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
+                },
+                success: function (data) {
+                    // On Success, build our rich list up and append it to the #richList div.
+                    if (data) {
+                        data.forEach((value) => {
+                            const locationNo = $('#inputLocationNo').val();
+                            if (String(value.locationNo) !== String(locationNo)) {
+                                const option = $('<option value="' + value.locationNo + '">' + value.locationName + '</option>');
+                                $('#locationList').append(option);
+                            }
+                        });
+                    }
+                },
+                complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+                },
+            });
         },
     });
 });

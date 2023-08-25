@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.findRankList = exports.updateGameMemberMap = exports.updateGame = exports.findMeetForGameList = exports.createGame = exports.findGame = exports.findGameList = exports.updateMeet = exports.createMeet = exports.findMeet = exports.findMeetList = exports.updateMember = exports.createMember = exports.findMember = exports.findMemberList = void 0;
+exports.login = exports.findRankList = exports.updateGameMemberMap = exports.updateGame = exports.findMeetForGameList = exports.createGame = exports.findGame = exports.findGameList = exports.updateMeet = exports.createMeet = exports.findMeet = exports.findLocationList = exports.findMeetList = exports.updateMember = exports.createMember = exports.findMember = exports.findMemberList = void 0;
 const service = __importStar(require("./service"));
 const findMemberList = async (ctx) => {
     ctx.log.info('*** Find Member List Controller Start ***');
@@ -92,6 +92,18 @@ const findMeetList = async (ctx) => {
     }
 };
 exports.findMeetList = findMeetList;
+const findLocationList = async (ctx) => {
+    ctx.log.info('*** Find Location List Controller Start ***');
+    const data = await service.findLocationList(ctx);
+    if (data) {
+        ctx.status = 200;
+        ctx.body = data;
+    }
+    else {
+        ctx.status = 204;
+    }
+};
+exports.findLocationList = findLocationList;
 const findMeet = async (ctx) => {
     ctx.log.info('*** Find Meet Controller Start ***');
     const { meetNo } = ctx.params;

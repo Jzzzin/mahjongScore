@@ -7,10 +7,10 @@ import {
     FindRankFilter,
     GameData,
     GameMemberMapData, GameMemberParam,
-    GameParam,
+    GameParam, LocationData,
     MeetData,
     MeetMemberMapData,
-    MeetParam,
+    MeetParam, MeetWinMemberParam,
     MemberData,
     MemberParam,
     RankData
@@ -159,15 +159,28 @@ export async function deleteMeetMemberMapByMember(memberNo: number): Promise<any
   }
 }
 
-function getSearchMeetParam(filter: FindMeetFilter, search: string): string {
-    const searchEndYn = !isEmpty(filter.endYn) ? `end_yn = '${filter.endYn}'` : ''
+export async function findLocationList(): Promise<LocationData[]> {
+  const sql = `
+    SELECT location_no      AS locationNo,
+           location_name    AS locationName
+    FROM location
+    WHERE use_yn = '1'
+  `
+  console.log(sql)
 
-    let result = ''
-    for (const value of [searchEndYn, search]) {
-        if (!isEmpty(result) && !isEmpty(value)) result += ' AND '
-        result += value
-    }
-    return result
+  const [data] = await DB_MAHJONG_SCORE.query(sql)
+  return data as LocationData[]
+}
+
+function getSearchMeetParam(filter: FindMeetFilter, search: string): string {
+  const searchEndYn = !isEmpty(filter.endYn) ? `meet.end_yn = '${filter.endYn}'` : ''
+
+  let result = ''
+  for (const value of [searchEndYn, search]) {
+    if (!isEmpty(result) && !isEmpty(value)) result += ' AND '
+    result += value
+  }
+  return result
 }
 
 export async function findMeetCount(filter:FindMeetFilter): Promise<CountData[]> {
@@ -176,7 +189,8 @@ export async function findMeetCount(filter:FindMeetFilter): Promise<CountData[]>
 
   const sql = `
     SELECT count(*)
-    FROM meet
+    FROM meet meet
+        LEFT JOIN location location ON meet.location_no = location.location_no
     ${searchParam && `WHERE ${searchParam}`}
   `
   const [data] = await DB_MAHJONG_SCORE.query(sql)
@@ -188,15 +202,20 @@ export async function findMeetList(filter:FindMeetFilter): Promise<MeetData[]> {
 
   const search = getSearchQuery(filter)
   const searchParam = getSearchMeetParam(filter, search)
-  const sort = getSortQuery(filter, 'meet_day')
+  const sort = getSortQuery(filter, 'meet.meet_day')
 
   const sql = `
-    SELECT meet_no                  AS meetNo,
-           CAST(meet_day AS CHAR)   AS meetDay,
-           CAST(meet_time AS CHAR)  AS meetTime,
-           location                 AS location,
-           end_yn                   AS endYn
-    FROM meet
+    SELECT meet.meet_no                     AS meetNo,
+           CAST(meet.meet_day AS CHAR)      AS meetDay,
+           CAST(meet.meet_time AS CHAR)     AS meetTime,
+           meet.location_no                 AS locationNo,
+           location.location_name           AS locationName,
+           meet.win_member_no               AS winMemberNo,
+           member.member_name               AS winMemberName,
+           meet.end_yn                      AS endYn
+    FROM meet meet
+        LEFT JOIN location location ON meet.location_no = location.location_no
+        LEFT JOIN member member ON meet.win_member_no = member.member_no
     ${searchParam && `WHERE ${searchParam}`}
     ${sort}
   `
@@ -233,14 +252,19 @@ export async function findMeetWithMember(meetNo: number): Promise<MeetWithMember
     SELECT meet.meet_no                     AS meetNo,
            CAST(meet.meet_day AS CHAR)      AS meetDay,
            CAST(meet.meet_time AS CHAR)     AS meetTime,
-           meet.location                    AS location,
+           meet.location_no                 AS locationNo,
+           location.location_name           AS locationName,
+           meet.win_member_no               AS winMemberNo,
+           member.member_name               AS winMemberName,
            meet.end_yn                      AS endYn,
            map.member_no                    AS memberNo,
-           member.member_name               AS memberName,
+           mapMember.member_name            AS memberName,
            map.attend_yn                    AS attendYn
     FROM meet meet
+        LEFT JOIN location location ON meet.location_no = location.location_no
+        LEFT JOIN member member ON meet.win_member_no = member.member_no
         LEFT JOIN meet_member_map map ON meet.meet_no = map.meet_no
-        LEFT JOIN member member ON map.member_no = member.member_no
+        LEFT JOIN member mapMember ON map.member_no = mapMember.member_no
     WHERE meet.meet_no = '${meetNo}'
   `
   console.log(sql)
@@ -270,11 +294,11 @@ export async function findMeetForValidate(meetDay: string): Promise<number> {
 type MeetName =
 | 'meetDay'
 | 'meetTime'
-| 'location'
+| 'locationNo'
 export type CreateMeetParam = Pick<MahjongScore.meet, MeetName>
 export async function createMeet(param: CreateMeetParam): Promise<any> {
   const sql = `
-    INSERT INTO meet (meet_day, meet_time, location, created_date, modified_date)
+    INSERT INTO meet (meet_day, meet_time, location_no, created_date, modified_date)
     VALUES (?, ?, ?, now(), now())
   `
   console.log(sql)
@@ -335,8 +359,25 @@ export async function updateMeet(param: MeetParam): Promise<any> {
     UPDATE meet
     SET meet_day = '${param.meetDay}',
         meet_time = '${param.meetTime}',
-        location = '${param.location}',
+        location_no = '${param.locationNo}',
         end_yn = '${param.endYn}',
+        modified_date = now()
+    WHERE meet_no = '${param.meetNo}'
+  `
+  console.log(sql)
+
+  try {
+    const [rows] = await DB_MAHJONG_SCORE.query(sql)
+    return rows
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+export async function updateMeetWinMember(param: MeetWinMemberParam): Promise<any> {
+  const sql = `
+    UPDATE meet
+    SET win_member_no = '${param.winMemberNo}',
         modified_date = now()
     WHERE meet_no = '${param.meetNo}'
   `

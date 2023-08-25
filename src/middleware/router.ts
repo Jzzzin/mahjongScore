@@ -9,6 +9,8 @@ router.post('/api/member', controller.createMember)
 router.get('/api/member/:memberNo', controller.findMember)
 router.put('/api/member/:memberNo', controller.updateMember)
 
+router.get('/api/location', controller.findLocationList)
+
 router.get('/api/meet', controller.findMeetList)
 router.post('/api/meet', controller.createMeet)
 

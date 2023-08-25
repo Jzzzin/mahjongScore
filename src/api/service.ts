@@ -5,7 +5,7 @@ import type {
     FindMemberFilter, FindRankFilter,
     GameDetail,
     GameList, GameMemberParam,
-    GameParam, LoginInfo, LoginParam,
+    GameParam, LocationData, LoginInfo, LoginParam,
     MeetList,
     MeetParam,
     MemberData,
@@ -73,6 +73,12 @@ export async function updateMember(ctx: Context, param: MemberParam) {
   return result
 }
 
+export async function findLocationList(ctx: Context): Promise<LocationData[]> {
+    ctx.log.info('*** Find Location List Service Start ***')
+
+    return access.findLocationList()
+}
+
 export async function findMeetList(ctx: Context, filter: FindMeetFilter): Promise<MeetList[]> {
   ctx.log.info('*** Find Meet List Service Start ***')
 
@@ -103,7 +109,10 @@ export async function findMeet(ctx: Context, meetNo: number): Promise<MeetList> 
     meetNo: meetWithMember[0].meetNo,
     meetDay: meetWithMember[0].meetDay,
     meetTime: meetWithMember[0].meetTime,
-    location: meetWithMember[0].location,
+    locationNo: meetWithMember[0].locationNo,
+    locationName: meetWithMember[0].locationName,
+    winMemberNo: meetWithMember[0].winMemberNo,
+    winMemberName: meetWithMember[0].winMemberName,
     endYn: meetWithMember[0].endYn,
     memberList: meetWithMember.map(value => { return { meetNo: value.meetNo, memberNo: value.memberNo, memberName: value.memberName, attendYn: value.attendYn }})
   }
@@ -117,7 +126,7 @@ export async function createMeet(ctx: Context, param: MeetParam) {
   const duplicated = await access.findMeetForValidate(param.meetDay)
   console.log(`*** Meet No [${duplicated.toString()}] For Meet Day[${param.meetDay}]`)
   if (duplicated === 0) {
-    const createResult = await access.createMeet({ meetDay: param.meetDay, meetTime: param.meetTime, location: param.location })
+    const createResult = await access.createMeet({ meetDay: param.meetDay, meetTime: param.meetTime, locationNo: param.locationNo })
     result = createResult.insertId
 
     if (result > 0) {

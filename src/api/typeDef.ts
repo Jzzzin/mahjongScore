@@ -23,11 +23,19 @@ export interface FindMeetFilter extends Filter<FindMeetFilterName> {
   endYn: string
 }
 
+export interface LocationData {
+  locationNo: number
+  locationName: string
+}
+
 export interface MeetData {
   meetNo: number
   meetDay: string
   meetTime: string
-  location: string
+  locationNo: number
+  locationName: string
+  winMemberNo: number
+  winMemberName: string
   endYn: number
 }
 
@@ -46,9 +54,14 @@ export interface MeetParam {
   meetNo: number
   meetDay: string
   meetTime: string
-  location: string
+  locationNo: number
   endYn: number
   memberNoList: number[]
+}
+
+export interface MeetWinMemberParam {
+  meetNo: number
+  winMemberNo: number
 }
 
 type FindGameFilterName = ''

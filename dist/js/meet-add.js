@@ -7,6 +7,7 @@ window.addEventListener('DOMContentLoaded', event => {
             const meetNo = "0";
             const currentURL = window.location.protocol + "//" + window.location.host;
             const url = currentURL + "/api/meet";
+            const locationNo = $('#locationList option:selected').val();
             const memberNoList = [];
             $('input:checkbox[name=memberList]').each(function () {
                 if($(this).is(":checked") === true) memberNoList.push($(this).val())
@@ -15,7 +16,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 "meetNo": meetNo,
                 "meetDay": $('#inputMeetDay').val(),
                 "meetTime": $('#inputMeetTime').val(),
-                "location": $('#inputLocation').val(),
+                "locationNo": locationNo,
                 "memberNoList": memberNoList,
                 "endYn": $('input:radio[name="endYn"]:checked').val()
             }
@@ -53,7 +54,7 @@ window.addEventListener('DOMContentLoaded', event => {
 $(document).ready(function() {
 
     const currentURL = window.location.protocol + "//" + window.location.host;
-    const url = currentURL + "/api/member";
+    let url = currentURL + "/api/member";
 
     $.ajax({
         type: "GET",
@@ -70,6 +71,28 @@ $(document).ready(function() {
                       '<label for="' + id + '"></label></li>');
                     li.find('label').text(value.memberName);
                     $('#memberList').append(li);
+                });
+            }
+        },
+        complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
+        },
+    });
+
+    url = currentURL + "/api/location";
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: 'json',
+        beforeSend: function () { // Before we send the request, remove the .hidden class from the spinner and default to inline-block.
+        },
+        success: function (data) {
+            // On Success, build our rich list up and append it to the #richList div.
+            if (data) {
+                data.forEach((value, idx) => {
+                    const option = $('<option value="' + value.locationNo + '">' + value.locationName + '</option>');
+                    if (idx === 0) option.prop("selected", true);
+                    $('#locationList').append(option);
                 });
             }
         },

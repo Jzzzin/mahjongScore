@@ -77,6 +77,18 @@ export const findMeetList: Middleware = async (ctx) => {
   }
 }
 
+export const findLocationList: Middleware = async (ctx) => {
+    ctx.log.info('*** Find Location List Controller Start ***')
+
+    const data = await service.findLocationList(ctx)
+    if (data) {
+        ctx.status = 200
+        ctx.body = data
+    } else {
+        ctx.status = 204
+    }
+}
+
 export const findMeet: Middleware = async (ctx) => {
   ctx.log.info('*** Find Meet Controller Start ***')
 

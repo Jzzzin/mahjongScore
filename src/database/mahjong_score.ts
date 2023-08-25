@@ -13,11 +13,18 @@ export interface member extends auditWithUpdate {
   useYn: number
 }
 
+export interface location extends auditWithUpdate {
+  locationNo: number
+  locationName: string
+  useYn: number
+}
+
 export interface meet extends auditWithUpdate {
   meetNo: number
   meetDay: string
   meetTime: string
-  location: string
+  locationNo: number
+  winMemberNo: number
   endYn: number
 }
 
@@ -38,6 +45,7 @@ export interface game extends auditWithUpdate {
   returnScore: number
   okaPoint: number
   umaPoint: number
+  yakumanMemberNo: number
   comment: string
   endYn: number
 }

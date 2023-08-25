@@ -28,7 +28,7 @@ $(document).ready(function() {
                 data: 'meetDay',
                 render: function (data, type) {
                     if (type === 'display') {
-                        return data.substr(0, 4) + '-' + data.substr(4, 2) + '-' + data.substr(6, 2);
+                        return data;
                     }
 
                     return data;
@@ -38,17 +38,18 @@ $(document).ready(function() {
                 data: 'meetTime',
                 render: function (data, type) {
                     if (type === 'display') {
-                        return data.substr(0, 2) + ':' + data.substr(2, 2);
+                        return data;
                     }
 
                     return data;
                 },
             },
-            { data: 'location' },
+            { data: 'locationName' },
             {
                 data: 'memberList',
                 render: '[, ].memberName'
             },
+            { data: 'winMemberName' },
             {
                 data: 'endYn',
                 render: function (data, type) {
