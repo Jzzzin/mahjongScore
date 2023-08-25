@@ -12,7 +12,7 @@ export default compose([
   logger(),
   parser(),
   koaStatic(),
-  jwtMiddleware,
+  // jwtMiddleware,
   router.routes(),
   router.allowedMethods()
 ])

@@ -9,13 +9,12 @@ const logger_1 = __importDefault(require("./logger"));
 const parser_1 = __importDefault(require("./parser"));
 const router_1 = __importDefault(require("./router"));
 const static_1 = __importDefault(require("./static"));
-const jwt_1 = __importDefault(require("./jwt"));
 exports.default = (0, koa_compose_1.default)([
     (0, cors_1.default)(),
     (0, logger_1.default)(),
     (0, parser_1.default)(),
     (0, static_1.default)(),
-    jwt_1.default,
+    // jwtMiddleware,
     router_1.default.routes(),
     router_1.default.allowedMethods()
 ]);
