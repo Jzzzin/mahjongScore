@@ -427,6 +427,7 @@ export async function findGameList(filter:FindGameFilter): Promise<GameData[]> {
            game.end_yn                      AS endYn
     FROM game game
         LEFT JOIN meet meet ON game.meet_no = meet.meet_no
+        LEFT JOIN member member ON game.yakuman_member_no = member.member_no
     ${search && `WHERE ${search}`}
     ${sort}
   `
