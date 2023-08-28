@@ -8,6 +8,8 @@ export interface FindMemberFilter extends Filter<FindMemberFilterName> {
 export interface MemberData {
   memberNo: number
   memberName: string
+  meetWinCnt: number
+  yakumanCnt: number
   useYn: number
   createdDate: string
 }

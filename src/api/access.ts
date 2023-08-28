@@ -42,10 +42,12 @@ export async function findMemberList(filter:FindMemberFilter): Promise<MemberDat
   const sort = getSortQuery(filter, 'member_no')
 
   const sql = `
-    SELECT member_no                    AS memberNo,
-           member_name                  AS memberName,
-           use_yn                       AS useYn,
-           CAST(created_date AS CHAR)   AS createdDate
+    SELECT member_no                                                                            AS memberNo,
+           member_name                                                                          AS memberName,
+           (SELECT COUNT(meet_no) FROM meet WHERE meet.win_member_no = member.member_no)        AS meetWinCnt,
+           (SELECT COUNT(game_no) FROM game WHERE game.yakuman_member_no = member.member_no)    AS yakumanCnt,
+           use_yn                                                                               AS useYn,
+           CAST(created_date AS CHAR)                                                           AS createdDate
     FROM member
     WHERE use_yn = '1'
     ${search && `AND ${search}`}
@@ -59,10 +61,12 @@ export async function findMemberList(filter:FindMemberFilter): Promise<MemberDat
 
 export async function findMember(memberNo: number): Promise<MemberData> {
   const sql = `
-    SELECT member_no                    AS memberNo,
-           member_name                  AS memberName,
-           use_yn                       AS useYn,
-           CAST(created_date AS CHAR)   AS createdDate
+    SELECT member_no                                                                            AS memberNo,
+           member_name                                                                          AS memberName,
+           (SELECT COUNT(meet_no) FROM meet WHERE meet.win_member_no = member.member_no)        AS meetWinCnt,
+           (SELECT COUNT(game_no) FROM game WHERE game.yakuman_member_no = member.member_no)    AS yakumanCnt,
+           use_yn                                                                               AS useYn,
+           CAST(created_date AS CHAR)                                                           AS createdDate
     FROM member
     WHERE member_no = '${memberNo}'
   `
