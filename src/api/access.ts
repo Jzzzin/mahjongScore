@@ -192,8 +192,8 @@ export async function findMeetCount(filter:FindMeetFilter): Promise<CountData[]>
 
   const sql = `
     SELECT count(*)
-    FROM meet meet
-        LEFT JOIN location location ON meet.location_no = location.location_no
+    FROM meet
+        LEFT JOIN location ON meet.location_no = location.location_no
     ${searchParam && `WHERE ${searchParam}`}
   `
   const [data] = await DB_MAHJONG_SCORE.query(sql)
@@ -216,9 +216,9 @@ export async function findMeetList(filter:FindMeetFilter): Promise<MeetData[]> {
            meet.win_member_no               AS winMemberNo,
            member.member_name               AS winMemberName,
            meet.end_yn                      AS endYn
-    FROM meet meet
-        LEFT JOIN location location ON meet.location_no = location.location_no
-        LEFT JOIN member member ON meet.win_member_no = member.member_no
+    FROM meet
+        LEFT JOIN location ON meet.location_no = location.location_no
+        LEFT JOIN member ON meet.win_member_no = member.member_no
     ${searchParam && `WHERE ${searchParam}`}
     ${sort}
   `
@@ -235,7 +235,7 @@ export async function findMeetMemberMapList(): Promise<MeetMemberMapData[]> {
            member.member_name           AS memberName,
            map.attend_yn                AS attendYn
     FROM meet_member_map map
-        LEFT JOIN member member ON map.member_no = member.member_no
+        LEFT JOIN member ON map.member_no = member.member_no
     WHERE map.attend_yn = '1'
   `
   console.log(sql)
@@ -263,9 +263,9 @@ export async function findMeetWithMember(meetNo: number): Promise<MeetWithMember
            map.member_no                    AS memberNo,
            mapMember.member_name            AS memberName,
            map.attend_yn                    AS attendYn
-    FROM meet meet
-        LEFT JOIN location location ON meet.location_no = location.location_no
-        LEFT JOIN member member ON meet.win_member_no = member.member_no
+    FROM meet
+        LEFT JOIN location ON meet.location_no = location.location_no
+        LEFT JOIN member ON meet.win_member_no = member.member_no
         LEFT JOIN meet_member_map map ON meet.meet_no = map.meet_no
         LEFT JOIN member mapMember ON map.member_no = mapMember.member_no
     WHERE meet.meet_no = '${meetNo}'
@@ -377,6 +377,34 @@ export async function updateMeet(param: MeetParam): Promise<any> {
   }
 }
 
+interface WinMemberData {
+  meetNo: number
+  memberNo: number
+  point: number
+}
+
+export async function getMeetWinMember(meetNo: number): Promise<number> {
+  const sql = `
+    SELECT meet.meet_no         AS meetNo,
+           member.member_no     AS memeberNo,
+           SUM(map.point)       AS point
+    FROM game_member_map map
+        LEFT JOIN game ON game.game_no = map.game_no
+        LEFT JOIN meet ON meet.meet_no = game.meet_no
+        LEFT JOIN member ON member.member_no = map.member_no
+    WHERE game.end_yn = '1'
+      AND meet.meet_no = '${meetNo}'
+    GROUP BY map.member_no
+    ORDER BY point DESC
+    LIMIT 1
+  `
+  console.log(sql)
+
+  const [data] = await DB_MAHJONG_SCORE.query(sql)
+  const result = data as WinMemberData[]
+  return result.pop()?.memberNo ?? 0
+}
+
 export async function updateMeetWinMember(param: MeetWinMemberParam): Promise<any> {
   const sql = `
     UPDATE meet
@@ -399,8 +427,8 @@ export async function findGameCount(filter:FindGameFilter): Promise<CountData[]>
 
   const sql = `
     SELECT count(*)
-    FROM game game
-        LEFT JOIN meet meet ON game.meet_no = meet.meet_no
+    FROM game
+        LEFT JOIN meet ON game.meet_no = meet.meet_no
     ${search && `WHERE ${search}`}
   `
   const [data] = await DB_MAHJONG_SCORE.query(sql)
@@ -428,9 +456,9 @@ export async function findGameList(filter:FindGameFilter): Promise<GameData[]> {
            member.member_name               AS yakumanMemberName,
            game.comment                     AS comment,
            game.end_yn                      AS endYn
-    FROM game game
-        LEFT JOIN meet meet ON game.meet_no = meet.meet_no
-        LEFT JOIN member member ON game.yakuman_member_no = member.member_no
+    FROM game
+        LEFT JOIN meet ON game.meet_no = meet.meet_no
+        LEFT JOIN member ON game.yakuman_member_no = member.member_no
     ${search && `WHERE ${search}`}
     ${sort}
   `
@@ -450,7 +478,7 @@ export async function findGameMemberMapList(): Promise<GameMemberMapData[]> {
            map.rank                     AS 'rank',
            map.point                    AS point
     FROM game_member_map map
-        LEFT JOIN member member ON map.member_no = member.member_no
+        LEFT JOIN member ON map.member_no = member.member_no
     ORDER BY map.game_no, map.score DESC
   `
   console.log(sql)
@@ -486,12 +514,12 @@ export async function findGameWithMember(gameNo: number): Promise<GameWithMember
            member.member_name               AS memberName,
            IFNULL(gameMap.member_no, 0)     AS gameMemberNo,
            IFNULL(gameMap.score, 0)         AS gameMemberScore
-    FROM game game
-        LEFT JOIN meet meet ON game.meet_no = meet.meet_no
+    FROM game
+        LEFT JOIN meet ON game.meet_no = meet.meet_no
         LEFT JOIN member gameMember ON game.yakuman_member_no = gameMember.member_no
         LEFT JOIN meet_member_map meetMap ON game.meet_no = meetMap.meet_no AND meetMap.attend_yn = '1'
         LEFT JOIN game_member_map gameMap ON game.game_no = gameMap.game_no AND meetMap.member_no = gameMap.member_no
-        LEFT JOIN member member ON meetMap.member_no = member.member_no
+        LEFT JOIN member ON meetMap.member_no = member.member_no
     WHERE game.game_no = '${gameNo}'
   `
   console.log(sql)
@@ -509,8 +537,8 @@ export async function findGameNumber(meetNo: number): Promise<GameNumberData> {
   const sql = `
     SELECT CAST(COALESCE(MAX(game.game_number), '') AS CHAR)    AS maxGameNumber,
            CAST(meet.meet_day AS CHAR)                          AS meetDay
-    FROM meet meet
-        LEFT JOIN game game ON game.meet_no = meet.meet_no
+    FROM meet
+        LEFT JOIN game ON game.meet_no = meet.meet_no
     WHERE meet.meet_no = '${meetNo}'
     GROUP BY meet.meet_no
   `
@@ -649,7 +677,7 @@ export interface UpdateGameMemberMapParam extends GameMemberParam {
 export async function updateGameMemberMap(param: UpdateGameMemberMapParam): Promise<any> {
   const sql = `
     UPDATE game_member_map map
-        LEFT JOIN game game ON map.game_no = game.game_no
+        LEFT JOIN game ON map.game_no = game.game_no
     SET map.position = '${param.position}',
         map.score = '${param.score}',
         map.rank = '${param.rank}',
@@ -691,7 +719,7 @@ export async function findGameMemberMapListForUpdate(gameNo: number): Promise<Ga
            game.return_score        AS returnScore,
            game.oka_point           AS okaPoint,
            game.uma_point           AS umaPoint
-    FROM game game
+    FROM game
         LEFT JOIN game_member_map map ON game.game_no = map.game_no
     WHERE game.game_no = '${gameNo}'
     ORDER BY game.game_no, map.score DESC
@@ -760,9 +788,9 @@ export async function findRankList(filter:FindRankFilter): Promise<RankData[]> {
            COUNT(IF(map.rank=4, true, null))                                                    AS forthCnt,
            COUNT(map.game_no)                                                                   AS totalGameCnt
     FROM game_member_map map
-        LEFT JOIN game game ON game.game_no = map.game_no
-        LEFT JOIN meet meet ON meet.meet_no = game.meet_no
-        LEFT JOIN member member ON member.member_no = map.member_no
+        LEFT JOIN game ON game.game_no = map.game_no
+        LEFT JOIN meet ON meet.meet_no = game.meet_no
+        LEFT JOIN member ON member.member_no = map.member_no
     WHERE game.end_yn = '1'
     ${searchParam && `AND ${searchParam}`}
     GROUP BY map.member_no

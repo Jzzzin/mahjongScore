@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findRankList = exports.findRankCount = exports.findGameMemberMapListForUpdate = exports.updateGameMemberMap = exports.sortGameNumber = exports.updateGame = exports.createGameMemberMap = exports.deleteGameMemberMap = exports.createGame = exports.findGameNumber = exports.findGameWithMember = exports.findGameMemberMapList = exports.findGameList = exports.findGameCount = exports.updateMeetWinMember = exports.updateMeet = exports.updateMeetMemberMap = exports.createMeetMemberMap = exports.createMeet = exports.findMeetForValidate = exports.findMeetWithMember = exports.findMeetMemberMapList = exports.findMeetList = exports.findMeetCount = exports.findLocationList = exports.deleteMeetMemberMapByMember = exports.updateMember = exports.createMeetMemberMapByMember = exports.createMember = exports.findMemberForValidate = exports.findMember = exports.findMemberList = exports.findMemberCount = void 0;
+exports.findRankList = exports.findRankCount = exports.findGameMemberMapListForUpdate = exports.updateGameMemberMap = exports.sortGameNumber = exports.updateGame = exports.createGameMemberMap = exports.deleteGameMemberMap = exports.createGame = exports.findGameNumber = exports.findGameWithMember = exports.findGameMemberMapList = exports.findGameList = exports.findGameCount = exports.updateMeetWinMember = exports.getMeetWinMember = exports.updateMeet = exports.updateMeetMemberMap = exports.createMeetMemberMap = exports.createMeet = exports.findMeetForValidate = exports.findMeetWithMember = exports.findMeetMemberMapList = exports.findMeetList = exports.findMeetCount = exports.findLocationList = exports.deleteMeetMemberMapByMember = exports.updateMember = exports.createMeetMemberMapByMember = exports.createMember = exports.findMemberForValidate = exports.findMember = exports.findMemberList = exports.findMemberCount = void 0;
 const database_1 = require("../database");
 const util_1 = require("./util");
 async function findMemberCount(filter) {
@@ -21,10 +21,12 @@ async function findMemberList(filter) {
     const search = (0, util_1.getSearchQuery)(filter);
     const sort = (0, util_1.getSortQuery)(filter, 'member_no');
     const sql = `
-    SELECT member_no                    AS memberNo,
-           member_name                  AS memberName,
-           use_yn                       AS useYn,
-           CAST(created_date AS CHAR)   AS createdDate
+    SELECT member_no                                                                            AS memberNo,
+           member_name                                                                          AS memberName,
+           (SELECT COUNT(meet_no) FROM meet WHERE meet.win_member_no = member.member_no)        AS meetWinCnt,
+           (SELECT COUNT(game_no) FROM game WHERE game.yakuman_member_no = member.member_no)    AS yakumanCnt,
+           use_yn                                                                               AS useYn,
+           CAST(created_date AS CHAR)                                                           AS createdDate
     FROM member
     WHERE use_yn = '1'
     ${search && `AND ${search}`}
@@ -37,10 +39,12 @@ async function findMemberList(filter) {
 exports.findMemberList = findMemberList;
 async function findMember(memberNo) {
     const sql = `
-    SELECT member_no                    AS memberNo,
-           member_name                  AS memberName,
-           use_yn                       AS useYn,
-           CAST(created_date AS CHAR)   AS createdDate
+    SELECT member_no                                                                            AS memberNo,
+           member_name                                                                          AS memberName,
+           (SELECT COUNT(meet_no) FROM meet WHERE meet.win_member_no = member.member_no)        AS meetWinCnt,
+           (SELECT COUNT(game_no) FROM game WHERE game.yakuman_member_no = member.member_no)    AS yakumanCnt,
+           use_yn                                                                               AS useYn,
+           CAST(created_date AS CHAR)                                                           AS createdDate
     FROM member
     WHERE member_no = '${memberNo}'
   `;
@@ -317,6 +321,28 @@ async function updateMeet(param) {
     }
 }
 exports.updateMeet = updateMeet;
+async function getMeetWinMember(meetNo) {
+    var _a, _b;
+    const sql = `
+    SELECT meet.meet_no         AS meetNo,
+           member.member_no     AS memeberNo,
+           SUM(map.point)       AS point
+    FROM game_member_map map
+        LEFT JOIN game game ON game.game_no = map.game_no
+        LEFT JOIN meet meet ON meet.meet_no = game.meet_no
+        LEFT JOIN member member ON member.member_no = map.member_no
+    WHERE game.end_yn = '1'
+      AND meet.meet_no = '${meetNo}'
+    GROUP BY map.member_no
+    ORDER BY point DESC
+    LIMIT 1
+  `;
+    console.log(sql);
+    const [data] = await database_1.DB_MAHJONG_SCORE.query(sql);
+    const result = data;
+    return (_b = (_a = result.pop()) === null || _a === void 0 ? void 0 : _a.memberNo) !== null && _b !== void 0 ? _b : 0;
+}
+exports.getMeetWinMember = getMeetWinMember;
 async function updateMeetWinMember(param) {
     const sql = `
     UPDATE meet
@@ -609,7 +635,6 @@ async function findRankCount(filter) {
            GROUP BY map.member_no
          ) stat
   `;
-    console.log(sql);
     const [data] = await database_1.DB_MAHJONG_SCORE.query(sql);
     return data;
 }
