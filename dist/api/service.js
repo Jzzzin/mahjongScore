@@ -246,7 +246,6 @@ async function updateGameMemberMap(ctx, param) {
         const updateParams = [];
         const gameMemberMapData = await access.findGameMemberMapListForUpdate(param.gameNo);
         gameMemberMapData.forEach((map, idx) => {
-            var _a;
             const rank = idx + 1;
             const okaPoint = rank === 1 ? map.okaPoint : 0;
             let umaPoint = 0;
@@ -268,7 +267,7 @@ async function updateGameMemberMap(ctx, param) {
             const updateParam = {
                 gameNo: map.gameNo,
                 memberNo: map.memberNo,
-                position: (_a = map.position) !== null && _a !== void 0 ? _a : '',
+                position: '',
                 score: map.score,
                 rank: rank,
                 point: point

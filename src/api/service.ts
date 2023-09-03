@@ -290,7 +290,7 @@ export async function updateGameMemberMap(ctx: Context, param: GameMemberParam) 
       const updateParam: UpdateGameMemberMapParam = {
         gameNo: map.gameNo,
         memberNo: map.memberNo,
-        position: map.position ?? '',
+        position: '',
         score: map.score,
         rank: rank,
         point: point
