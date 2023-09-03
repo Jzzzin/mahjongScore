@@ -209,6 +209,7 @@ export async function createGame(ctx: Context, param: GameParam) {
   const gameNumber = await access.findGameNumber(param.meetNo)
   const meetDay = gameNumber.meetDay.replace(/[^0-9]/g, '')
   const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : meetDay.concat('01')
+  const endYn = param.memberList[0].score !== 0 ? 1 : 0
 
   const createParam: CreateGameParam = {
     meetNo: param.meetNo,
@@ -219,7 +220,8 @@ export async function createGame(ctx: Context, param: GameParam) {
     returnScore: CONST.RETURN_SCORE[param.gameMemberCount],
     okaPoint: (CONST.RETURN_SCORE[param.gameMemberCount] - CONST.START_SCORE[param.gameMemberCount]) * param.gameMemberCount / 1000,
     umaPoint: CONST.UMA_POINT[param.gameType],
-    comment: param.comment
+    comment: param.comment,
+    endYn : endYn
   }
 
 
@@ -240,6 +242,7 @@ export async function updateGame(ctx: Context, param: GameParam) {
   const startScore = CONST.START_SCORE[param.gameMemberCount]
   const returnScore = CONST.RETURN_SCORE[param.gameMemberCount]
   const umaPoint = CONST.UMA_POINT[param.gameType]
+  param.endYn = param.memberList[0].score !== 0 ? 1 : 0
 
   const result = await access.updateGame({ ...param, gameNumber: newGameNumber, startScore: startScore, returnScore: returnScore, umaPoint: umaPoint })
 
@@ -283,7 +286,7 @@ export async function updateGameMemberMap(ctx: Context, param: GameMemberParam) 
       const updateParam: UpdateGameMemberMapParam = {
         gameNo: map.gameNo,
         memberNo: map.memberNo,
-        position: map.position,
+        position: map.position ?? '',
         score: map.score,
         rank: rank,
         point: point

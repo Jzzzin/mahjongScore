@@ -193,6 +193,7 @@ async function createGame(ctx, param) {
     const gameNumber = await access.findGameNumber(param.meetNo);
     const meetDay = gameNumber.meetDay.replace(/[^0-9]/g, '');
     const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : meetDay.concat('01');
+    const endYn = param.memberList[0].score !== 0 ? 1 : 0;
     const createParam = {
         meetNo: param.meetNo,
         gameNumber: newGameNumber,
@@ -202,7 +203,8 @@ async function createGame(ctx, param) {
         returnScore: CONST.RETURN_SCORE[param.gameMemberCount],
         okaPoint: (CONST.RETURN_SCORE[param.gameMemberCount] - CONST.START_SCORE[param.gameMemberCount]) * param.gameMemberCount / 1000,
         umaPoint: CONST.UMA_POINT[param.gameType],
-        comment: param.comment
+        comment: param.comment,
+        endYn: endYn
     };
     const createResult = await access.createGame(createParam);
     result = createResult.insertId;
@@ -220,6 +222,7 @@ async function updateGame(ctx, param) {
     const startScore = CONST.START_SCORE[param.gameMemberCount];
     const returnScore = CONST.RETURN_SCORE[param.gameMemberCount];
     const umaPoint = CONST.UMA_POINT[param.gameType];
+    param.endYn = param.memberList[0].score !== 0 ? 1 : 0;
     const result = await access.updateGame({ ...param, gameNumber: newGameNumber, startScore: startScore, returnScore: returnScore, umaPoint: umaPoint });
     if (result && result.affectedRows > 0) {
         await access.sortGameNumber({ gameNumber: param.orgGameNumber, meetNo: param.orgMeetNo });
@@ -239,6 +242,7 @@ async function updateGameMemberMap(ctx, param) {
         const updateParams = [];
         const gameMemberMapData = await access.findGameMemberMapListForUpdate(param.gameNo);
         gameMemberMapData.forEach((map, idx) => {
+            var _a;
             const rank = idx + 1;
             const okaPoint = rank === 1 ? map.okaPoint : 0;
             let umaPoint = 0;
@@ -260,7 +264,7 @@ async function updateGameMemberMap(ctx, param) {
             const updateParam = {
                 gameNo: map.gameNo,
                 memberNo: map.memberNo,
-                position: map.position,
+                position: (_a = map.position) !== null && _a !== void 0 ? _a : '',
                 score: map.score,
                 rank: rank,
                 point: point

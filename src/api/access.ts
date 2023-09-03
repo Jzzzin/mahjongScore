@@ -527,11 +527,12 @@ type GameName =
 | 'okaPoint'
 | 'umaPoint'
 | 'comment'
+| 'endYn'
 export type CreateGameParam = Pick<MahjongScore.game, GameName>
 export async function createGame(param: CreateGameParam): Promise<any> {
   const sql = `
-    INSERT INTO game (meet_no, game_number, game_member_count, game_type, start_score, return_score, oka_point, uma_point, comment, created_date, modified_date)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, now(), now())
+    INSERT INTO game (meet_no, game_number, game_member_count, game_type, start_score, return_score, oka_point, uma_point, comment, end_yn, created_date, modified_date)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), now())
   `
   console.log(sql)
 
@@ -600,9 +601,9 @@ export async function updateGame(param: UpdateGameParam): Promise<any> {
         uma_point = '${param.umaPoint}',
         yakuman_member_no = '${param.yakumanMemberNo}',
         comment = '${param.comment}',
+        end_yn = '${param.endYn}',
         modified_date = now()
     WHERE game_no = '${param.gameNo}'
-      AND end_yn = '0'
   `
   console.log(sql)
 

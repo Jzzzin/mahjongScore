@@ -445,8 +445,8 @@ async function findGameNumber(meetNo) {
 exports.findGameNumber = findGameNumber;
 async function createGame(param) {
     const sql = `
-    INSERT INTO game (meet_no, game_number, game_member_count, game_type, start_score, return_score, oka_point, uma_point, comment, created_date, modified_date)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, now(), now())
+    INSERT INTO game (meet_no, game_number, game_member_count, game_type, start_score, return_score, oka_point, uma_point, comment, end_yn, created_date, modified_date)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), now())
   `;
     console.log(sql);
     try {
@@ -501,9 +501,9 @@ async function updateGame(param) {
         uma_point = '${param.umaPoint}',
         yakuman_member_no = '${param.yakumanMemberNo}',
         comment = '${param.comment}',
+        end_yn = '${param.endYn}',
         modified_date = now()
     WHERE game_no = '${param.gameNo}'
-      AND end_yn = '0'
   `;
     console.log(sql);
     try {
@@ -609,7 +609,6 @@ async function findRankCount(filter) {
            GROUP BY map.member_no
          ) stat
   `;
-    console.log(sql);
     const [data] = await database_1.DB_MAHJONG_SCORE.query(sql);
     return data;
 }
