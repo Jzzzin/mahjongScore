@@ -148,6 +148,10 @@ export async function updateMeet(ctx: Context, param: MeetParam) {
   if (duplicated === 0 || duplicated === Number(param.meetNo)) {
     const updateResult = await access.updateMeet(param)
     if (updateResult) await access.updateMeetMemberMap({ meetNo: param.meetNo, memberNoList: param.memberNoList })
+    if (param.endYn === 1) {
+      const winMemberNo = await access.getMeetWinMember(param.meetNo)
+      await access.updateMeetWinMember({ meetNo: param.meetNo, winMemberNo: winMemberNo })
+    }
 
     result = updateResult.affectedRows
   }
