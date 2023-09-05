@@ -32,7 +32,6 @@ $(document).ready(function() {
             {
                 data: 'meetDay'
             },
-            { data: 'gameNumber' },
             {
                 data: 'gameMemberCount',
                 render: function (data, type, row) {
@@ -203,7 +202,6 @@ $(document).ready(function() {
                 data: 'endYn',
                 render: function (data, type) {
                     if (type === 'display') {
-                        console.log(data);
                         if (String(data) === '1') return '종료';
                         else return '진행';
                     }
