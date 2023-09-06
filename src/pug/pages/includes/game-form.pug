@@ -4,68 +4,68 @@ form#meetForm(name='form')
     input#inputMemberList(type='hidden')
     input#inputMeetNo(type='hidden')
     .row.mb-3
-        p.mb-2#meetDayListName 모임일자
-        d#meetDiv
-            select#meetList.input-el
-    .row.mb-3(style='display:none;')
+        .form-floating.mb-3.mb-md-0
+        p#meetDayListName 모임일자
+            d#meetDiv
+                select#meetList
+    .row.mb-3
+        .form-floating.mb-3
             input#inputOrgGameNumber.form-control(type='text', disabled)
             label(for='inputOrgGameNumber') 게임번호
     .row.mb-3
-        p.mb-2#gameMemberCountName 참여인원
-        div
+        .form-floating.mb-3.mb-md-0
+        p#gameMemberCountName 참여인원
             input#inputGameMemberCount1(type='radio', name='gameMemberCount', value='3')
             label(for='inputGameMemberCount1') 3인
             input#inputGameMemberCount2(type='radio', name='gameMemberCount', value='4')
             label(for='inputGameMemberCount2') 4인
     .row.mb-3
-        p.mb-2#gameTypeName 게임유형
-        div 
+        .form-floating.mb-3.mb-md-0
+        p#gameTypeName 게임유형
             input#inputGameType1(type='radio', name='gameType', value='HALF')
             label(for='inputGameType1') 반장전
             input#inputGameType2(type='radio', name='gameType', value='EAST')
             label(for='inputGameType2') 동장전
     .row.mb-3
-        p.mb-2#memberListName 참여자
-        #memberDiv(style='width: 125px; height: 180px; max-height: 180px; overflow-y: auto;')
-            ul#memberList(style='list-style:none; padding: unset; display: flex; flex-wrap: wrap;')
+        .form-floating.mb-3
+            input#inputStartScore.form-control(type='text', disabled)
+            label(for='inputStartScore') 시작점수
+    .row.mb-3
+        .form-floating.mb-3
+            input#inputReturnScore.form-control(type='text', disabled)
+            label(for='inputReturnScore') 반환점수
+    .row.mb-3
+        .form-floating.mb-3
+            input#inputOkaPoint.form-control(type='text', disabled)
+            label(for='inputOkaPoint') 오카
     .row.mb-3
         .form-floating.mb-3.mb-md-0
-        p#userResultName 점수
-        #resultDiv
-            ul
+        p#umaPointName 우마
+            input#inputUmaPoint1(type='radio', name='umaPoint', value='5', disabled)
+            label(for='inputUmaPoint1') 5(10)
+            input#inputUmaPoint2(type='radio', name='umaPoint', value='10', disabled)
+            label(for='inputUmaPoint2') 10(20)
     .row.mb-3
-        .form-floating(style='display:flex; flex-wrap:wrap;')
-            div
-                p.score-type 시작점수
-                    span#inputStartScore
-            div
-                p.score-type 반환점수
-                    span#inputReturnScore
-            div
-                p.score-type 오카
-                    span#inputOkaPoint
-            div
-                p.score-type 우마
-                    span#umaPoint
+        .form-floating.mb-3
+        p#memberListName 참여자
+            d#memberDiv
+                ul#memberList(style='list-style:none')
     .row.mb-3
-        .form-floating
+        .form-floating.mb-3
             textarea#inputComment.form-control
             label(for='inputComment') 메모
-    .mb-0
+    .row.mb-3
+        .form-floating.mb-3.mb-md-0
+        p#endYnName 종료 여부
+            input#inputEndYn1(type='radio', name='endYn', value='0', disabled)
+            label(for='inputEndYn1') 진행중
+            input#inputEndYn2(type='radio', name='endYn', value='1', disabled)
+            label(for='inputEndYn2') 종료
+    .mt-4.mb-0
         .d-grid
-            .row.mb-2
-                .mb-3
-                    a.btn.btn-secondary.btn-block(
-                        href='game.html'
-                        style='margin-right:10px;'
-                        ) 목록으로
+            .row.mb-3
+                .form-floating.mb-3
                     a.btn.btn-primary.btn-block#submit #{buttonName}
-                    
-style(type="text/css" scoped).
-    #resultDiv li { display : flex; list-style: none; margin-left: -30px; margin-bottom: 15px; }
-    #resultDiv li div:first-child { margin-right: 15px; }
-    .row p { font-weight: bold; }
-    .row p label { font-weight: 500;}
-    .score-type span { font-weight: normal !important; margin-right: 30px; color: darkcyan;}
-    .input-el { width: 150px; height: 30px; border: 1px solid #ddd; border-radius: 4px;}
-    
+            .row.mb-3
+                .form-floating.mb-3
+                    a(href='game.html') 목록으로
