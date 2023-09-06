@@ -3,26 +3,35 @@ form#meetForm(name='form')
     input#inputMemberList(type='hidden')
     input#inputLocationNo(type='hidden')
     .row.mb-3
-        .form-floating.mb-3.mb-md-0
-            input#inputMeetDay.form-control(type='date')
-            label(for='inputMeetDay') 모임일자
+        p.mb-2 모임일자
+        input#inputMeetDay.form-control.input-el(
+            type='date'
+            style='margin-left:10px;'
+            )
+        
     .row.mb-3
-        .form-floating.mb-3
-            input#inputMeetTime.form-control(type='time')
-            label(for='inputMeetTime') 모임시각
+        p.mb-2 모임시각
+        input#inputMeetTime.form-control.input-el(
+            type='time'
+            style='margin-left:10px;'
+            )
+         
     .row.mb-3
-        .form-floating.mb-3
-        p#locationListName 장소
-            d#locationDiv
-                select#locationList
+        p.mb-2#locationListName 장소
+        d#locationDiv
+            select#locationList.input-el
+    //- .row.mb-3
+    //-     .form-floating.mb-3
+    //-     p#memberListName 참여자
+    //-         d#memberDiv
+    //-             ul#memberList(style='list-style:none')
     .row.mb-3
-        .form-floating.mb-3
-        p#memberListName 참여자
-            d#memberDiv
-                ul#memberList(style='list-style:none')
+        p.mb-2#memberListName 참여자
+        #memberDiv(style='width: 125px; height: 180px; max-height: 180px; overflow-y: auto;')
+            ul#memberList(style='list-style:none; padding: unset; display: flex; flex-wrap: wrap;')
+        #attendMember.mt-3(style='display:flex; flex-wrap: wrap;')
     .row.mb-3
-        .form-floating.mb-3.mb-md-0
-        p#endYnName 종료 여부
+        p.mb-2#endYnName 종료 여부
             input#inputEndYn1(type='radio', name='endYn', value='0')
             label(for='inputEndYn1') 진행중
             input#inputEndYn2(type='radio', name='endYn', value='1')
@@ -35,3 +44,6 @@ form#meetForm(name='form')
             .row.mb-3
                 .form-floating.mb-3
                     a(href='meet.html') 목록으로
+
+style(type="text/css" scoped).
+    .input-el { width: 200px; height: 30px; border: 1px solid #ddd; border-radius: 4px;}

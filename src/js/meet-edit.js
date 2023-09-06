@@ -79,7 +79,7 @@ $(document).ready(function() {
                     $('#inputEndYn2').prop('checked', true);
                 data.memberList.forEach(value => {
                     const id = value.memberName + value.memberNo;
-                    const li = $('<li style="display: inline; padding: 10px"><input type="checkbox" name="memberList" id="' + id + '" value="' + value.memberNo + '"/>' +
+                    const li = $('<li style="display: inline; padding: 2px 3px"><input type="checkbox" name="memberList" id="' + id + '" value="' + value.memberNo + '"/>' +
                       '<label for="' + id + '"></label></li>');
                     li.find('label').text(value.memberName);
                     if (value.attendYn === 1)
