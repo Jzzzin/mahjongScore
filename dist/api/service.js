@@ -141,7 +141,7 @@ async function updateMeet(ctx, param) {
         const updateResult = await access.updateMeet(param);
         if (updateResult)
             await access.updateMeetMemberMap({ meetNo: param.meetNo, memberNoList: param.memberNoList });
-        if (param.endYn === 1) {
+        if (String(param.endYn) === '1') {
             const winMemberNo = await access.getMeetWinMember(param.meetNo);
             await access.updateMeetWinMember({ meetNo: param.meetNo, winMemberNo: winMemberNo });
         }
@@ -239,8 +239,9 @@ async function updateGame(ctx, param) {
 }
 exports.updateGame = updateGame;
 async function updateGameMemberMap(ctx, param) {
-    var _a;
+    var _a, _b;
     ctx.log.info('*** Update Game Member Map Service Start ***');
+    param.position = (_a = param.position) !== null && _a !== void 0 ? _a : '';
     const result = await access.updateGameMemberMap({ ...param, rank: 0, point: 0 });
     if (result) {
         const updateParams = [];
@@ -267,7 +268,7 @@ async function updateGameMemberMap(ctx, param) {
             const updateParam = {
                 gameNo: map.gameNo,
                 memberNo: map.memberNo,
-                position: '',
+                position: map.position,
                 score: map.score,
                 rank: rank,
                 point: point
@@ -278,7 +279,7 @@ async function updateGameMemberMap(ctx, param) {
             for (const param of updateParams)
                 await access.updateGameMemberMap(param);
     }
-    return (_a = result.affectedRows) !== null && _a !== void 0 ? _a : 0;
+    return (_b = result.affectedRows) !== null && _b !== void 0 ? _b : 0;
 }
 exports.updateGameMemberMap = updateGameMemberMap;
 async function findRankList(ctx, filter) {

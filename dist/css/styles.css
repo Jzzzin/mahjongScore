@@ -11838,46 +11838,54 @@ body {
   }
 
   .rankTable td:nth-of-type(3):before {
-    content: "총 승점 : ";
+    content: "우승횟수 : ";
   }
 
   .rankTable td:nth-of-type(4):before {
-    content: "평균 승점 : ";
+    content: "역만횟수 : ";
   }
 
   .rankTable td:nth-of-type(5):before {
-    content: "- 승률 : ";
+    content: "총 승점 : ";
   }
 
   .rankTable td:nth-of-type(6):before {
-    content: "- 1,2위율 : ";
+    content: "평균 승점 : ";
   }
 
   .rankTable td:nth-of-type(7):before {
-    content: "- 4위율 : ";
+    content: "- 승률 : ";
   }
 
   .rankTable td:nth-of-type(8):before {
-    content: "- 승수 : ";
+    content: "- 1,2위율 : ";
   }
 
   .rankTable td:nth-of-type(9):before {
-    content: "- 2위 횟수 : ";
+    content: "- 4위율 : ";
   }
 
   .rankTable td:nth-of-type(10):before {
-    content: "- 3위 횟수 : ";
+    content: "- 승수 : ";
   }
 
   .rankTable td:nth-of-type(11):before {
-    content: "- 4위 횟수 : ";
+    content: "- 2위 횟수 : ";
   }
 
   .rankTable td:nth-of-type(12):before {
-    content: "순위율 : ";
+    content: "- 3위 횟수 : ";
   }
 
   .rankTable td:nth-of-type(13):before {
+    content: "- 4위 횟수 : ";
+  }
+
+  .rankTable td:nth-of-type(14):before {
+    content: "순위율 : ";
+  }
+
+  .rankTable td:nth-of-type(15):before {
     content: "총 국수 : ";
   }
 
@@ -11950,10 +11958,14 @@ body {
   }
 
   .meetTable td:nth-of-type(5):before {
-    content: "종료 여부 : ";
+    content: "우승자 : ";
   }
 
   .meetTable td:nth-of-type(6):before {
+    content: "종료 여부 : ";
+  }
+
+  .meetTable td:nth-of-type(7):before {
     content: "수정 : ";
   }
 
@@ -11962,10 +11974,18 @@ body {
   }
 
   .memberTable td:nth-of-type(2):before {
-    content: "등록일시 : ";
+    content: "우승횟수 : ";
   }
 
   .memberTable td:nth-of-type(3):before {
+    content: "역만횟수 : ";
+  }
+
+  .memberTable td:nth-of-type(4):before {
+    content: "등록일시 : ";
+  }
+
+  .memberTable td:nth-of-type(5):before {
     content: "수정 : ";
   }
 }

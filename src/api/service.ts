@@ -148,7 +148,7 @@ export async function updateMeet(ctx: Context, param: MeetParam) {
   if (duplicated === 0 || duplicated === Number(param.meetNo)) {
     const updateResult = await access.updateMeet(param)
     if (updateResult) await access.updateMeetMemberMap({ meetNo: param.meetNo, memberNoList: param.memberNoList })
-    if (param.endYn === 1) {
+    if (String(param.endYn) === '1') {
       const winMemberNo = await access.getMeetWinMember(param.meetNo)
       await access.updateMeetWinMember({ meetNo: param.meetNo, winMemberNo: winMemberNo })
     }
@@ -262,6 +262,7 @@ export async function updateGame(ctx: Context, param: GameParam) {
 export async function updateGameMemberMap(ctx: Context, param: GameMemberParam) {
   ctx.log.info('*** Update Game Member Map Service Start ***')
 
+  param.position = param.position ?? ''
   const result = await access.updateGameMemberMap({ ...param, rank: 0, point: 0 })
   if (result) {
     const updateParams: UpdateGameMemberMapParam[] = []
@@ -290,7 +291,7 @@ export async function updateGameMemberMap(ctx: Context, param: GameMemberParam) 
       const updateParam: UpdateGameMemberMapParam = {
         gameNo: map.gameNo,
         memberNo: map.memberNo,
-        position: '',
+        position: map.position,
         score: map.score,
         rank: rank,
         point: point

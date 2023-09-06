@@ -39,7 +39,6 @@ export async function findMemberList(filter:FindMemberFilter): Promise<MemberDat
   if (!filter.order_by && !filter.is_desc) filter.is_desc = 'N'
 
   const search = getSearchQuery(filter)
-  const sort = getSortQuery(filter, 'member_no')
 
   const sql = `
     SELECT member_no                                                                            AS memberNo,
@@ -51,7 +50,7 @@ export async function findMemberList(filter:FindMemberFilter): Promise<MemberDat
     FROM member
     WHERE use_yn = '1'
     ${search && `AND ${search}`}
-    ${sort}
+    ORDER BY meetWinCnt DESC, yakumanCnt DESC
   `
   console.log(sql)
 
@@ -386,7 +385,7 @@ interface WinMemberData {
 export async function getMeetWinMember(meetNo: number): Promise<number> {
   const sql = `
     SELECT meet.meet_no         AS meetNo,
-           member.member_no     AS memeberNo,
+           member.member_no     AS memberNo,
            SUM(map.point)       AS point
     FROM game_member_map map
         LEFT JOIN game ON game.game_no = map.game_no

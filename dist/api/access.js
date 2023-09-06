@@ -19,7 +19,6 @@ async function findMemberList(filter) {
     if (!filter.order_by && !filter.is_desc)
         filter.is_desc = 'N';
     const search = (0, util_1.getSearchQuery)(filter);
-    const sort = (0, util_1.getSortQuery)(filter, 'member_no');
     const sql = `
     SELECT member_no                                                                            AS memberNo,
            member_name                                                                          AS memberName,
@@ -30,7 +29,7 @@ async function findMemberList(filter) {
     FROM member
     WHERE use_yn = '1'
     ${search && `AND ${search}`}
-    ${sort}
+    ORDER BY meetWinCnt DESC, yakumanCnt DESC
   `;
     console.log(sql);
     const [data] = await database_1.DB_MAHJONG_SCORE.query(sql);
@@ -325,7 +324,7 @@ async function getMeetWinMember(meetNo) {
     var _a, _b;
     const sql = `
     SELECT meet.meet_no         AS meetNo,
-           member.member_no     AS memeberNo,
+           member.member_no     AS memberNo,
            SUM(map.point)       AS point
     FROM game_member_map map
         LEFT JOIN game ON game.game_no = map.game_no

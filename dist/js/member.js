@@ -24,9 +24,9 @@ $(document).ready(function() {
         lengthChange: false,
         columns: [
             { data: 'memberName' },
-            { data: 'meetWinCnt'},
-            { data: 'yakumanCnt'},
-            { data: 'createdDate'},
+            { data: 'meetWinCnt' },
+            { data: 'yakumanCnt' },
+            { data: 'createdDate' },
             {
                 targets: -1,
                 data: 'memberNo',
