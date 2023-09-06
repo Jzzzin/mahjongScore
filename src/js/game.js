@@ -48,6 +48,7 @@ $(document).ready(function() {
                 defaultContent: '',
                 visible: false,
                 searchable: false,
+                
             },
             {
                 data: 'memberList.0.memberName',
@@ -55,8 +56,7 @@ $(document).ready(function() {
                 render: function (data, type, row) {
                     if (type === 'display' && data) {
                         let link = 'game-result.html?gameNo=' + row.gameNo + '&memberNo=' + row.memberList[0].memberNo + '&name=' + data + '&position=' + row.memberList[0].position + '&score=' + row.memberList[0].score + '&rank=' + row.memberList[0].rank + '&point=' + row.memberList[0].point;
-
-                        return '<a href="' + link + '">' + data + '</a>';
+                        return '<div class="winner-block"><a href="' + link + '">' + data + '</a>' + '<img class="winner-star" src="../assets/img/yellow-star.svg" alt="winner star"/></div>';
                     }
 
                     return data;

@@ -49,7 +49,12 @@ $(document).ready(function() {
                 data: 'memberList',
                 render: '[, ].memberName'
             },
-            { data: 'winMemberName' },
+            { data: 'winMemberName',
+              render: function (data) {
+                    if (!!data) return '<div class="winner-block">' + data + '<img class="winner-crown" src="../assets/img/yellow-crown.svg" alt="winner star"/></div>';
+                    return data;
+                }
+            },
             {
                 data: 'endYn',
                 render: function (data, type) {

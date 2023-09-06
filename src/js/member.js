@@ -22,6 +22,7 @@ $(document).ready(function() {
         },
         searching: false,
         lengthChange: false,
+        order: [[1, 'ASC']],
         columns: [
             { data: 'memberName' },
             { data: 'meetWinCnt' },

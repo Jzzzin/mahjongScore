@@ -62,7 +62,12 @@ $(document).ready(function() {
                 lengthChange: false,
                 columns: [
                     { data: 'rank' },
-                    { data: 'memberName' },
+                    { data: 'memberName', 
+                      render: function (data, type, row, meta) {
+                        if (row.rank === 1) return '<div class="winner-block">' + data + '<img class="winner-crown" src="../assets/img/yellow-crown.svg" alt="winner star"/></div>';
+                        return data;
+                      }
+                    },
                     { data: 'meetWinCnt'},
                     { data: 'yakumanCnt'},
                     { data: 'totalPoint' },
