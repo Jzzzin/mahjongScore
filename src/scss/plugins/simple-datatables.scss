@@ -341,17 +341,19 @@ only screen and (max-width: 760px),
 
     .rankTable td:nth-of-type(1):before { content: "순위 : "; }
     .rankTable td:nth-of-type(2):before { content: "이름 : "; }
-    .rankTable td:nth-of-type(3):before { content: "총 승점 : "; }
-    .rankTable td:nth-of-type(4):before { content: "평균 승점 : "; }
-    .rankTable td:nth-of-type(5):before { content: "- 승률 : "; }
-    .rankTable td:nth-of-type(6):before { content: "- 1,2위율 : "; }
-    .rankTable td:nth-of-type(7):before { content: "- 4위율 : "; }
-    .rankTable td:nth-of-type(8):before { content: "- 승수 : "; }
-    .rankTable td:nth-of-type(9):before { content: "- 2위 횟수 : "; }
-    .rankTable td:nth-of-type(10):before { content: "- 3위 횟수 : "; }
-    .rankTable td:nth-of-type(11):before { content: "- 4위 횟수 : "; }
-    .rankTable td:nth-of-type(12):before { content: "순위율 : "; }
-    .rankTable td:nth-of-type(13):before { content: "총 국수 : "; }
+    .rankTable td:nth-of-type(3):before { content: "우승횟수 : "; }
+    .rankTable td:nth-of-type(4):before { content: "역만횟수 : "; }
+    .rankTable td:nth-of-type(5):before { content: "총 승점 : "; }
+    .rankTable td:nth-of-type(6):before { content: "평균 승점 : "; }
+    .rankTable td:nth-of-type(7):before { content: "- 승률 : "; }
+    .rankTable td:nth-of-type(8):before { content: "- 1,2위율 : "; }
+    .rankTable td:nth-of-type(9):before { content: "- 4위율 : "; }
+    .rankTable td:nth-of-type(10):before { content: "- 승수 : "; }
+    .rankTable td:nth-of-type(11):before { content: "- 2위 횟수 : "; }
+    .rankTable td:nth-of-type(12):before { content: "- 3위 횟수 : "; }
+    .rankTable td:nth-of-type(13):before { content: "- 4위 횟수 : "; }
+    .rankTable td:nth-of-type(14):before { content: "순위율 : "; }
+    .rankTable td:nth-of-type(15):before { content: "총 국수 : "; }
 
     .gameTable td:nth-of-type(1):before { content: "모임 일자 : "; }
     .gameTable td:nth-of-type(2):before { content: "게임 번호 : "; }
@@ -371,10 +373,13 @@ only screen and (max-width: 760px),
     .meetTable td:nth-of-type(2):before { content: "모임시각 : "; }
     .meetTable td:nth-of-type(3):before { content: "장소 : "; }
     .meetTable td:nth-of-type(4):before { content: "참여자 : "; }
-    .meetTable td:nth-of-type(5):before { content: "종료 여부 : "; }
-    .meetTable td:nth-of-type(6):before { content: "수정 : "; }
+    .meetTable td:nth-of-type(5):before { content: "우승자 : "; }
+    .meetTable td:nth-of-type(6):before { content: "종료 여부 : "; }
+    .meetTable td:nth-of-type(7):before { content: "수정 : "; }
 
     .memberTable td:nth-of-type(1):before { content: "이름 : "; }
-    .memberTable td:nth-of-type(2):before { content: "등록일시 : "; }
-    .memberTable td:nth-of-type(3):before { content: "수정 : "; }
+    .memberTable td:nth-of-type(2):before { content: "우승횟수 : "; }
+    .memberTable td:nth-of-type(3):before { content: "역만횟수 : "; }
+    .memberTable td:nth-of-type(4):before { content: "등록일시 : "; }
+    .memberTable td:nth-of-type(5):before { content: "수정 : "; }
 }
