@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS location
 
 INSERT INTO location (location_no, location_name, use_yn, created_by) VALUES (	1, '성산마장', 1, 'init');
 INSERT INTO location (location_no, location_name, use_yn, created_by) VALUES (	2, '서울대입구 마작카페', 1, 'init');
+INSERT INTO location (location_no, location_name, use_yn, created_by) VALUES (	3, '방배마장', 1, 'init');
 
 
 ### meet
