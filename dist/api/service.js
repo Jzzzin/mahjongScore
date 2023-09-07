@@ -197,7 +197,7 @@ async function createGame(ctx, param) {
     const gameNumber = await access.findGameNumber(param.meetNo);
     const meetDay = gameNumber.meetDay.replace(/[^0-9]/g, '');
     const newGameNumber = (gameNumber && gameNumber.maxGameNumber !== '') ? String(Number(gameNumber.maxGameNumber) + 1) : meetDay.concat('01');
-    const endYn = param.memberList[0].score !== 0 ? 1 : 0;
+    const endYn = param.memberList.length > 0 ? (param.memberList[0].score !== 0 ? 1 : 0) : 0;
     const createParam = {
         meetNo: param.meetNo,
         gameNumber: newGameNumber,
@@ -213,8 +213,23 @@ async function createGame(ctx, param) {
     const createResult = await access.createGame(createParam);
     result = createResult.insertId;
     const now = (0, util_1.getMysqlDatetime)();
-    if (result > 0)
-        await access.createGameMemberMap(param.memberList.map(value => { return [result, value.memberNo, value.score, now, now]; }));
+    if (result > 0 && param.memberList.length > 0) {
+        const sortedMemberList = param.memberList.sort((a, b) => { return b.score - a.score; });
+        const mapData = sortedMemberList.map(value => {
+            return {
+                gameNo: result,
+                memberNo: value.memberNo,
+                position: '',
+                score: value.score,
+                gameMemberCount: param.gameMemberCount,
+                returnScore: createParam.returnScore,
+                okaPoint: createParam.okaPoint,
+                umaPoint: createParam.umaPoint
+            };
+        });
+        const mapParams = getGameMemberMapParams(mapData);
+        await access.createGameMemberMap(mapParams.map(value => { return [value.gameNo, value.memberNo, value.score, value.rank, value.point, now, now]; }));
+    }
     return result;
 }
 exports.createGame = createGame;
@@ -226,14 +241,29 @@ async function updateGame(ctx, param) {
     const startScore = CONST.START_SCORE[param.gameMemberCount];
     const returnScore = CONST.RETURN_SCORE[param.gameMemberCount];
     const umaPoint = CONST.UMA_POINT[param.gameType];
-    param.endYn = param.memberList[0].score !== 0 ? 1 : 0;
+    param.endYn = param.memberList.length > 0 ? (param.memberList[0].score !== 0 ? 1 : 0) : 0;
     const result = await access.updateGame({ ...param, gameNumber: newGameNumber, startScore: startScore, returnScore: returnScore, umaPoint: umaPoint });
-    if (result && result.affectedRows > 0) {
+    if (result && result.affectedRows > 0 && param.memberList.length > 0) {
         await access.sortGameNumber({ gameNumber: param.orgGameNumber, meetNo: param.orgMeetNo });
         const deleteResult = await access.deleteGameMemberMap(param.gameNo);
         const now = (0, util_1.getMysqlDatetime)();
-        if (deleteResult && param.memberList.length > 0)
-            await access.createGameMemberMap(param.memberList.map(value => { return [param.gameNo, value.memberNo, value.score, now, now]; }));
+        if (deleteResult && param.memberList.length > 0) {
+            const sortedMemberList = param.memberList.sort((a, b) => { return b.score - a.score; });
+            const mapData = sortedMemberList.map(value => {
+                return {
+                    gameNo: param.gameNo,
+                    memberNo: value.memberNo,
+                    position: '',
+                    score: value.score,
+                    gameMemberCount: param.gameMemberCount,
+                    returnScore: returnScore,
+                    okaPoint: (returnScore - startScore) * param.gameMemberCount / 1000,
+                    umaPoint: CONST.UMA_POINT[param.gameType]
+                };
+            });
+            const mapParams = getGameMemberMapParams(mapData);
+            await access.createGameMemberMap(mapParams.map(value => { return [value.gameNo, value.memberNo, value.score, value.rank, value.point, now, now]; }));
+        }
     }
     return result.affectedRows;
 }
@@ -244,37 +274,8 @@ async function updateGameMemberMap(ctx, param) {
     param.position = (_a = param.position) !== null && _a !== void 0 ? _a : '';
     const result = await access.updateGameMemberMap({ ...param, rank: 0, point: 0 });
     if (result) {
-        const updateParams = [];
-        const gameMemberMapData = await access.findGameMemberMapListForUpdate(param.gameNo);
-        gameMemberMapData.forEach((map, idx) => {
-            const rank = idx + 1;
-            const okaPoint = rank === 1 ? map.okaPoint : 0;
-            let umaPoint = 0;
-            switch (idx) {
-                case 0:
-                    umaPoint = map.gameMemberCount === 4 ? map.umaPoint * 2 : map.umaPoint;
-                    break;
-                case 1:
-                    umaPoint = map.gameMemberCount === 4 ? map.umaPoint : 0;
-                    break;
-                case 2:
-                    umaPoint = map.gameMemberCount === 4 ? -map.umaPoint : -map.umaPoint;
-                    break;
-                case 3:
-                    umaPoint = map.gameMemberCount === 4 ? -map.umaPoint * 2 : 0;
-                    break;
-            }
-            const point = (map.score - map.returnScore) / 1000 + okaPoint + umaPoint;
-            const updateParam = {
-                gameNo: map.gameNo,
-                memberNo: map.memberNo,
-                position: map.position,
-                score: map.score,
-                rank: rank,
-                point: point
-            };
-            updateParams.push(updateParam);
-        });
+        const gameMemberMapData = await access.findGameMemberMapListForRank(param.gameNo);
+        const updateParams = getGameMemberMapParams(gameMemberMapData);
         if (updateParams.length > 0)
             for (const param of updateParams)
                 await access.updateGameMemberMap(param);
@@ -282,6 +283,39 @@ async function updateGameMemberMap(ctx, param) {
     return (_b = result.affectedRows) !== null && _b !== void 0 ? _b : 0;
 }
 exports.updateGameMemberMap = updateGameMemberMap;
+function getGameMemberMapParams(data) {
+    const params = [];
+    data.forEach((map, idx) => {
+        const rank = idx + 1;
+        const okaPoint = rank === 1 ? map.okaPoint : 0;
+        let umaPoint = 0;
+        switch (idx) {
+            case 0:
+                umaPoint = map.gameMemberCount === 4 ? map.umaPoint * 2 : map.umaPoint;
+                break;
+            case 1:
+                umaPoint = map.gameMemberCount === 4 ? map.umaPoint : 0;
+                break;
+            case 2:
+                umaPoint = map.gameMemberCount === 4 ? -map.umaPoint : -map.umaPoint;
+                break;
+            case 3:
+                umaPoint = map.gameMemberCount === 4 ? -map.umaPoint * 2 : 0;
+                break;
+        }
+        const point = (map.score - map.returnScore) / 1000 + okaPoint + umaPoint;
+        const param = {
+            gameNo: map.gameNo,
+            memberNo: map.memberNo,
+            position: map.position,
+            score: map.score,
+            rank: rank,
+            point: point
+        };
+        params.push(param);
+    });
+    return params;
+}
 async function findRankList(ctx, filter) {
     ctx.log.info('*** Find Rank List Service Start ***');
     let list = [];

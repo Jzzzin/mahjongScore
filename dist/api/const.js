@@ -28,12 +28,12 @@ exports.GAME_TYPE = {
     EAST: 'EAST'
 };
 exports.START_SCORE = {
-    3: 25000,
-    4: 35000
+    4: 25000,
+    3: 35000
 };
 exports.RETURN_SCORE = {
-    3: 30000,
-    4: 40000
+    4: 30000,
+    3: 40000
 };
 exports.UMA_POINT = {
     HALF: 10,

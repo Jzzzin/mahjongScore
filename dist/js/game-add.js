@@ -6,22 +6,20 @@ window.addEventListener('DOMContentLoaded', event => {
             event.preventDefault();
             const currentURL = window.location.protocol + "//" + window.location.host;
             const url = currentURL + "/api/game";
-
             const meetNo = $('#meetList option:selected').val();
             const memberList = [];
-            $('input:checkbox[name=memberList]').each(function () {
-                if($(this).is(":checked") === true && $(this).attr('class') === meetNo) {
-                    const member = {
-                        "memberNo": $(this).val(),
-                        "score": 0
-                    }
-                    memberList.push(member);
+
+            $('#resultDiv ul li').each(function () {
+                                    const member = {
+                        "memberNo": $(this).children('div')[0].className,
+                        "score": parseInt($(this).children('input').val())
                 }
+memberList.push(member);
             });
             const formData = {
                 "gameNo": "0",
                 "orgMeetNo": meetNo,
-                "orgGameNumber": $('#inputOrgGameNumber').val(),
+                //"orgGameNumber": $('#inputOrgGameNumber').val(),
                 "meetNo": meetNo,
                 "gameMemberCount": $('input:radio[name="gameMemberCount"]:checked').val(),
                 "gameType": $('input:radio[name="gameType"]:checked').val(),
@@ -62,8 +60,9 @@ window.addEventListener('DOMContentLoaded', event => {
     if (meetSelect) {
         meetSelect.addEventListener('change', event => {
             event.preventDefault();
+inputInit();
             const meetNo = $('#meetList option:selected').val();
-            $('.memberList').each(function () {
+            $('.member-list').each(function () {
                 const classNo = $(this).children('input').attr('class');
                 if (classNo === meetNo) $(this).show();
                 else $(this).hide();
@@ -83,22 +82,28 @@ window.addEventListener('DOMContentLoaded', event => {
 $('input:radio[name="gameMemberCount"]').change(function () {
     const gameMemberCount = $('input:radio[name="gameMemberCount"]:checked').val();
     if (gameMemberCount === '3') {
-        $('#inputStartScore').val(35000);
-        $('#inputReturnScore').val(40000);
-        $('#inputOkaPoint').val(15);
+        $('#inputStartScore').html(35000);
+        $('#inputReturnScore').html(40000);
+        $('#inputOkaPoint').html(15);
     } else if (gameMemberCount === '4') {
-        $('#inputStartScore').val(25000);
-        $('#inputReturnScore').val(30000);
-        $('#inputOkaPoint').val(20);
+        $('#inputStartScore').html(25000);
+        $('#inputReturnScore').html(30000);
+        $('#inputOkaPoint').html(20);
     }
 });
 
 $('input:radio[name="gameType"]').change(function () {
     const gameType = $('input:radio[name="gameType"]:checked').val();
-    if (gameType === 'HALF') $('input:radio[name="umaPoint"]:input[value="10"]').prop('checked', true);
-    else $('input:radio[name="umaPoint"]:input[value="5"]').prop('checked', true);
+    if (gameType === 'HALF') {
+        $('input:radio[name="umaPoint"]:input[value="10"]').prop('checked', true);
+        $('#umaPoint').html('10(20)')
+    }
+    else {
+        $('input:radio[name="umaPoint"]:input[value="5"]').prop('checked', true);
+        $('#umaPoint').html('5(10)')
+    }
 });
-
+$('#btncheck').on('click', () => { btncheck()});
 $(document).ready(function() {
 
     const currentURL = window.location.protocol + "//" + window.location.host;
@@ -106,10 +111,12 @@ $(document).ready(function() {
 
     $('input:radio[name="gameMemberCount"]:input[value="4"]').prop('checked', true);
     $('input:radio[name="gameType"]:input[value="HALF"]').prop('checked', true);
-    $('#inputStartScore').val('25000');
-    $('#inputReturnScore').val('30000');
-    $('#inputOkaPoint').val('20');
+    $('#inputStartScore').html('25000');
+    $('#inputReturnScore').html('30000');
+    $('#inputOkaPoint').html('20');
     $('input:radio[name="umaPoint"]:input[value="10"]').prop('checked', true);
+
+    $('#umaPoint').html('10(20)')
 
     $.ajax({
         type: "GET",
@@ -127,7 +134,7 @@ $(document).ready(function() {
 
                     value.memberList.forEach(member => {
                         const id = value.meetNo + member.memberName;
-                        const li = $('<li style="display: inline; padding: 10px" class="memberList"><input type="checkbox" name="memberList" id="' + id + '" value="' + member.memberNo + '" class="' + value.meetNo + '"/>' +
+                        const li = $('<li style="display: inline; padding: 2px 3px" class="member-list"><input onchange="inputChange(this)" type="checkbox" name="memberList" id="' + id + '" value="' + member.memberNo + '" class="' + value.meetNo + '"/>' +
                             '<label for="' + id + '"></label></li>');
                         li.find('label').text(member.memberName);
                         if (idx !== 0) li.hide();
@@ -140,3 +147,27 @@ $(document).ready(function() {
         },
     });
 });
+function inputChange(e) {
+    let memberNum = parseInt($('input:radio[name="gameMemberCount"]:checked').val());
+    if ($('#resultDiv ul li input').length >= memberNum && e.checked) {
+        alert('참여 인원 수를 초과했습니다.');
+        e.checked = false;
+        return;
+    }
+
+    const checkedMember = document.body.querySelectorAll('#memberList li input:checked');
+    let trList = '';
+    const meetNo = $('#meetList option:selected').val();
+    checkedMember.forEach(el => {
+        if (meetNo == el.className) {
+            let tmp = '<li><div class='+el.value+'>'+el.labels[0].innerHTML+'</div><input class="input-el" type=text></li>'
+            trList += tmp;
+        }
+    })
+    $('#resultDiv ul').html(trList);
+}
+
+function inputInit() {
+    $('.member-list input').prop('checked',false);
+    $('#resultDiv ul').html('');
+}

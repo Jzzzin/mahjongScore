@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findRankList = exports.findRankCount = exports.findGameMemberMapListForUpdate = exports.updateGameMemberMap = exports.sortGameNumber = exports.updateGame = exports.createGameMemberMap = exports.deleteGameMemberMap = exports.createGame = exports.findGameNumber = exports.findGameWithMember = exports.findGameMemberMapList = exports.findGameList = exports.findGameCount = exports.updateMeetWinMember = exports.getMeetWinMember = exports.updateMeet = exports.updateMeetMemberMap = exports.createMeetMemberMap = exports.createMeet = exports.findMeetForValidate = exports.findMeetWithMember = exports.findMeetMemberMapList = exports.findMeetList = exports.findMeetCount = exports.findLocationList = exports.deleteMeetMemberMapByMember = exports.updateMember = exports.createMeetMemberMapByMember = exports.createMember = exports.findMemberForValidate = exports.findMember = exports.findMemberList = exports.findMemberCount = void 0;
+exports.findRankList = exports.findRankCount = exports.findGameMemberMapListForRank = exports.updateGameMemberMap = exports.sortGameNumber = exports.updateGame = exports.createGameMemberMap = exports.deleteGameMemberMap = exports.createGame = exports.findGameNumber = exports.findGameWithMember = exports.findGameMemberMapList = exports.findGameList = exports.findGameCount = exports.updateMeetWinMember = exports.getMeetWinMember = exports.updateMeet = exports.updateMeetMemberMap = exports.createMeetMemberMap = exports.createMeet = exports.findMeetForValidate = exports.findMeetWithMember = exports.findMeetMemberMapList = exports.findMeetList = exports.findMeetCount = exports.findLocationList = exports.deleteMeetMemberMapByMember = exports.updateMember = exports.createMeetMemberMapByMember = exports.createMember = exports.findMemberForValidate = exports.findMember = exports.findMemberList = exports.findMemberCount = void 0;
 const database_1 = require("../database");
 const util_1 = require("./util");
 async function findMemberCount(filter) {
@@ -500,7 +500,7 @@ async function deleteGameMemberMap(gameNo) {
 exports.deleteGameMemberMap = deleteGameMemberMap;
 async function createGameMemberMap(params) {
     const sql = `
-    INSERT INTO game_member_map (game_no, member_no, score, created_date, modified_date)
+    INSERT INTO game_member_map (game_no, member_no, score, rank, point, created_date, modified_date)
     VALUES ?
   `;
     console.log(sql);
@@ -581,7 +581,7 @@ async function updateGameMemberMap(param) {
     }
 }
 exports.updateGameMemberMap = updateGameMemberMap;
-async function findGameMemberMapListForUpdate(gameNo) {
+async function findGameMemberMapListForRank(gameNo) {
     const sql = `
     SELECT game.game_no             AS gameNo,
            map.member_no            AS memberNo,
@@ -600,7 +600,7 @@ async function findGameMemberMapListForUpdate(gameNo) {
     const [data] = await database_1.DB_MAHJONG_SCORE.query(sql);
     return data;
 }
-exports.findGameMemberMapListForUpdate = findGameMemberMapListForUpdate;
+exports.findGameMemberMapListForRank = findGameMemberMapListForRank;
 function getSearchRankParam(filter, search) {
     const searchMeetNo = !(0, util_1.isEmpty)(filter.meetNo) ? `meet.meet_no = '${filter.meetNo}'` : '';
     let result = '';

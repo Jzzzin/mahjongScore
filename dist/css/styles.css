@@ -11989,3 +11989,22 @@ body {
     content: "수정 : ";
   }
 }
+.row.mb-3 p {
+  font-weight: bold;
+}
+.row.mb-3 p label {
+  font-weight: 500;
+}
+
+#resultTable thead tr th {
+  text-align: center;
+}
+
+.winner-block {
+  display: flex;
+  align-items: center;
+}
+.winner-block .winner-star, .winner-block .winner-crown {
+  width: 20px;
+  height: 20px;
+}

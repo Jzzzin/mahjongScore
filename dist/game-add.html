@@ -73,116 +73,117 @@
                                     <input id="inputMemberList" type="hidden" />
                                     <input id="inputMeetNo" type="hidden" />
                                     <div class="row mb-3">
-                                        <div class="form-floating mb-3 mb-md-0"></div>
-                                        <p id="meetDayListName">
-                                            모임일자
-                                            <d id="meetDiv"><select id="meetList"></select></d>
-                                        </p>
+                                        <p class="mb-2" id="meetDayListName">모임일자</p>
+                                        <d id="meetDiv"><select class="input-el" id="meetList"></select></d>
+                                    </div>
+                                    <div class="row mb-3" style="display: none">
+                                        <input class="form-control" id="inputOrgGameNumber" type="text" disabled />
+                                        <label for="inputOrgGameNumber">게임번호</label>
                                     </div>
                                     <div class="row mb-3">
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputOrgGameNumber" type="text" disabled />
-                                            <label for="inputOrgGameNumber">게임번호</label>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="form-floating mb-3 mb-md-0"></div>
-                                        <p id="gameMemberCountName">
-                                            참여인원
+                                        <p class="mb-2" id="gameMemberCountName">참여인원</p>
+                                        <div>
                                             <input id="inputGameMemberCount1" type="radio" name="gameMemberCount" value="3" />
                                             <label for="inputGameMemberCount1">3인</label>
                                             <input id="inputGameMemberCount2" type="radio" name="gameMemberCount" value="4" />
                                             <label for="inputGameMemberCount2">4인</label>
-                                        </p>
+                                        </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <div class="form-floating mb-3 mb-md-0"></div>
-                                        <p id="gameTypeName">
-                                            게임유형
+                                        <p class="mb-2" id="gameTypeName">게임유형</p>
+                                        <div>
                                             <input id="inputGameType1" type="radio" name="gameType" value="HALF" />
                                             <label for="inputGameType1">반장전</label>
                                             <input id="inputGameType2" type="radio" name="gameType" value="EAST" />
                                             <label for="inputGameType2">동장전</label>
-                                        </p>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputStartScore" type="text" disabled />
-                                            <label for="inputStartScore">시작점수</label>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputReturnScore" type="text" disabled />
-                                            <label for="inputReturnScore">반환점수</label>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-3">
-                                        <div class="form-floating mb-3">
-                                            <input class="form-control" id="inputOkaPoint" type="text" disabled />
-                                            <label for="inputOkaPoint">오카</label>
-                                        </div>
+                                        <p class="mb-2" id="memberListName">참여자</p>
+                                        <div id="memberDiv" style="width: 125px; height: 180px; max-height: 180px; overflow-y: auto"><ul id="memberList" style="list-style: none; padding: unset; display: flex; flex-wrap: wrap"></ul></div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="form-floating mb-3 mb-md-0"></div>
-                                        <p id="umaPointName">
-                                            우마
-                                            <input id="inputUmaPoint1" type="radio" name="umaPoint" value="5" disabled />
-                                            <label for="inputUmaPoint1">5(10)</label>
-                                            <input id="inputUmaPoint2" type="radio" name="umaPoint" value="10" disabled />
-                                            <label for="inputUmaPoint2">10(20)</label>
-                                        </p>
+                                        <p id="userResultName">점수</p>
+                                        <div id="resultDiv"><ul></ul></div>
                                     </div>
                                     <div class="row mb-3">
-                                        <div class="form-floating mb-3"></div>
-                                        <p id="memberListName">
-                                            참여자
-                                            <d id="memberDiv"><ul id="memberList" style="list-style: none"></ul></d>
-                                        </p>
+                                        <div class="form-floating" style="display: flex; flex-wrap: wrap">
+                                            <div>
+                                                <p class="score-type">
+                                                    시작점수
+                                                    <span id="inputStartScore"></span>
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p class="score-type">
+                                                    반환점수
+                                                    <span id="inputReturnScore"></span>
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p class="score-type">
+                                                    오카
+                                                    <span id="inputOkaPoint"></span>
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p class="score-type">
+                                                    우마
+                                                    <span id="umaPoint"></span>
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <div class="form-floating mb-3">
+                                        <div class="form-floating">
                                             <textarea class="form-control" id="inputComment"></textarea>
                                             <label for="inputComment">메모</label>
                                         </div>
                                     </div>
-                                    <div class="row mb-3">
-                                        <div class="form-floating mb-3 mb-md-0"></div>
-                                        <p id="endYnName">
-                                            종료 여부
-                                            <input id="inputEndYn1" type="radio" name="endYn" value="0" disabled />
-                                            <label for="inputEndYn1">진행중</label>
-                                            <input id="inputEndYn2" type="radio" name="endYn" value="1" disabled />
-                                            <label for="inputEndYn2">종료</label>
-                                        </p>
-                                    </div>
-                                    <div class="mt-4 mb-0">
+                                    <div class="mb-0">
                                         <div class="d-grid">
-                                            <div class="row mb-3">
-                                                <div class="form-floating mb-3"><a class="btn btn-primary btn-block" id="submit">등록</a></div>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="form-floating mb-3"><a href="game.html">목록으로</a></div>
+                                            <div class="row mb-2">
+                                                <div class="mb-3">
+                                                    <a class="btn btn-secondary btn-block" href="game.html" style="margin-right: 10px">목록으로</a>
+                                                    <a class="btn btn-primary btn-block" id="submit">등록</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </form>
+                                <style type="text/css" scoped>
+                                    #resultDiv li {
+                                        display: flex;
+                                        list-style: none;
+                                        margin-left: -30px;
+                                        margin-bottom: 15px;
+                                    }
+                                    #resultDiv li div:first-child {
+                                        margin-right: 15px;
+                                    }
+                                    .row p {
+                                        font-weight: bold;
+                                    }
+                                    .row p label {
+                                        font-weight: 500;
+                                    }
+                                    .score-type span {
+                                        font-weight: normal !important;
+                                        margin-right: 30px;
+                                        color: darkcyan;
+                                    }
+                                    .input-el {
+                                        width: 150px;
+                                        height: 30px;
+                                        border: 1px solid #ddd;
+                                        border-radius: 4px;
+                                    }
+                                </style>
                             </div>
                         </div>
                     </div>
                 </main>
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
             </div>
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
