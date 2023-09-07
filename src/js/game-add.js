@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', event => {
             const url = currentURL + "/api/game";
             const meetNo = $('#meetList option:selected').val();
             const memberList = [];
-            
+
             $('#resultDiv ul li').each(function () {
                                     const member = {
                         "memberNo": $(this).children('div')[0].className,
@@ -100,7 +100,7 @@ $('input:radio[name="gameType"]').change(function () {
     }
     else {
         $('input:radio[name="umaPoint"]:input[value="5"]').prop('checked', true);
-$('#umaPoint').html('5(10)')
+        $('#umaPoint').html('5(10)')
     }
 });
 $('#btncheck').on('click', () => { btncheck()});

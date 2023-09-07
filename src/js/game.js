@@ -22,7 +22,7 @@ $(document).ready(function() {
         },
         searching: false,
         lengthChange: false,
-        order: [[2, 'DESC']],
+        order: [[1, 'DESC'], [0, 'DESC']],
         columns: [
             {
                 data: 'gameNo',
@@ -48,7 +48,6 @@ $(document).ready(function() {
                 defaultContent: '',
                 visible: false,
                 searchable: false,
-                
             },
             {
                 data: 'memberList.0.memberName',

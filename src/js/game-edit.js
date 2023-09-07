@@ -96,9 +96,15 @@ $('input:radio[name="gameMemberCount"]').change(function () {
 });
 
 $('input:radio[name="gameType"]').change(function () {
-    const gameType = $('input:radio[name="gameType"]:checked').val();
-    if (gameType === 'HALF') $('input:radio[name="umaPoint"]:input[value="10"]').prop('checked', true);
-    else $('input:radio[name="umaPoint"]:input[value="5"]').prop('checked', true);
+  const gameType = $('input:radio[name="gameType"]:checked').val();
+  if (gameType === 'HALF') {
+    $('input:radio[name="umaPoint"]:input[value="10"]').prop('checked', true);
+    $('#umaPoint').html('10(20)')
+  }
+  else {
+    $('input:radio[name="umaPoint"]:input[value="5"]').prop('checked', true);
+    $('#umaPoint').html('5(10)')
+  }
 });
 
 $(document).ready(function() {
@@ -123,7 +129,7 @@ $(document).ready(function() {
                 const option = $('<option value="' + data.meetNo + '" selected>' + data.meetDay + '</option>');
                 $('#meetList').append(option);
                 $('#inputOrgGameNumber').val(data.gameNumber);
-                
+
                 if (data.gameMemberCount === 3)
                     $('#inputGameMemberCount1').prop('checked', true);
                 else
@@ -135,13 +141,14 @@ $(document).ready(function() {
                 $('#inputStartScore').html(data.startScore);
                 $('#inputReturnScore').html(data.returnScore);
                 $('#inputOkaPoint').html(data.okaPoint);
-                
+
+                const umaPoint = data.umaPoint+"("+data.umaPoint*2+")";
                 if (data.umaPoint === 5)
                     //$('#inputUmaPoint1').prop('checked', true);
-                    $('#umaPoint').html(data.umaPoint)
+                    $('#umaPoint').html(umaPoint)
                 else
                     //$('#inputUmaPoint2').prop('checked', true);
-                    $('#umaPoint').html(data.umaPoint)
+                    $('#umaPoint').html(umaPoint)
                 $('#inputComment').val(data.comment ?? '');
                 const rowCount = $('#inputComment').val().split(/\r\n|\r|\n/).length;
                 $('#inputComment').height((rowCount * 18 + 36) + "px");
@@ -151,9 +158,9 @@ $(document).ready(function() {
                 else
                     $('#inputEndYn2').prop('checked', true);
                 data.memberList.forEach(member => {
-                    if (member.attendYn) {  
+                    if (member.attendYn) {
                         let tmp = '<li><div class="member-name" value='+member.memberNo+'>'+member.memberName+'</div><input class="input-el" type=text value='+ member.score+'></li>';
-                        $('#resultDiv ul').append(tmp);    
+                        $('#resultDiv ul').append(tmp);
                         attendMember.push(member.memberNo);
                     }
                 })
@@ -184,7 +191,7 @@ $(document).ready(function() {
                                     $('#memberList').append(li);
                                 });
                             }
-                            else { 
+                            else {
                                 value.memberList.forEach(member => {
                                     const id = member.meetNo + member.memberName;
                                     const li = $('<li style="display: inline; padding: 2px 3px"'+'" value="' + member.memberNo + '" class="member-list sdfsdfsdf"><input onchange="inputChange(this)" type="checkbox" name="memberList" id="' + id + '" class="' + member.meetNo + '"/>' +
@@ -193,9 +200,9 @@ $(document).ready(function() {
                                     if (attendMember.includes(member.memberNo))
                                         li.find('input').prop('checked', true);
                                     $('#memberList').append(li);
-                                });    
+                                });
                             }
-                                                    
+
                         });
                     }
                 },
