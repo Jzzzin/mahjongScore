@@ -594,12 +594,14 @@ type GameMemberMapName =
 | 'gameNo'
 | 'memberNo'
 | 'score'
+| 'rank'
+| 'point'
 | 'createdDate'
 | 'modifiedDate'
 export type CreateGameMemberMapParam = Array<MahjongScore.game_member_map[GameMemberMapName]>
 export async function createGameMemberMap(params: CreateGameMemberMapParam[]): Promise<any> {
   const sql = `
-    INSERT INTO game_member_map (game_no, member_no, score, created_date, modified_date)
+    INSERT INTO game_member_map (game_no, member_no, score, rank, point, created_date, modified_date)
     VALUES ?
   `
   console.log(sql)
@@ -669,12 +671,12 @@ export async function sortGameNumber(param: SortGameNumberParam): Promise<any> {
   }
 }
 
-export interface UpdateGameMemberMapParam extends GameMemberParam {
+export interface GameMemberMapParam extends GameMemberParam {
   rank: number
   point: number
 }
 
-export async function updateGameMemberMap(param: UpdateGameMemberMapParam): Promise<any> {
+export async function updateGameMemberMap(param: GameMemberMapParam): Promise<any> {
   const sql = `
     UPDATE game_member_map map
         LEFT JOIN game ON map.game_no = game.game_no
@@ -698,7 +700,7 @@ export async function updateGameMemberMap(param: UpdateGameMemberMapParam): Prom
   }
 }
 
-export interface GameMemberMapForUpdate {
+export interface GameMemberMapForRank {
   gameNo: number
   memberNo: number
   position: string
@@ -709,7 +711,7 @@ export interface GameMemberMapForUpdate {
   umaPoint: number
 }
 
-export async function findGameMemberMapListForUpdate(gameNo: number): Promise<GameMemberMapForUpdate[]> {
+export async function findGameMemberMapListForRank(gameNo: number): Promise<GameMemberMapForRank[]> {
   const sql = `
     SELECT game.game_no             AS gameNo,
            map.member_no            AS memberNo,
@@ -727,7 +729,7 @@ export async function findGameMemberMapListForUpdate(gameNo: number): Promise<Ga
   console.log(sql)
 
   const [data] = await DB_MAHJONG_SCORE.query(sql)
-  return data as GameMemberMapForUpdate[]
+  return data as GameMemberMapForRank[]
 }
 
 function getSearchRankParam(filter: FindRankFilter, search: string): string {

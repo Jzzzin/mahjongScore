@@ -33,13 +33,13 @@ export const GAME_TYPE = {
 export type GameType = typeof GAME_TYPE[keyof typeof GAME_TYPE]
 
 export const START_SCORE = {
-  3: 25000,
-  4: 35000
+  4: 25000,
+  3: 35000
 } as const
 
 export const RETURN_SCORE = {
-  3: 30000,
-  4: 40000
+  4: 30000,
+  3: 40000
 } as const
 
 export const UMA_POINT = {
