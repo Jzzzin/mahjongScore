@@ -776,7 +776,7 @@ export async function findRankList(filter:FindRankFilter): Promise<RankData[]> {
 
   const search = getSearchQuery(filter)
   const searchParam = getSearchRankParam(filter, search)
-  const sort = getSortQuery(filter, 'avgPoint')
+  const sort = getSortQuery(filter, 'totalPoint')
 
   const sql = `
     SELECT member.member_name                                                                   AS memberName,

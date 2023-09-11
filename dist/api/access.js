@@ -643,7 +643,7 @@ async function findRankList(filter) {
         filter.is_desc = 'Y';
     const search = (0, util_1.getSearchQuery)(filter);
     const searchParam = getSearchRankParam(filter, search);
-    const sort = (0, util_1.getSortQuery)(filter, 'avgPoint');
+    const sort = (0, util_1.getSortQuery)(filter, 'totalPoint');
     const sql = `
     SELECT member.member_name                                                                   AS memberName,
            (SELECT COUNT(meet_no) FROM meet WHERE meet.win_member_no = member.member_no)        AS meetWinCnt,
