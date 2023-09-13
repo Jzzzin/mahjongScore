@@ -8,15 +8,19 @@ window.addEventListener('DOMContentLoaded', event => {
             const url = currentURL + "/api/game";
             const meetNo = $('#meetList option:selected').val();
             const memberList = [];
-
+            const yakumanMember = $('#yakumanSelect').val();
+            
             if (!returnScoreCheck()) {
                 alert('반환점수를 넘는 참여자가 없습니다.');
                 return;
             }
-
+            if (parseInt($('.left-score span').html()) !== 0) {
+                alert('총 점수의 합이 틀렸습니다.');
+                return;
+            }
             $('#resultDiv ul li').each(function () {
                 const member = {
-                    "memberNo": $(this).children('div')[0].className,
+                    "memberNo": $(($($(this).children('div')))).attr('value'),
                     "score": parseInt($(this).children('input').val())
                 }
                 memberList.push(member);
@@ -28,6 +32,7 @@ window.addEventListener('DOMContentLoaded', event => {
                 "meetNo": meetNo,
                 "gameMemberCount": $('input:radio[name="gameMemberCount"]:checked').val(),
                 "gameType": $('input:radio[name="gameType"]:checked').val(),
+                "yakumanMemberNo": yakumanMember,
                 "comment": $('#inputComment').val(),
                 "memberList": memberList
             }
@@ -173,7 +178,7 @@ function inputChange(e) {
     }
 
     if (e.checked) {      //추가
-        let memberVal = $(e).parent().val();
+        let memberVal = $(e)[0].value;
         let memberName = e.id.replace(/[0-9]/g, '');
         let tmp = '<li><div class="member-name" value='+memberVal+'>'+memberName+'</div><input class="input-el" onchange="scoreCheck()" type=text value=""></li>'
         $('#resultDiv ul').append(tmp);
@@ -184,6 +189,15 @@ function inputChange(e) {
             if (name === $(el).text()) $(el).parent().remove();
         })
     }
+    const checkedMember = document.body.querySelectorAll('#memberList li input:checked');
+    const meetNo = $('#meetList option:selected').val();
+    let options = '<option value=""></option>';
+    checkedMember.forEach(el => {
+        if (meetNo == el.className) {
+            options += '<option value="'+el.value+'">'+el.labels[0].innerHTML+'</option>'
+        }
+    })
+    $('#yakumanSelect').html(options);
 }
 
 function inputInit() {
@@ -206,8 +220,10 @@ function scoreCheck() {
 }
 
 function returnScoreCheck() {
-    $('.input-el').each((idx, item) => {
-        if (item.value >= parseInt($('#inputReturnScore').html())) return true;
+    let isOver = 0;
+    $('input.input-el').each((idx, item) => {
+        if (parseInt($(item).val()) >= parseInt($('#inputReturnScore').html())) isOver++;
     })
+    if (isOver) return true;
     return false;
 }
