@@ -9,12 +9,17 @@ window.addEventListener('DOMContentLoaded', event => {
             const meetNo = $('#meetList option:selected').val();
             const memberList = [];
 
+            if (!returnScoreCheck()) {
+                alert('반환점수를 넘는 참여자가 없습니다.');
+                return;
+            }
+
             $('#resultDiv ul li').each(function () {
-                                    const member = {
-                        "memberNo": $(this).children('div')[0].className,
-                        "score": parseInt($(this).children('input').val())
+                const member = {
+                    "memberNo": $(this).children('div')[0].className,
+                    "score": parseInt($(this).children('input').val())
                 }
-memberList.push(member);
+                memberList.push(member);
             });
             const formData = {
                 "gameNo": "0",
@@ -60,7 +65,7 @@ memberList.push(member);
     if (meetSelect) {
         meetSelect.addEventListener('change', event => {
             event.preventDefault();
-inputInit();
+            inputInit();
             const meetNo = $('#meetList option:selected').val();
             $('.member-list').each(function () {
                 const classNo = $(this).children('input').attr('class');
@@ -77,18 +82,28 @@ inputInit();
             commentArea.style.height= (rowCount * 18 + 36) + "px";
         })
     }
+    
 });
 
 $('input:radio[name="gameMemberCount"]').change(function () {
     const gameMemberCount = $('input:radio[name="gameMemberCount"]:checked').val();
     if (gameMemberCount === '3') {
+        if ($('#resultDiv ul li input').length > 3) {
+            alert('참여 인원 수를 초과했습니다.');
+            $('#inputGameMemberCount2').prop('checked', true);
+            return;
+        }
         $('#inputStartScore').html(35000);
         $('#inputReturnScore').html(40000);
         $('#inputOkaPoint').html(15);
+        getTotalScore(3, 35000, 40000);
+        scoreCheck();
     } else if (gameMemberCount === '4') {
         $('#inputStartScore').html(25000);
         $('#inputReturnScore').html(30000);
         $('#inputOkaPoint').html(20);
+        getTotalScore(4, 25000, 30000);
+        scoreCheck();
     }
 });
 
@@ -141,6 +156,8 @@ $(document).ready(function() {
                         $('#memberList').append(li);
                     })
                 });
+                getTotalScore(4, 25000, 30000); 
+                scoreCheck();
             }
         },
         complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
@@ -155,19 +172,42 @@ function inputChange(e) {
         return;
     }
 
-    const checkedMember = document.body.querySelectorAll('#memberList li input:checked');
-    let trList = '';
-    const meetNo = $('#meetList option:selected').val();
-    checkedMember.forEach(el => {
-        if (meetNo == el.className) {
-            let tmp = '<li><div class='+el.value+'>'+el.labels[0].innerHTML+'</div><input class="input-el" type=text></li>'
-            trList += tmp;
-        }
-    })
-    $('#resultDiv ul').html(trList);
+    if (e.checked) {      //추가
+        let memberVal = $(e).parent().val();
+        let memberName = e.id.replace(/[0-9]/g, '');
+        let tmp = '<li><div class="member-name" value='+memberVal+'>'+memberName+'</div><input class="input-el" onchange="scoreCheck()" type=text value=""></li>'
+        $('#resultDiv ul').append(tmp);
+    }
+    else {      //삭제
+        let name = (e.id).replace(/[0-9]/g, '');
+        $('#resultDiv ul li .member-name').map((idx, el) => {
+            if (name === $(el).text()) $(el).parent().remove();
+        })
+    }
 }
 
 function inputInit() {
     $('.member-list input').prop('checked',false);
     $('#resultDiv ul').html('');
+}
+
+function getTotalScore(memberNum, startScore, returnScore) {
+    let totalScore = memberNum * startScore;
+    $('.total-score span').html(totalScore);
+}
+
+function scoreCheck() {
+    let sumValue = 0;
+    $('#resultDiv input').each((idx, el) => {
+        if (el.value === '') el.value = 0;
+        sumValue += parseInt(el.value);
+    })
+    $('.left-score span').html(parseInt($('.total-score span').html()) - sumValue);
+}
+
+function returnScoreCheck() {
+    $('.input-el').each((idx, item) => {
+        if (item.value >= parseInt($('#inputReturnScore').html())) return true;
+    })
+    return false;
 }

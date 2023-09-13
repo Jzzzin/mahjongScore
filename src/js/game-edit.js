@@ -10,6 +10,10 @@ window.addEventListener('DOMContentLoaded', event => {
             const meetNo = $('#meetList option:selected').val();
             const memberList = [];
 
+            if (!returnScoreCheck()) {
+                alert('반환점수를 넘는 참여자가 없습니다.');
+                return;
+            }
             $('#resultDiv ul li').each(function () {
                 const member = {
                     "memberNo": $(this).children('.member-name')[0].getAttribute("value"),
@@ -85,13 +89,20 @@ window.addEventListener('DOMContentLoaded', event => {
 $('input:radio[name="gameMemberCount"]').change(function () {
     const gameMemberCount = $('input:radio[name="gameMemberCount"]:checked').val();
     if (gameMemberCount === '3') {
+        if ($('#resultDiv ul li input').length > 3) {
+            alert('참여 인원 수를 초과했습니다.');
+            $('#inputGameMemberCount2').prop('checked', true);
+            return;
+        }
         $('#inputStartScore').html(35000);
         $('#inputReturnScore').html(40000);
         $('#inputOkaPoint').html(15);
+        getTotalScore(3, 35000, 40000);
     } else if (gameMemberCount === '4') {
         $('#inputStartScore').html(25000);
         $('#inputReturnScore').html(30000);
         $('#inputOkaPoint').html(20);
+        getTotalScore(4, 25000, 30000);
     }
 });
 
@@ -113,7 +124,6 @@ $(document).ready(function() {
     const currentURL = window.location.protocol + "//" + window.location.host;
     const url = currentURL + "/api/game/" + gameNo;
     let attendMember = [];
-
     $.ajax({
         type: "GET",
         url: url,
@@ -141,7 +151,8 @@ $(document).ready(function() {
                 $('#inputStartScore').html(data.startScore);
                 $('#inputReturnScore').html(data.returnScore);
                 $('#inputOkaPoint').html(data.okaPoint);
-
+                
+                getTotalScore(data.gameMemberCount, data.startScore, data.returnScore);
                 const umaPoint = data.umaPoint+"("+data.umaPoint*2+")";
                 if (data.umaPoint === 5)
                     //$('#inputUmaPoint1').prop('checked', true);
@@ -159,7 +170,7 @@ $(document).ready(function() {
                     $('#inputEndYn2').prop('checked', true);
                 data.memberList.forEach(member => {
                     if (member.attendYn) {
-                        let tmp = '<li><div class="member-name" value='+member.memberNo+'>'+member.memberName+'</div><input class="input-el" type=text value='+ member.score+'></li>';
+                        let tmp = '<li><div class="member-name" value='+member.memberNo+'>'+member.memberName+'</div><input class="input-el" onchange="scoreCheck()" type=text value='+ member.score+'></li>';
                         $('#resultDiv ul').append(tmp);
                         attendMember.push(member.memberNo);
                     }
@@ -184,7 +195,7 @@ $(document).ready(function() {
                                 $('#meetList').append(option);
                                 value.memberList.forEach(member => {
                                     const id = member.meetNo + member.memberName;
-                                    const li = $('<li style="display: inline; padding: 2px 3px"'+'" value="' + member.memberNo + '" class="member-list sdfsdfsdf"><input onchange="inputChange(this)" type="checkbox" name="memberList" id="' + id + '" class="' + member.meetNo + '"/>' +
+                                    const li = $('<li style="display: inline; padding: 2px 3px"'+'" value="' + member.memberNo + '" class="member-list"><input onchange="inputChange(this)" type="checkbox" name="memberList" id="' + id + '" class="' + member.meetNo + '"/>' +
                                       '<label for="' + id + '"></label></li>');
                                     li.find('label').text(member.memberName);
                                     li.hide();
@@ -192,17 +203,21 @@ $(document).ready(function() {
                                 });
                             }
                             else {
-                                value.memberList.forEach(member => {
-                                    const id = member.meetNo + member.memberName;
-                                    const li = $('<li style="display: inline; padding: 2px 3px"'+'" value="' + member.memberNo + '" class="member-list sdfsdfsdf"><input onchange="inputChange(this)" type="checkbox" name="memberList" id="' + id + '" class="' + member.meetNo + '"/>' +
-                                      '<label for="' + id + '"></label></li>');
-                                    li.find('label').text(member.memberName);
-                                    if (attendMember.includes(member.memberNo))
-                                        li.find('input').prop('checked', true);
-                                    $('#memberList').append(li);
-                                });
+                                    value.memberList.forEach(member => {
+                                        const id = member.meetNo + member.memberName;
+                                        const li = $('<li style="display: inline; padding: 2px 3px"'+'" value="' + member.memberNo + '" class="member-list"><input onchange="inputChange(this)" type="checkbox" name="memberList" id="' + id + '" class="' + member.meetNo + '"/>' +
+                                          '<label for="' + id + '"></label></li>');
+                                        li.find('label').text(member.memberName);
+                                        if (attendMember.includes(member.memberNo))
+                                            li.find('input').prop('checked', true);
+                                        $('#memberList').append(li);
+                                    });
                             }
-
+                            // if (!isGameOn()) {
+                            //     $('#memberDiv').html('종료된 모임입니다.');
+                            //     $('#memberDiv').css('width', 'unset');
+                            // }
+                            scoreCheck();
                         });
                     }
                 },
@@ -223,7 +238,7 @@ function inputChange(e) {
     if (e.checked) {      //추가
         let memberVal = $(e).parent().val();
         let memberName = e.id.replace(/[0-9]/g, '');
-        let tmp = '<li><div class="member-name" value='+memberVal+'>'+memberName+'</div><input class="input-el" type=text value=""></li>'
+        let tmp = '<li><div class="member-name" value='+memberVal+'>'+memberName+'</div><input class="input-el" onchange="scoreCheck()" type=text value=""></li>'
         $('#resultDiv ul').append(tmp);
     }
     else {      //삭제
@@ -237,4 +252,33 @@ function inputChange(e) {
 function inputInit() {
     $('.member-list input').prop('checked',false);
     $('#resultDiv ul').html('');
+}
+
+function isGameOn() {
+    let isOn = false;
+    $('#memberDiv').children().each((idx, el) => {
+        if ($(el).children().css('display') !== 'none') isOn = true;
+    })
+    return isOn;
+}
+
+function getTotalScore(memberNum, startScore, returnScore) {
+    let totalScore = memberNum * startScore;
+    $('.total-score span').html(totalScore);
+}
+
+function scoreCheck() {
+    let sumValue = 0;
+    $('#resultDiv input').each((idx, el) => {
+        if (el.value === '') el.value = 0;
+        sumValue += parseInt(el.value);
+    })
+    $('.left-score span').html(parseInt($('.total-score span').html()) - sumValue);
+}
+
+function returnScoreCheck() {
+    $('.input-el').each((idx, item) => {
+        if (item.value >= parseInt($('#inputReturnScore').html())) return true;
+    })
+    return false;
 }

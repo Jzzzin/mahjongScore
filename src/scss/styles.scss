@@ -52,7 +52,17 @@ only screen and (max-width: 760px),
 
 }
 
-.winner-block { display: flex; align-items: center;
-    .winner-star, .winner-crown { width: 20px; height: 20px; }
+.winner-block { display: inline-flex; align-items: center;
+    .winner-star, .winner-crown { width: 22px; height: 19px; }
 }
 
+.winner-inline { display: inline-flex; align-items: center; vertical-align: bottom;
+    .winner-crown { width: 16px; height: 15px; padding-left: 1px; }
+}
+#meetDayListName { width: unset; margin-left: 1rem; margin-top: 1rem; font-weight: bold;
+    span { padding-left: 7px;}
+}
+.card-body { padding: 0rem 1rem !important; }
+.input-el { width: 200px; height: 30px; border: 1px solid #ddd; border-radius: 4px;
+    &.meet-date { width: 120px; }
+}

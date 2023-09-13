@@ -26,11 +26,16 @@ form#meetForm(name='form')
             label(for='inputGameType2') 동장전
     .row.mb-3
         p.mb-2#memberListName 참여자
-        #memberDiv(style='width: 125px; height: 180px; max-height: 180px; overflow-y: auto;')
+        #memberDiv(style='width: 125px; max-height: 180px; overflow-y: auto;')
             ul#memberList(style='list-style:none; padding: unset; display: flex; flex-wrap: wrap;')
     .row.mb-3
         .form-floating.mb-3.mb-md-0
         p#userResultName 점수
+        #scoreInfo.mb-3(style='display:flex;')
+            .total-score 총 점수: 
+                span
+            .left-score(style='margin-left:20px;') 남은 점수:
+                span
         #resultDiv
             ul
     .row.mb-3

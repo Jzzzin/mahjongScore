@@ -47,14 +47,22 @@ $(document).ready(function() {
             { data: 'locationName' },
             {
                 data: 'memberList',
-                render: '[, ].memberName'
+                // render: '[, ].memberName'
+                render: function (data, type, row, meta) {
+                    let result = [];
+                    for (var item of data) {
+                        if (item.memberName === row.winMemberName) result.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/yellow-crown.svg" alt="winner star"/>' + item.memberName + '</div>') 
+                        else result.push(item.memberName);
+                    }       
+                    return result.toString();
+                  }
             },
-            { data: 'winMemberName',
-              render: function (data) {
-                    if (!!data) return '<div class="winner-block">' + data + '<img class="winner-crown" src="../assets/img/yellow-crown.svg" alt="winner star"/></div>';
-                    return data;
-                }
-            },
+            // { data: 'winMemberName',
+            //   render: function (data) {
+            //         if (!!data) return '<div class="winner-block">' + data + '<img class="winner-crown" src="../assets/img/yellow-crown.svg" alt="winner star"/></div>';
+            //         return data;
+            //     }
+            // },
             {
                 data: 'endYn',
                 render: function (data, type) {

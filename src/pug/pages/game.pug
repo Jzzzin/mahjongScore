@@ -14,9 +14,6 @@ block content
     .container-fluid.px-4
         include includes/page-header.pug
         .card.mb-4
-            .card-header
-                i.fas.fa-table.me-1
-                | 게임
             .card-body
                 table.gameTable#gameDataTable
                     thead
@@ -28,7 +25,6 @@ block content
                             th(colspan= 6) 참여자2
                             th(colspan= 6) 참여자3
                             th(colspan= 6) 참여자4
-                            th(rowspan= 2) 종료여부
                             th(rowspan= 2) 수정
                         tr
                             th 회원No
