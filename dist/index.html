@@ -66,20 +66,13 @@
                 <main>
                     <div class="container-fluid px-4">
                         <h2 class="mt-3">순위</h2>
-                        <ol class="breadcrumb mb-4">
-                            <li class="breadcrumb-item active">순위</li>
-                        </ol>
                         <div class="card mb-4">
-                            <div class="row mb-3">
-                                <div class="form-floating mb-3 mb-md-0"></div>
-                                <p id="meetDayListName">
+                            <div class="row">
+                                <div class="form-floating mb-md-0"></div>
+                                <div id="meetDayListName">
                                     모임일자
-                                    <d id="meetDiv"><select id="meetList"></select></d>
-                                </p>
-                            </div>
-                            <div class="card-header">
-                                <i class="fas fa-table me-1"></i>
-                                순위
+                                    <span id="meetDiv"><select class="input-el meet-date" id="meetList"></select></span>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <table class="rankTable" id="rankDataTable">
@@ -87,8 +80,8 @@
                                         <tr>
                                             <th>순위</th>
                                             <th>이름</th>
-                                            <th>우승 횟수</th>
-                                            <th>역만 횟수</th>
+                                            <th>전체 우승 횟수</th>
+                                            <th>전체 역만 횟수</th>
                                             <th>총 승점</th>
                                             <th>평균 승점</th>
                                             <th>승률</th>

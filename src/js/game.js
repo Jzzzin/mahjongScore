@@ -198,17 +198,6 @@ $(document).ready(function() {
                 searchable: false,
             },
             {
-                data: 'endYn',
-                render: function (data, type) {
-                    if (type === 'display') {
-                                                if (String(data) === '1') return '종료';
-                        else return '진행';
-                    }
-
-                    return data;
-                },
-            },
-            {
                 targets: -1,
                 data: 'gameNo',
                 render: function (data, type) {

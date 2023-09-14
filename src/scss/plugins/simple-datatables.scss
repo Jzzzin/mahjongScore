@@ -375,8 +375,7 @@ only screen and (max-width: 760px),
     .gameTable td:nth-of-type(8):before { content: "- 점수 : "; }
     .gameTable td:nth-of-type(9):before { content: "- 이름 : "; }
     .gameTable td:nth-of-type(10):before { content: "- 점수 : "; }
-    .gameTable td:nth-of-type(11):before { content: "종료 여부 : "; }
-    .gameTable td:nth-of-type(12):before { content: "수정 : "; }
+    .gameTable td:nth-of-type(11):before { content: "수정 : "; }
 
     .meetTable td:nth-of-type(1):before { content: "모임일자 : "; }
     .meetTable td:nth-of-type(2):before { content: "모임시각 : "; }

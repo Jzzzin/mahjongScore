@@ -100,11 +100,21 @@
                                     </div>
                                     <div class="row mb-3">
                                         <p class="mb-2" id="memberListName">참여자</p>
-                                        <div id="memberDiv" style="width: 125px; height: 180px; max-height: 180px; overflow-y: auto"><ul id="memberList" style="list-style: none; padding: unset; display: flex; flex-wrap: wrap"></ul></div>
+                                        <div id="memberDiv" style="width: 125px; max-height: 180px; overflow-y: auto"><ul id="memberList" style="list-style: none; padding: unset; display: flex; flex-wrap: wrap"></ul></div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="form-floating mb-3 mb-md-0"></div>
                                         <p id="userResultName">점수</p>
+                                        <div class="mb-3" id="scoreInfo" style="display: flex">
+                                            <div class="total-score">
+                                                총 점수:
+                                                <span></span>
+                                            </div>
+                                            <div class="left-score" style="margin-left: 20px">
+                                                남은 점수:
+                                                <span></span>
+                                            </div>
+                                        </div>
                                         <div id="resultDiv"><ul></ul></div>
                                     </div>
                                     <div class="row mb-3">
@@ -134,6 +144,13 @@
                                                 </p>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="form-floating mb-3 mb-md-0"></div>
+                                        <p id="isYakuman">
+                                            역만
+                                            <select id="yakumanSelect"></select>
+                                        </p>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="form-floating">

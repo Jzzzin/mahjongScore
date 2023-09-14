@@ -470,8 +470,8 @@ async function findGameNumber(meetNo) {
 exports.findGameNumber = findGameNumber;
 async function createGame(param) {
     const sql = `
-    INSERT INTO game (meet_no, game_number, game_member_count, game_type, start_score, return_score, oka_point, uma_point, comment, end_yn, created_date, modified_date)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), now())
+    INSERT INTO game (meet_no, game_number, game_member_count, game_type, start_score, return_score, oka_point, uma_point, yakuman_member_no, comment, end_yn, created_date, modified_date)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now(), now())
   `;
     console.log(sql);
     try {

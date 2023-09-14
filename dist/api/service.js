@@ -207,6 +207,7 @@ async function createGame(ctx, param) {
         returnScore: CONST.RETURN_SCORE[param.gameMemberCount],
         okaPoint: (CONST.RETURN_SCORE[param.gameMemberCount] - CONST.START_SCORE[param.gameMemberCount]) * param.gameMemberCount / 1000,
         umaPoint: CONST.UMA_POINT[param.gameType],
+        yakumanMemberNo: param.yakumanMemberNo,
         comment: param.comment,
         endYn: endYn
     };
