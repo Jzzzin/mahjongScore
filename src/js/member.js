@@ -34,7 +34,7 @@ $(document).ready(function() {
                 tmp.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/winner-medal.svg" alt="winner medal"/>'.repeat(threeCount));
                 tmp.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/winner-badge.svg" alt="winner badge"/>'.repeat(oneCount));
                 tmp.push(data);
-                tmp.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/yakuman-badge.svg" alt="yakuman badge"/>'.repeat(row.yakumanCnt));
+                tmp.push('<div class="winner-inline"><img class="winner-crown" height="20px" src="../assets/img/yakuman-badge.svg" alt="yakuman badge"/>'.repeat(row.yakumanCnt));
                 tmp = tmp.join();
                 return tmp.replace(/\,/g,"");
               }
