@@ -30,13 +30,14 @@ $(document).ready(function() {
                 let fiveCount = parseInt(row.meetWinCnt / 5);
                 let threeCount = parseInt(parseInt(row.meetWinCnt - fiveCount * 5) / 3);
                 let oneCount = parseInt(row.meetWinCnt - fiveCount * 5 - threeCount * 3);
-                tmp.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/winner-trophy.svg" alt="winner badge"/>'.repeat(fiveCount));
+                tmp.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/winner-trophy.svg" alt="winner trophy"/>'.repeat(fiveCount));
                 tmp.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/winner-medal.svg" alt="winner medal"/>'.repeat(threeCount));
-                tmp.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/winner-badge.svg" alt="winner trophy"/>'.repeat(oneCount));
+                tmp.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/winner-badge.svg" alt="winner badge"/>'.repeat(oneCount));
                 tmp.push(data);
+                tmp.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/yakuman-badge.svg" alt="yakuman badge"/>'.repeat(row.yakumanCnt));
                 tmp = tmp.join();
                 return tmp.replace(/\,/g,"");
-              } 
+              }
             },
             { data: 'meetWinCnt'},
             { data: 'yakumanCnt' },
