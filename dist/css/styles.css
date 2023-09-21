@@ -12048,6 +12048,17 @@ body {
   padding-left: 1px;
 }
 
+.yakuman-inline {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: bottom;
+}
+.yakuman-inline .yakuman-crown {
+  width: 20px;
+  height: 15px;
+  padding-left: 1px;
+}
+
 #meetDayListName {
   width: unset;
   margin-left: 1rem;
