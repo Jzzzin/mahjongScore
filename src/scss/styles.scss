@@ -55,6 +55,9 @@ only screen and (max-width: 760px),
 .winner-block { display: inline-flex; align-items: center;
     .winner-star, .winner-crown { width: 22px; height: 19px; }
 }
+.loser-block { display: inline-flex; align-items: center;
+  .loser-badge { width: 22px; height: 19px; }
+}
 
 .winner-inline { display: inline-flex; align-items: center; vertical-align: bottom;
     .winner-crown { width: 16px; height: 15px; padding-left: 1px; }

@@ -356,6 +356,7 @@ export async function findRankList(ctx: Context, filter: FindRankFilter): Promis
       const rankList: RankList = {
         ...value,
         rank: rank,
+        meetMemberCnt: countData[0]['count(*)'],
         winRate: Math.round(value.winCnt / value.totalGameCnt * 1000) / 10,
         upRate: Math.round((value.winCnt + value.secondCnt) / value.totalGameCnt * 1000) / 10,
         forthRate: Math.round(value.forthCnt / value.totalGameCnt * 1000) / 10,

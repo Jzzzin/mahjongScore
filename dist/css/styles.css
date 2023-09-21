@@ -12037,6 +12037,15 @@ body {
   height: 19px;
 }
 
+.loser-block {
+  display: inline-flex;
+  align-items: center;
+}
+.loser-block .loser-badge {
+  width: 22px;
+  height: 19px;
+}
+
 .winner-inline {
   display: inline-flex;
   align-items: center;

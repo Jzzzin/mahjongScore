@@ -62,9 +62,10 @@ $(document).ready(function() {
                 lengthChange: false,
                 columns: [
                     { data: 'rank' },
-                    { data: 'memberName', 
+                    { data: 'memberName',
                       render: function (data, type, row, meta) {
                         if (row.rank === 1) return '<div class="winner-block">' + data + '<img class="winner-crown" src="../assets/img/yellow-crown.svg" alt="winner star"/></div>';
+                        else if (row.rank === row.meetMemberCnt) return '<div class="loser-block">' + data + '<img class="loser-badge" src="../assets/img/loser-badge.svg" alt="loser badge"/></div>';
                         return data;
                       }
                     },

@@ -153,6 +153,7 @@ export interface RankData {
 
 export interface RankList extends RankData {
   rank: number
+  meetMemberCnt: number
   winRate: number
   upRate: number
   forthRate: number
