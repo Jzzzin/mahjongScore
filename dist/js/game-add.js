@@ -8,8 +8,7 @@ window.addEventListener('DOMContentLoaded', event => {
             const url = currentURL + "/api/game";
             const meetNo = $('#meetList option:selected').val();
             const memberList = [];
-            const yakumanMember = $('#yakumanSelect').val();
-            
+            const yakumanMember = !!$('#yakumanSelect').val() ? $('#yakumanSelect').val() : 0;
             if (!returnScoreCheck()) {
                 alert('반환점수를 넘는 참여자가 없습니다.');
                 return;
