@@ -63,11 +63,6 @@ export interface MeetParam {
   memberNoList: number[]
 }
 
-export interface MeetWinMemberParam {
-  meetNo: number
-  winMemberNo: number
-}
-
 type FindGameFilterName = ''
 export interface FindGameFilter extends Filter<FindGameFilterName> {
   meetNo: string
@@ -161,6 +156,30 @@ export interface RankList extends RankData {
   upRate: number
   forthRate: number
   rankRate: number
+}
+
+export interface YearData {
+  year: number
+}
+
+type FindPointRankFilterName = ''
+export interface FindPointRankFilter extends Filter<FindPointRankFilterName> {
+  year: string
+}
+
+export interface PointRankData {
+  memberName: string
+  meetWinCnt: number
+  yakumanCnt: number
+  totalPoint: number
+  secondCnt: number
+  thirdCnt: number
+  totalMeetCnt: number
+}
+
+export interface PointRankList extends PointRankData {
+  rank: number
+  yearMemberCnt: number
 }
 
 export interface LoginParam {

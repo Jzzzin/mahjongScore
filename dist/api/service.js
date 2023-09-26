@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.findRankList = exports.updateGameMemberMap = exports.updateGame = exports.createGame = exports.findGame = exports.findGameList = exports.updateMeet = exports.createMeet = exports.findMeet = exports.findMeetList = exports.findLocationList = exports.updateMember = exports.createMember = exports.findMember = exports.findMemberList = void 0;
+exports.login = exports.findPointRankList = exports.findYearList = exports.findRankList = exports.updateGameMemberMap = exports.updateGame = exports.createGame = exports.findGame = exports.findGameList = exports.updateMeet = exports.createMeet = exports.findMeet = exports.findMeetList = exports.findLocationList = exports.updateMember = exports.createMember = exports.findMember = exports.findMemberList = void 0;
 const access = __importStar(require("./access"));
 const jwt = __importStar(require("./jwt"));
 const util_1 = require("./util");
@@ -110,6 +110,8 @@ async function findMeet(ctx, meetNo) {
         locationName: meetWithMember[0].locationName,
         winMemberNo: meetWithMember[0].winMemberNo,
         winMemberName: meetWithMember[0].winMemberName,
+        loseMemberNo: meetWithMember[0].loseMemberNo,
+        loseMemberName: meetWithMember[0].loseMemberName,
         endYn: meetWithMember[0].endYn,
         memberList: meetWithMember.map(value => { return { meetNo: value.meetNo, memberNo: value.memberNo, memberName: value.memberName, attendYn: value.attendYn }; })
     };
@@ -141,10 +143,8 @@ async function updateMeet(ctx, param) {
         const updateResult = await access.updateMeet(param);
         if (updateResult)
             await access.updateMeetMemberMap({ meetNo: param.meetNo, memberNoList: param.memberNoList });
-        if (String(param.endYn) === '1') {
-            const winMemberNo = await access.getMeetWinMember(param.meetNo);
-            await access.updateMeetWinMember({ meetNo: param.meetNo, winMemberNo: winMemberNo });
-        }
+        if (String(param.endYn) === '1')
+            await access.updateMeetResult(param.meetNo);
         result = updateResult.affectedRows;
     }
     return result;
@@ -341,6 +341,30 @@ async function findRankList(ctx, filter) {
     return list;
 }
 exports.findRankList = findRankList;
+async function findYearList(ctx) {
+    ctx.log.info('*** Find Year List Service Start ***');
+    return await access.findYearList();
+}
+exports.findYearList = findYearList;
+async function findPointRankList(ctx, filter) {
+    ctx.log.info('*** Find Point Rank List Service Start ***');
+    let list = [];
+    const countData = await access.findPointRankCount(filter);
+    if (countData.length > 0 && countData[0]['count(*)']) {
+        const rankData = await access.findPointRankList(filter);
+        rankData.forEach((value, idx) => {
+            const rank = idx + 1;
+            const pointRankList = {
+                ...value,
+                rank: rank,
+                yearMemberCnt: countData[0]['count(*)']
+            };
+            list.push(pointRankList);
+        });
+    }
+    return list;
+}
+exports.findPointRankList = findPointRankList;
 async function login(ctx, param) {
     ctx.log.info('*** Login Service Start ***');
     const result = {

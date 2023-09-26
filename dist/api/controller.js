@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.findRankList = exports.updateGameMemberMap = exports.updateGame = exports.findMeetForGameList = exports.createGame = exports.findGame = exports.findGameList = exports.updateMeet = exports.createMeet = exports.findMeet = exports.findLocationList = exports.findMeetList = exports.updateMember = exports.createMember = exports.findMember = exports.findMemberList = void 0;
+exports.login = exports.findPointRankList = exports.findYearList = exports.findRankList = exports.updateGameMemberMap = exports.updateGame = exports.findMeetForGameList = exports.createGame = exports.findGame = exports.findGameList = exports.updateMeet = exports.createMeet = exports.findMeet = exports.findLocationList = exports.findMeetList = exports.updateMember = exports.createMember = exports.findMember = exports.findMemberList = void 0;
 const service = __importStar(require("./service"));
 const findMemberList = async (ctx) => {
     ctx.log.info('*** Find Member List Controller Start ***');
@@ -261,6 +261,31 @@ const findRankList = async (ctx) => {
     }
 };
 exports.findRankList = findRankList;
+const findYearList = async (ctx) => {
+    ctx.log.info('*** Find Year List Controller Start ***');
+    const data = await service.findYearList(ctx);
+    if (data) {
+        ctx.status = 200;
+        ctx.body = data;
+    }
+    else {
+        ctx.status = 204;
+    }
+};
+exports.findYearList = findYearList;
+const findPointRankList = async (ctx) => {
+    ctx.log.info('*** Find Point Rank List Controller Start ***');
+    const query = ctx.query;
+    const data = await service.findPointRankList(ctx, query);
+    if (data) {
+        ctx.status = 200;
+        ctx.body = data;
+    }
+    else {
+        ctx.status = 204;
+    }
+};
+exports.findPointRankList = findPointRankList;
 const login = async (ctx) => {
     ctx.log.info('*** Login Controller Start ***');
     const param = ctx.request.body;

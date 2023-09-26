@@ -2,7 +2,7 @@ extends ../layouts/dashboard.pug
 
 block config
     - var bodyClass = 'sb-nav-fixed'
-    - var pageTitle = '누적 순위';
+    - var pageTitle = '모임별 순위';
     - var addPage = ''
     - var index = true;
     - var sidenavStyle = 'sb-sidenav-dark'
@@ -17,25 +17,32 @@ block content
         .card.mb-4
             .row
                 .form-floating.mb-md-0
-                div#yearListName 연도
-                    span#yearDiv
-                        select#yearList.input-el.year
+                div#meetDayListName 모임일자
+                    span#meetDiv
+                        select#meetList.input-el.meet-date
             .card-body
-                table.pointRankTable#pointRankDataTable
+                table.rankTable#rankDataTable
                     thead
                         tr
                             th 순위
                             th 이름
-                            th 연간 우승 횟수
-                            th 연간 역만 횟수
-                            th 총 포인트
+                            th 전체 우승 횟수
+                            th 전체 역만 횟수
+                            th 총 승점
+                            th 평균 승점
+                            th 승률
+                            th 1,2위율
+                            th 4위율
+                            th 승수
                             th 2위 횟수
                             th 3위 횟수
-                            th 총 참여 횟수
+                            th 4위 횟수
+                            th 순위율
+                            th 총 국수
 
 
 append scripts
     //- Load Simple DataTables Scripts
     script(src='https://cdn.jsdelivr.net/npm/simple-datatables@5', crossorigin='anonymous')
     script(src='https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js')
-    script(src='js/pointRank.js')
+    script(src='js/rank.js')

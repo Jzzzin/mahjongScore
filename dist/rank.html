@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>누적 순위 - Mahjong Score</title>
+        <title>모임별 순위 - Mahjong Score</title>
         <link href="https://cdn.jsdelivr.net/npm/simple-datatables@5/dist/style.css" rel="stylesheet" />
         <link href="css/styles.css" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
@@ -65,27 +65,34 @@
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid px-4">
-                        <h2 class="mt-3">누적 순위</h2>
+                        <h2 class="mt-3">모임별 순위</h2>
                         <div class="card mb-4">
                             <div class="row">
                                 <div class="form-floating mb-md-0"></div>
-                                <div id="yearListName">
-                                    연도
-                                    <span id="yearDiv"><select class="input-el year" id="yearList"></select></span>
+                                <div id="meetDayListName">
+                                    모임일자
+                                    <span id="meetDiv"><select class="input-el meet-date" id="meetList"></select></span>
                                 </div>
                             </div>
                             <div class="card-body">
-                                <table class="pointRankTable" id="pointRankDataTable">
+                                <table class="rankTable" id="rankDataTable">
                                     <thead>
                                         <tr>
                                             <th>순위</th>
                                             <th>이름</th>
-                                            <th>연간 우승 횟수</th>
-                                            <th>연간 역만 횟수</th>
-                                            <th>총 포인트</th>
+                                            <th>전체 우승 횟수</th>
+                                            <th>전체 역만 횟수</th>
+                                            <th>총 승점</th>
+                                            <th>평균 승점</th>
+                                            <th>승률</th>
+                                            <th>1,2위율</th>
+                                            <th>4위율</th>
+                                            <th>승수</th>
                                             <th>2위 횟수</th>
                                             <th>3위 횟수</th>
-                                            <th>총 참여 횟수</th>
+                                            <th>4위 횟수</th>
+                                            <th>순위율</th>
+                                            <th>총 국수</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -100,6 +107,6 @@
         <script src="js/scripts.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@5" crossorigin="anonymous"></script>
         <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-        <script src="js/pointRank.js"></script>
+        <script src="js/rank.js"></script>
     </body>
 </html>

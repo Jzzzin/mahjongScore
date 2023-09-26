@@ -2,19 +2,19 @@ window.addEventListener('DOMContentLoaded', event => {
     // Simple-DataTables
     // https://github.com/fiduswriter/Simple-DataTables/wiki
 
-    const meetSelect = document.body.querySelector('#meetList');
-    if (meetSelect) {
-        meetSelect.addEventListener('change', event => {
+    const yearSelect = document.body.querySelector('#yearList');
+    if (yearSelect) {
+        yearSelect.addEventListener('change', event => {
             event.preventDefault();
-            const meetNo = $('#meetList option:selected').val();
-            location.replace('/rank.html?meetNo='+meetNo);
+            const year = $('#yearList option:selected').val();
+            location.replace('/index.html?year='+year);
         })
     }
 
 
-    const rankDataTable = document.getElementById('rankDataTable');
-    if (rankDataTable) {
-        new simpleDatatables.DataTable(rankDataTable, {
+    const pointRankDataTable = document.getElementById('pointRankDataTable');
+    if (pointRankDataTable) {
+        new simpleDatatables.DataTable(pointRankDataTable, {
             searchable: false,
             perPageSelect: false,
             sortable: false
@@ -25,8 +25,8 @@ window.addEventListener('DOMContentLoaded', event => {
 // Call the dataTables jQuery plugin
 $(document).ready(function() {
     const currentURL = window.location.protocol + "//" + window.location.host;
-    const url = currentURL + "/api/meet";
-    let meetNo = new URLSearchParams(location.search).get('meetNo');
+    const url = currentURL + "/api/year";
+    let year = new URLSearchParams(location.search).get('year');
 
     $.ajax({
         type: "GET",
@@ -38,24 +38,24 @@ $(document).ready(function() {
             // On Success, build our rich list up and append it to the #richList div.
             if (data) {
                 data.forEach((value, idx) => {
-                    const option = $('<option value="' + value.meetNo + '">' + value.meetDay + '</option>');
-                    if(meetNo) {
-                        if (String(value.meetNo) === String(meetNo)) option.prop("selected", true);
+                    const option = $('<option value="' + value.year + '">' + value.year + '</option>');
+                    if(year) {
+                        if (String(value.year) === String(year)) option.prop("selected", true);
                     } else {
                         if (idx === 0) {
                             option.prop("selected", true);
-                            meetNo = value.meetNo;
+                            year = value.year;
                         }
                     }
-                    $('#meetList').append(option);
+                    $('#yearList').append(option);
                 });
             }
         },
         complete: function () { // Set our complete callback, adding the .hidden class and hiding the spinner.
 
-            $('#rankDataTable').DataTable({
+            $('#pointRankDataTable').DataTable({
                 ajax: {
-                    url: currentURL + '/api/rank?meetNo=' + meetNo,
+                    url: currentURL + '/api/pointRank?year=' + year,
                     dataSrc: ''
                 },
                 searching: false,
@@ -65,23 +65,16 @@ $(document).ready(function() {
                     { data: 'memberName',
                       render: function (data, type, row, meta) {
                         if (row.rank === 1) return '<div class="winner-block">' + data + '<img class="winner-crown" src="../assets/img/yellow-crown.svg" alt="winner star"/></div>';
-                        else if (row.rank === row.meetMemberCnt) return '<div class="loser-block">' + data + '<img class="loser-badge" src="../assets/img/loser-badge.svg" alt="loser badge"/></div>';
+                        else if (row.rank === row.yearMemberCnt) return '<div class="loser-block">' + data + '<img class="loser-badge" src="../assets/img/loser-badge.svg" alt="loser badge"/></div>';
                         return data;
                       }
                     },
                     { data: 'meetWinCnt'},
                     { data: 'yakumanCnt'},
                     { data: 'totalPoint' },
-                    { data: 'avgPoint' },
-                    { data: 'winRate' },
-                    { data: 'upRate' },
-                    { data: 'forthRate' },
-                    { data: 'winCnt' },
                     { data: 'secondCnt' },
                     { data: 'thirdCnt' },
-                    { data: 'forthCnt' },
-                    { data: 'rankRate' },
-                    { data: 'totalGameCnt' }
+                    { data: 'totalMeetCnt' }
                 ]
             });
         },

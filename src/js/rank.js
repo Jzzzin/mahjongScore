@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', event => {
         meetSelect.addEventListener('change', event => {
             event.preventDefault();
             const meetNo = $('#meetList option:selected').val();
-            location.replace('/index.html?meetNo='+meetNo);
+            location.replace('/rank.html?meetNo='+meetNo);
         })
     }
 

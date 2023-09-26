@@ -2,7 +2,7 @@ import type { Middleware } from 'koa'
 import {
     FindGameFilter,
     FindMeetFilter,
-    FindMemberFilter, FindRankFilter, GameMemberParam, GameParam, LoginParam, MeetParam, MemberParam
+    FindMemberFilter, FindPointRankFilter, FindRankFilter, GameMemberParam, GameParam, LoginParam, MeetParam, MemberParam
 } from './typeDef'
 import * as service from './service'
 
@@ -245,6 +245,31 @@ export const findRankList: Middleware = async (ctx) => {
 
   const query = ctx.query as FindRankFilter
   const data = await service.findRankList(ctx, query)
+  if (data) {
+    ctx.status = 200
+    ctx.body = data
+  } else {
+    ctx.status = 204
+  }
+}
+
+export const findYearList: Middleware = async (ctx) => {
+    ctx.log.info('*** Find Year List Controller Start ***')
+
+    const data = await service.findYearList(ctx)
+    if (data) {
+        ctx.status = 200
+        ctx.body = data
+    } else {
+        ctx.status = 204
+    }
+}
+
+export const findPointRankList: Middleware = async (ctx) => {
+  ctx.log.info('*** Find Point Rank List Controller Start ***')
+
+  const query = ctx.query as FindPointRankFilter
+  const data = await service.findPointRankList(ctx, query)
   if (data) {
     ctx.status = 200
     ctx.body = data

@@ -11830,6 +11830,48 @@ body {
   /*
   Label the data
   */
+  .pointRankTable td:nth-of-type(1):before {
+    content: "순위 : ";
+  }
+
+  .pointRankTable td:nth-of-type(2):before {
+    content: "이름 : ";
+  }
+
+  .pointRankTable td:nth-of-type(3):before {
+    content: "연간 우승횟수 : ";
+  }
+
+  .pointRankTable td:nth-of-type(4):before {
+    content: "연간 역만횟수 : ";
+  }
+
+  .pointRankTable td:nth-of-type(5):before {
+    content: "총 포인트 : ";
+  }
+
+  .pointRankTable td:nth-of-type(6):before {
+    content: "- 2위 횟수 : ";
+    display: none;
+  }
+
+  .pointRankTable td:nth-of-type(7):before {
+    content: "- 3위 횟수 : ";
+    display: none;
+  }
+
+  .pointRankTable td:nth-of-type(8):before {
+    content: "총 참여 횟수 : ";
+  }
+
+  .pointRankTable td:nth-of-type(6) {
+    display: none;
+  }
+
+  .pointRankTable td:nth-of-type(7) {
+    display: none;
+  }
+
   .rankTable td:nth-of-type(1):before {
     content: "순위 : ";
   }

@@ -2,14 +2,14 @@ import type { Context } from 'koa'
 import type {
     FindGameFilter,
     FindMeetFilter,
-    FindMemberFilter, FindRankFilter,
+    FindMemberFilter, FindPointRankFilter, FindRankFilter,
     GameDetail,
     GameList, GameMemberParam,
     GameParam, LocationData, LoginInfo, LoginParam,
     MeetList,
     MeetParam,
     MemberData,
-    MemberParam, RankList
+    MemberParam, PointRankList, RankList, YearData
 } from './typeDef'
 import type {CreateGameParam, GameMemberMapForRank, GameMemberMapParam} from "./access";
 import * as access from './access'
@@ -362,6 +362,35 @@ export async function findRankList(ctx: Context, filter: FindRankFilter): Promis
         rankRate: Math.round(rankRate * 100) / 100
       }
       list.push(rankList)
+    })
+  }
+
+  return list
+}
+
+export async function findYearList(ctx: Context): Promise<YearData[]> {
+  ctx.log.info('*** Find Year List Service Start ***')
+
+  return await access.findYearList()
+}
+
+export async function findPointRankList(ctx: Context, filter: FindPointRankFilter): Promise<PointRankList[]> {
+  ctx.log.info('*** Find Point Rank List Service Start ***')
+
+  let list: PointRankList[] = []
+
+  const countData = await access.findPointRankCount(filter)
+
+  if (countData.length > 0 && countData[0]['count(*)']) {
+    const rankData = await access.findPointRankList(filter)
+    rankData.forEach((value, idx) => {
+      const rank = idx + 1
+      const pointRankList: PointRankList = {
+        ...value,
+        rank: rank,
+        yearMemberCnt: countData[0]['count(*)']
+      }
+      list.push(pointRankList)
     })
   }
 

@@ -29,6 +29,10 @@ router.put('/api/game/:gameNo', controller.updateGame)
 
 router.get('/api/rank', controller.findRankList)
 
+router.get('/api/year', controller.findYearList)
+
+router.get('/api/pointRank', controller.findPointRankList)
+
 router.post('/api/login', controller.login)
 
 export default router

@@ -3,17 +3,17 @@ import { DB_MAHJONG_SCORE } from '../database'
 import {
     FindGameFilter,
     FindMeetFilter,
-    FindMemberFilter,
+    FindMemberFilter, FindPointRankFilter,
     FindRankFilter,
     GameData,
     GameMemberMapData, GameMemberParam,
     GameParam, LocationData,
     MeetData,
     MeetMemberMapData,
-    MeetParam, MeetWinMemberParam,
+    MeetParam,
     MemberData,
-    MemberParam,
-    RankData
+    MemberParam, PointRankData,
+    RankData, YearData
 } from './typeDef'
 import {
   CountData,
@@ -839,4 +839,100 @@ export async function findRankList(filter:FindRankFilter): Promise<RankData[]> {
 
   const [data] = await DB_MAHJONG_SCORE.query(sql)
   return data as RankData[]
+}
+
+export async function findYearList(): Promise<YearData[]> {
+  const sql = `
+    SELECT DISTINCT SUBSTRING(meet_day, 1, 4) AS year
+    FROM meet
+    WHERE end_yn = '1'
+    ORDER BY year DESC
+  `
+  console.log(sql)
+
+  const [data] = await DB_MAHJONG_SCORE.query(sql)
+  return data as YearData[]
+}
+
+function getSearchPointRankParam(filter: FindPointRankFilter, search: string): string {
+  const searchMeetNo = !isEmpty(filter.year) ? `meet.meet_day LIKE '${filter.year}%'` : ''
+
+  let result = ''
+  for (const value of [searchMeetNo, search]) {
+    if (!isEmpty(result) && !isEmpty(value)) result += ' AND '
+    result += value
+  }
+  return result
+}
+
+export async function findPointRankCount(filter:FindPointRankFilter): Promise<CountData[]> {
+  const search = getSearchQuery(filter)
+  const searchParam = getSearchPointRankParam(filter, search)
+
+  const sql = `
+    SELECT count(*)
+    FROM ( SELECT member.member_name                                     AS memberName,
+                  ( SELECT COUNT(meet_no)
+                    FROM meet
+                    WHERE meet.win_member_no = member.member_no
+                      ${searchParam && `AND ${searchParam}`})            AS meetWinCnt,
+                  ( SELECT COUNT(game_no)
+                    FROM game
+                        LEFT JOIN meet ON game.meet_no = meet.meet_no
+                    WHERE game.yakuman_member_no = member.member_no
+                      ${searchParam && `AND ${searchParam}`})            AS yakumanCnt,
+                  SUM(map.point)                                         AS totalPoint,
+                  COUNT(IF(map.rank=1, true, null))                      AS winCnt,
+                  COUNT(IF(map.rank=2, true, null))                      AS secondCnt,
+                  COUNT(IF(map.rank=3, true, null))                      AS thirdCnt,
+                  COUNT(IF(map.attend_yn=1, true, null))                 AS totalMeetCnt
+           FROM meet_member_map map
+                  LEFT JOIN meet ON meet.meet_no = map.meet_no
+                  LEFT JOIN member ON member.member_no = map.member_no
+           WHERE meet.end_yn = '1'
+             AND map.attend_yn = '1'
+             ${searchParam && `AND ${searchParam}`}
+           GROUP BY map.member_no
+         ) stat
+  `
+  const [data] = await DB_MAHJONG_SCORE.query(sql)
+  return data as CountData[]
+}
+
+export async function findPointRankList(filter:FindPointRankFilter): Promise<PointRankData[]> {
+  if (!filter.order_by && !filter.is_desc) filter.is_desc = 'Y'
+
+  const search = getSearchQuery(filter)
+  const searchParam = getSearchPointRankParam(filter, search)
+  const sort = getSortQuery(filter, 'totalPoint')
+
+  const sql = `
+    SELECT member.member_name                                     AS memberName,
+           ( SELECT COUNT(meet_no)
+             FROM meet
+             WHERE meet.win_member_no = member.member_no
+               ${searchParam && `AND ${searchParam}`})            AS meetWinCnt,
+           ( SELECT COUNT(game_no)
+             FROM game
+                    LEFT JOIN meet ON game.meet_no = meet.meet_no
+             WHERE game.yakuman_member_no = member.member_no
+               ${searchParam && `AND ${searchParam}`})            AS yakumanCnt,
+           SUM(map.point)                                         AS totalPoint,
+           COUNT(IF(map.rank=1, true, null))                      AS winCnt,
+           COUNT(IF(map.rank=2, true, null))                      AS secondCnt,
+           COUNT(IF(map.rank=3, true, null))                      AS thirdCnt,
+           COUNT(IF(map.attend_yn=1, true, null))                 AS totalMeetCnt
+    FROM meet_member_map map
+           LEFT JOIN meet ON meet.meet_no = map.meet_no
+           LEFT JOIN member ON member.member_no = map.member_no
+    WHERE meet.end_yn = '1'
+      AND map.attend_yn = '1'
+      ${searchParam && `AND ${searchParam}`}
+    GROUP BY map.member_no
+    ${sort}
+  `
+  console.log(sql)
+
+  const [data] = await DB_MAHJONG_SCORE.query(sql)
+  return data as PointRankData[]
 }
