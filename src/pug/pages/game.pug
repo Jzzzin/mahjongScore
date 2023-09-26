@@ -14,6 +14,11 @@ block content
     .container-fluid.px-4
         include includes/page-header.pug
         .card.mb-4
+            .row
+                .form-floating.mb-md-0
+                div#meetDayListName 모임일자
+                    span#meetDiv
+                        select#meetList.input-el.meet-date
             .card-body
                 table.gameTable#gameDataTable
                     thead

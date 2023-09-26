@@ -70,6 +70,7 @@ export interface MeetWinMemberParam {
 
 type FindGameFilterName = ''
 export interface FindGameFilter extends Filter<FindGameFilterName> {
+  meetNo: string
 }
 
 export interface GameData {

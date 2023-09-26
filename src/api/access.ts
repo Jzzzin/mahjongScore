@@ -444,31 +444,26 @@ export async function updateMeetResult(meetNo: number): Promise<any> {
   }
 }
 
-export async function updateMeetWinMember(param: MeetWinMemberParam): Promise<any> {
-  const sql = `
-    UPDATE meet
-    SET win_member_no = '${param.winMemberNo}',
-        modified_date = now()
-    WHERE meet_no = '${param.meetNo}'
-  `
-  console.log(sql)
+function getSearchGameParam(filter: FindGameFilter, search: string): string {
+  const searchMeetNo = !isEmpty(filter.meetNo) ? `meet.meet_no = '${filter.meetNo}'` : ''
 
-  try {
-    const [rows] = await DB_MAHJONG_SCORE.query(sql)
-    return rows
-  } catch (e) {
-    console.log(e)
+  let result = ''
+  for (const value of [searchMeetNo, search]) {
+    if (!isEmpty(result) && !isEmpty(value)) result += ' AND '
+    result += value
   }
+  return result
 }
 
 export async function findGameCount(filter:FindGameFilter): Promise<CountData[]> {
   const search = getSearchQuery(filter)
+  const searchParam = getSearchGameParam(filter, search)
 
   const sql = `
     SELECT count(*)
     FROM game
         LEFT JOIN meet ON game.meet_no = meet.meet_no
-    ${search && `WHERE ${search}`}
+    ${searchParam && `WHERE ${searchParam}`}
   `
   const [data] = await DB_MAHJONG_SCORE.query(sql)
   return data as CountData[]
@@ -478,6 +473,7 @@ export async function findGameList(filter:FindGameFilter): Promise<GameData[]> {
   if (!filter.order_by && !filter.is_desc) filter.is_desc = 'Y'
 
   const search = getSearchQuery(filter)
+  const searchParam = getSearchGameParam(filter, search)
   const sort = getSortQuery(filter, 'game.game_number')
 
   const sql = `
@@ -498,7 +494,7 @@ export async function findGameList(filter:FindGameFilter): Promise<GameData[]> {
     FROM game
         LEFT JOIN meet ON game.meet_no = meet.meet_no
         LEFT JOIN member ON game.yakuman_member_no = member.member_no
-    ${search && `WHERE ${search}`}
+    ${searchParam && `WHERE ${searchParam}`}
     ${sort}
   `
   console.log(sql)
@@ -800,9 +796,9 @@ export async function findRankCount(filter:FindRankFilter): Promise<CountData[]>
                   COUNT(IF(map.rank=4, true, null))                                                     AS forthCnt,
                   COUNT(map.game_no)                                                                    AS totalGameCnt
            FROM game_member_map map
-               LEFT JOIN game game ON game.game_no = map.game_no
-               LEFT JOIN meet meet ON meet.meet_no = game.meet_no
-               LEFT JOIN member member ON member.member_no = map.member_no
+               LEFT JOIN game ON game.game_no = map.game_no
+               LEFT JOIN meet ON meet.meet_no = game.meet_no
+               LEFT JOIN member ON member.member_no = map.member_no
            WHERE game.end_yn = '1'
            ${searchParam && `AND ${searchParam}`}
            GROUP BY map.member_no
