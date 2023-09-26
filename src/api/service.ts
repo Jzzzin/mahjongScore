@@ -113,6 +113,8 @@ export async function findMeet(ctx: Context, meetNo: number): Promise<MeetList> 
     locationName: meetWithMember[0].locationName,
     winMemberNo: meetWithMember[0].winMemberNo,
     winMemberName: meetWithMember[0].winMemberName,
+    loseMemberNo: meetWithMember[0].loseMemberNo,
+    loseMemberName: meetWithMember[0].loseMemberName,
     endYn: meetWithMember[0].endYn,
     memberList: meetWithMember.map(value => { return { meetNo: value.meetNo, memberNo: value.memberNo, memberName: value.memberName, attendYn: value.attendYn }})
   }
@@ -148,10 +150,7 @@ export async function updateMeet(ctx: Context, param: MeetParam) {
   if (duplicated === 0 || duplicated === Number(param.meetNo)) {
     const updateResult = await access.updateMeet(param)
     if (updateResult) await access.updateMeetMemberMap({ meetNo: param.meetNo, memberNoList: param.memberNoList })
-    if (String(param.endYn) === '1') {
-      const winMemberNo = await access.getMeetWinMember(param.meetNo)
-      await access.updateMeetWinMember({ meetNo: param.meetNo, winMemberNo: winMemberNo })
-    }
+    if (String(param.endYn) === '1') await access.updateMeetResult(param.meetNo)
 
     result = updateResult.affectedRows
   }

@@ -12057,6 +12057,17 @@ body {
   padding-left: 1px;
 }
 
+.loser-inline {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: bottom;
+}
+.loser-inline .loser-crown {
+  width: 16px;
+  height: 15px;
+  padding-left: 1px;
+}
+
 .yakuman-inline {
   display: inline-flex;
   align-items: center;

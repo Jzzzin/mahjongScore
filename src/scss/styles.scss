@@ -62,6 +62,9 @@ only screen and (max-width: 760px),
 .winner-inline { display: inline-flex; align-items: center; vertical-align: bottom;
     .winner-crown { width: 16px; height: 15px; padding-left: 1px; }
 }
+.loser-inline { display: inline-flex; align-items: center; vertical-align: bottom;
+  .loser-crown { width: 16px; height: 15px; padding-left: 1px; }
+}
 .yakuman-inline { display: inline-flex; align-items: center; vertical-align: bottom;
   .yakuman-crown { width: 16px; height: 20px; padding-left: 1px; }
 }

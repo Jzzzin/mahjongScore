@@ -38,6 +38,8 @@ export interface MeetData {
   locationName: string
   winMemberNo: number
   winMemberName: string
+  loseMemberNo: number
+  loseMemberName: string
   endYn: number
 }
 

@@ -51,9 +51,10 @@ $(document).ready(function() {
                 render: function (data, type, row, meta) {
                     let result = [];
                     for (var item of data) {
-                        if (item.memberName === row.winMemberName) result.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/yellow-crown.svg" alt="winner star"/>' + item.memberName + '</div>') 
+                        if (item.memberName === row.winMemberName) result.push('<div class="winner-inline"><img class="winner-crown" src="../assets/img/yellow-crown.svg" alt="winner star"/>' + item.memberName + '</div>')
+                        else if (item.memberName === row.loseMemberName) result.push('<div class="loser-inline"><img class="loser-crown" src="../assets/img/loser-badge.svg" alt="loser star"/>' + item.memberName + '</div>')
                         else result.push(item.memberName);
-                    }       
+                    }
                     return result.toString();
                   }
             },

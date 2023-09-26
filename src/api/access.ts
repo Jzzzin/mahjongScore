@@ -193,6 +193,8 @@ export async function findMeetCount(filter:FindMeetFilter): Promise<CountData[]>
     SELECT count(*)
     FROM meet
         LEFT JOIN location ON meet.location_no = location.location_no
+        LEFT JOIN member win ON meet.win_member_no = win.member_no
+        LEFT JOIN member lose ON meet.lose_member_no = lose.member_no
     ${searchParam && `WHERE ${searchParam}`}
   `
   const [data] = await DB_MAHJONG_SCORE.query(sql)
@@ -213,11 +215,14 @@ export async function findMeetList(filter:FindMeetFilter): Promise<MeetData[]> {
            meet.location_no                 AS locationNo,
            location.location_name           AS locationName,
            meet.win_member_no               AS winMemberNo,
-           member.member_name               AS winMemberName,
+           win.member_name                  AS winMemberName,
+           meet.lose_member_no              AS loseMemberNo,
+           lose.member_name                 AS loseMemberName,
            meet.end_yn                      AS endYn
     FROM meet
         LEFT JOIN location ON meet.location_no = location.location_no
-        LEFT JOIN member ON meet.win_member_no = member.member_no
+        LEFT JOIN member win ON meet.win_member_no = win.member_no
+        LEFT JOIN member lose ON meet.lose_member_no = lose.member_no
     ${searchParam && `WHERE ${searchParam}`}
     ${sort}
   `
@@ -236,6 +241,7 @@ export async function findMeetMemberMapList(): Promise<MeetMemberMapData[]> {
     FROM meet_member_map map
         LEFT JOIN member ON map.member_no = member.member_no
     WHERE map.attend_yn = '1'
+    ORDER BY map.rank
   `
   console.log(sql)
 
@@ -257,14 +263,17 @@ export async function findMeetWithMember(meetNo: number): Promise<MeetWithMember
            meet.location_no                 AS locationNo,
            location.location_name           AS locationName,
            meet.win_member_no               AS winMemberNo,
-           member.member_name               AS winMemberName,
+           win.member_name                  AS winMemberName,
+           meet.lose_member_no              AS loseMemberNo,
+           lose.member_name                 AS loseMemberName,
            meet.end_yn                      AS endYn,
            map.member_no                    AS memberNo,
            mapMember.member_name            AS memberName,
            map.attend_yn                    AS attendYn
     FROM meet
         LEFT JOIN location ON meet.location_no = location.location_no
-        LEFT JOIN member ON meet.win_member_no = member.member_no
+        LEFT JOIN member win ON meet.win_member_no = win.member_no
+        LEFT JOIN member lose ON meet.lose_member_no = lose.member_no
         LEFT JOIN meet_member_map map ON meet.meet_no = map.meet_no
         LEFT JOIN member mapMember ON map.member_no = mapMember.member_no
     WHERE meet.meet_no = '${meetNo}'
@@ -376,32 +385,63 @@ export async function updateMeet(param: MeetParam): Promise<any> {
   }
 }
 
-interface WinMemberData {
-  meetNo: number
-  memberNo: number
-  point: number
-}
-
-export async function getMeetWinMember(meetNo: number): Promise<number> {
+export async function updateMeetResult(meetNo: number): Promise<any> {
   const sql = `
-    SELECT meet.meet_no         AS meetNo,
-           member.member_no     AS memberNo,
-           SUM(map.point)       AS point
-    FROM game_member_map map
-        LEFT JOIN game ON game.game_no = map.game_no
-        LEFT JOIN meet ON meet.meet_no = game.meet_no
-        LEFT JOIN member ON member.member_no = map.member_no
-    WHERE game.end_yn = '1'
-      AND meet.meet_no = '${meetNo}'
-    GROUP BY map.member_no
-    ORDER BY point DESC
-    LIMIT 1
+    UPDATE meet_member_map map
+        LEFT JOIN meet ON map.meet_no = meet.meet_no
+        LEFT JOIN ( SELECT tmp.rank,
+                           IF(tmp.rank < 4, 4 - CAST(tmp.rank AS UNSIGNED), 0) AS 'point',
+                           tmp.meet_no,
+                           tmp.member_no
+                    FROM ( SELECT RANK() OVER w AS 'rank',
+                                  meet.meet_no,
+                                  member.member_no,
+                                  SUM(map.point) AS totalPoint
+                           FROM game_member_map map
+                                  LEFT JOIN game ON game.game_no = map.game_no
+                                  LEFT JOIN meet ON meet.meet_no = game.meet_no
+                                  LEFT JOIN member ON member.member_no = map.member_no
+                           WHERE game.end_yn = '1'
+                             AND meet.end_yn = '1'
+                             AND meet.meet_no = '${meetNo}'
+                           GROUP BY meet.meet_no, map.member_no
+                                WINDOW w AS (PARTITION BY meet.meet_no ORDER BY meet.meet_no, totalPoint DESC)
+                         ) tmp
+                  ) meetRank ON map.meet_no = meetRank.meet_no AND map.member_no = meetRank.member_no
+    SET map.rank = COALESCE(meetRank.rank, 0),
+        map.point = COALESCE(meetRank.point, 0)
+    WHERE meet.end_yn = '1'
+      AND map.attend_yn = '1'
+      AND meet.meet_no = '${meetNo}';
+    UPDATE meet
+        LEFT JOIN ( SELECT meet_no,
+                           member_no
+                    FROM meet_member_map
+                    WHERE meet_no = '${meetNo}'
+                    ORDER BY 'rank'
+                    LIMIT 1
+                  ) map ON meet.meet_no = map.meet_no
+    SET meet.win_member_no = map.member_no
+    WHERE meet.meet_no = '${meetNo}';
+    UPDATE meet
+          LEFT JOIN ( SELECT meet_no,
+                             member_no
+                      FROM meet_member_map
+                      WHERE meet_no = '${meetNo}'
+                      ORDER BY 'rank' DESC
+                      LIMIT 1
+                    ) map ON meet.meet_no = map.meet_no
+    SET meet.lose_member_no = map.member_no
+    WHERE meet.meet_no = '${meetNo}';
   `
   console.log(sql)
 
-  const [data] = await DB_MAHJONG_SCORE.query(sql)
-  const result = data as WinMemberData[]
-  return result.pop()?.memberNo ?? 0
+  try {
+    const [rows] = await DB_MAHJONG_SCORE.query(sql)
+    return rows
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 export async function updateMeetWinMember(param: MeetWinMemberParam): Promise<any> {

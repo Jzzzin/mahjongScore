@@ -25,6 +25,7 @@ export interface meet extends auditWithUpdate {
   meetTime: string
   locationNo: number
   winMemberNo: number
+  loseMemberNo: number
   endYn: number
 }
 
@@ -32,6 +33,8 @@ export interface meet_member_map extends auditWithUpdate {
   seq: number
   meetNo: number
   memberNo: number
+  rank: number
+  point: number
   attendYn: number
 }
 
