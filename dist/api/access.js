@@ -720,7 +720,7 @@ async function findRankList(filter) {
 exports.findRankList = findRankList;
 async function findYearList() {
     const sql = `
-    SELECT DISTINCT SUBSTRING(meet_day, 1, 4) AS year
+    SELECT DISTINCT CAST(SUBSTRING(meet_day, 1, 4) AS CHAR) AS year
     FROM meet
     WHERE end_yn = '1'
     ORDER BY year DESC

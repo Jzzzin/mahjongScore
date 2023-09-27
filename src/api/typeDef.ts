@@ -159,7 +159,7 @@ export interface RankList extends RankData {
 }
 
 export interface YearData {
-  year: number
+  year: string
 }
 
 type FindPointRankFilterName = ''
