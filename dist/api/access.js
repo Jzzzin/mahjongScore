@@ -353,6 +353,7 @@ async function updateMeetResult(meetNo) {
                                         LEFT JOIN member member ON member.member_no = map.member_no
                                     WHERE game.end_yn = '1'
                                       AND meet.end_yn = '1'
+                                      AND meet.meet_no = '${meetNo}'
                                     GROUP BY meet.meet_no, map.member_no
                                     ORDER BY meet.meet_no, totalPoint DESC
                                   ) as tmp,
@@ -369,8 +370,9 @@ async function updateMeetResult(meetNo) {
         LEFT JOIN ( SELECT meet_no,
                            member_no
                     FROM meet_member_map
-                    WHERE meet_no = '${meetNo}'
-                    ORDER BY 'rank'
+                    WHERE attend_yn = '1'
+                      AND meet_no = '${meetNo}'
+                    ORDER BY rank
                     LIMIT 1
                   ) map ON meet.meet_no = map.meet_no
     SET meet.win_member_no = map.member_no
@@ -379,8 +381,9 @@ async function updateMeetResult(meetNo) {
           LEFT JOIN ( SELECT meet_no,
                              member_no
                       FROM meet_member_map
-                      WHERE meet_no = '${meetNo}'
-                      ORDER BY 'rank' DESC
+                      WHERE attend_yn = '1'
+                        AND meet_no = '${meetNo}'
+                      ORDER BY rank DESC
                       LIMIT 1
                     ) map ON meet.meet_no = map.meet_no
     SET meet.lose_member_no = map.member_no
