@@ -1,6 +1,6 @@
 /*!
     * Start Bootstrap - Mahjong Score v1.0.0 (undefined)
-    * Copyright 2013-2023 undefined
+    * Copyright 2013-2024 undefined
     * Licensed under MIT (https://github.com/StartBootstrap/mahjong_score/blob/master/LICENSE)
     */
     //

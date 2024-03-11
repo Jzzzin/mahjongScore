@@ -222,7 +222,7 @@ async function createGame(ctx, param) {
                 memberNo: value.memberNo,
                 position: '',
                 score: value.score,
-                gameMemberCount: param.gameMemberCount,
+                gameMemberCount: Number(param.gameMemberCount),
                 returnScore: createParam.returnScore,
                 okaPoint: createParam.okaPoint,
                 umaPoint: createParam.umaPoint
